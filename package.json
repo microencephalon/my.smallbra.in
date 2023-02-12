@@ -27,6 +27,16 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dctii/my.smallbra.in.git"
+  },
+  "author": "Dana Tolman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dctii/my.smallbra.in/issues"
+  },
+  "homepage": "https://github.com/dctii/my.smallbra.in#readme",
   "eslintConfig": {
     "extends": [
       "react-app",
