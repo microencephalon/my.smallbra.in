@@ -27,7 +27,7 @@
 
     "start-production": "node backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
     "server-production": "nodemon backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
-    "client-production": "npm serve --prefix frontend --public my.smallbra.in --allowedHosts my.smallbra.in",
+    "client-production": "npm run serve --prefix frontend",
     "production": "concurrently \"npm run server-production\" \"npm run client-production\"",
 
     "test": "react-scripts test",
