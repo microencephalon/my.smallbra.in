@@ -20,9 +20,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node backend/server.js --public my.smallbra.in",
-    "server": "nodemon backend/server.js --public my.smallbra.in",
-    "client": "npm start --prefix frontend --public my.smallbra.in",
+    "start": "node backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
+    "server": "nodemon backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
+    "client": "npm start --prefix frontend --public my.smallbra.in --allowedHosts my.smallbra.in",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "production": "concurrently \"npm run server\" \"npm run client\"",
     "test": "react-scripts test",
