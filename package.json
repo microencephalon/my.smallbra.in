@@ -22,12 +22,12 @@
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
-    "client": "npm start --prefix frontend --public my.smallbra.in --allowedHosts my.smallbra.in",
+    "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
 
     "start-production": "node backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
     "server-production": "nodemon backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
-    "client-production": "npm serve --prefix frontend",
+    "client-production": "npm serve --prefix frontend --public my.smallbra.in --allowedHosts my.smallbra.in",
     "production": "concurrently \"npm run server-production\" \"npm run client-production\"",
 
     "test": "react-scripts test",
