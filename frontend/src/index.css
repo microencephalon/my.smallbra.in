@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/bpdots-2');
+
 html, body {
   height: 100%;
   margin: 0;
@@ -14,6 +16,16 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.navlist {
+  margin-top: -165px;
+  font-family:'BPdotsSquares', sans-serif;
+  font-size:48.163px;
+}
+
+.navItem:hover {
+  fill: green
 }
 
 code {
