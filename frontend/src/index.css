@@ -24,8 +24,16 @@ html, body {
   font-size:48.163px;
 }
 
-.navItem:hover {
-  fill: green
+#navItemBlog:hover, #navItemPortfolio:hover, #navItemResume:hover, #navItemAbout:hover {
+  fill: green;
+}
+
+#navItemBlogBack, #navItemPortfolioBack, #navItemResumeBack, #navItemAboutBack {
+  fill: white;
+}
+
+.navListPathTag {
+  fill-rule: nonzero;
 }
 
 code {

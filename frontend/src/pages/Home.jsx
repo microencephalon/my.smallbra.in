@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import logo from '../assets/svg/smallbrain-logo3.svg';
 // import nav from '../assets/svg/navbar-smbrain.svg';
 import { navItems } from '../assets/svg/navbarItems';
@@ -28,6 +28,7 @@ function Home() {
             width={512}
             height={512}
           /> */}
+          {/* TODO: Need to make it so when hovering over #navItem{}Backs will turn #navItem{name} green */}
           <svg
             className='navlist'
             width='100%'

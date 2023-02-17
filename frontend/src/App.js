@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  // MemoryRouter,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
 import { ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home';
@@ -14,8 +19,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/error' element={<Error responseCode={'503'} />} />
+          <Route exact path='/' element={<Home />} />
           <Route path='/blog' element={<Error responseCode={'503'} />} />
           <Route path='/portfolio' element={<Error responseCode={'503'} />} />
           <Route path='/resume' element={<Error responseCode={'503'} />} />
