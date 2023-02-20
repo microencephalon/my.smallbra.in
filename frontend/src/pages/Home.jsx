@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/svg/smallbrain-logo3.svg';
 // import nav from '../assets/svg/navbar-smbrain.svg';
 import { navItems } from '../assets/svg/navbarItems';
+// import Spinner from '../components/Spinner';
 
 function Home() {
   return (
