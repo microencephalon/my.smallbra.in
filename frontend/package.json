@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "node private/build.js && react-scripts build",
+    "build": "react-scripts build",
     "start-production": "react-scripts start --public my.smallbra.in --allowedHosts my.smallbra.in",
     "serve": "serve -s build",
     "test": "react-scripts test",
