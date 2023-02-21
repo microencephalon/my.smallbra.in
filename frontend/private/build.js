@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 // const { spawn } = require('child_process');
 
 axios
-  .post('http://localhost:8080', null, {
+  .post('http://localhost:3000/build', null, {
     headers: {
       Upgrade: 'npm-run-build-in-progress',
     },
