@@ -26,6 +26,11 @@ function App() {
           <Route path='/about' element={<Error responseCode={'503'} />} />
           {/* https://bit.ly/3YSClU2 React - Redirect to a default path if path doesn't exist */}
           <Route path='*' element={<Error responseCode={'404'} />} />
+          <Route
+            path='/manifest.json'
+            element={<Error responseCode={'403'} />}
+          />
+          <Route path='/robot.txt' element={<Error responseCode={'403'} />} />
         </Routes>
       </Router>
       <ToastContainer autoClose={3000} transition={Zoom} />
