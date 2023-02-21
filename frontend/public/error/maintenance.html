@@ -22,16 +22,17 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>my.smallbra.in: upgrading</title>
+    <title>my.smallbra.in: 503 maintenance</title>
   </head>
   <body>
-    <body>
       <div style="margin-left: 20px; font-family: BPdotsSquares">
         <h1>
           <span style="color: red">503 </span> Service Unavailable
         </h1>
         <p>This location is currently rebuilding. It will return soon. Please try again later.</p>
       </div>
-    </body>
+      <script>
+        console.warn(503 + ' Service Unavailable: my.smallbra.in is undergoing maintenance and will be back up at a later time.')
+      </script>
   </body>
 </html>
