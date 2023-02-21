@@ -1,7 +1,5 @@
-import axios from 'axios';
-import { spawn } from 'child_process';
-// const axios = require('axios');
-// const { spawn } = require('child_process');
+const axios = require('axios');
+const { spawn } = require('child_process');
 
 axios
   .post('http://localhost:3000/build', null, {
