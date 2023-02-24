@@ -24,8 +24,12 @@ html, body {
   font-size:48.163px;
 }
 
+#navItemBlog, #navItemPortfolio, #navItemResume, #navItemAbout {
+  fill: gray;
+}
+
 #navItemBlog:hover, #navItemPortfolio:hover, #navItemResume:hover, #navItemAbout:hover {
-  fill: green;
+  fill: lightgray;
 }
 
 #navItemBlogBack, #navItemPortfolioBack, #navItemResumeBack, #navItemAboutBack {
