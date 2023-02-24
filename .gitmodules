@@ -1,0 +1,3 @@
+[submodule "portfolio/bj-rotary"]
+	path = portfolio/bj-rotary
+	url = https://github.com/dctii/bj-rotary.git
