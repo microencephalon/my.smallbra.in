@@ -1,0 +1,377 @@
+/* TODO: Add Firefox support for href designs, see `p a` at the bottom for hover effects that work for webkit  */
+/* TODO: Need to add copy btn support for firefox and webkit */
+
+/* TODO: Add responsive design that adheres to different widths and heights */
+/* Base styles (for smallest screen size - 320px) */
+/* No media query needed */
+
+/* Width: 375px and 414px */
+/* @media (min-width: 375px) {
+  
+} */
+
+/* Width: 568px, 600px, and 667px */
+/* @media (min-width: 568px) {
+  
+} */
+
+/* Width: 736px and 768px */
+/* @media (min-width: 736px) {
+  
+} */
+
+/* Width: 800px, 834px, and 1024px */
+/* @media (min-width: 800px) {
+  
+} */
+
+/* Width: 1112px and 1080px */
+/* @media (min-width: 1080px) {
+  
+} */
+
+/* Width: 1366px and 1920px */
+/* @media (min-width: 1366px) {
+  
+} */
+
+/* Blog Roll */
+
+.blog-roll-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: absolute;
+}
+
+/* Blog Articles */
+
+@media (min-width: 768px) {
+  .blog-post-toc {
+    font-family: 'Inter', sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #f1f1f1;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+}
+
+.blog-post-toc {
+  display: none;
+}
+
+/* Main content styles */
+
+@media (min-width: 320px) {
+  .blog-post {
+    font-family: 'Rubik', sans-serif;
+    margin-left: 220px; /* leave space for the sidebar */
+    padding-bottom: 400px;
+    max-width: 800px;
+    margin-right: 5px;
+    display: block;
+  }
+}
+
+.blog-post {
+  font-family: 'Rubik', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-left: 5px;
+  margin-right: 5px;
+  max-width: calc(100% - 10px); /* Adjust the max-width to accommodate the left and right margins */
+  margin: 0 auto;
+}
+
+
+blockquote {
+  background-color: transparent;
+  border: 0px solid;
+  border-color: #424346 !important;
+  border-left-width: 2px !important;
+  border-radius: 0px;
+  color: black;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  line-height: 1.25em;
+  margin: 0 10px;
+  padding: 12px 0 0.1px 12.5px
+}
+
+.blog-post > h1, h2, h3, h4, h5, h6 {
+  padding-top: 15px;
+  padding-bottom: 0px;
+}
+
+/* Headers */
+
+h1 {
+  font-family: 'Asap', sans-serif;
+  font-size: 2em;
+}
+
+h2 {
+  font-family: 'Asap', sans-serif;
+  font-size: 1.5em;
+}
+
+h3 {
+  font-family: 'Asap', sans-serif;
+  font-size: 1.3em;
+}
+
+h4 {
+  font-family: 'Asap', sans-serif;
+  font-size: 1em;
+}
+
+h5 {
+  font-family: 'Asap', sans-serif;
+  font-size: 0.8em;
+}
+
+h6 {
+  font-family: 'Asap', sans-serif;
+  font-size: 0.7em;
+}
+
+.example-in-action {
+  color: #9DB2BD;
+  text-decoration: underline;
+  text-decoration-color: #9DB2BD;
+  text-decoration-thickness: 2px;
+  text-decoration-style: solid;
+}
+
+table { 
+  border: 0.125rem solid black;
+  border-collapse: separate;
+  border-left: 0;
+  border-radius: 4px;
+  border-spacing: 0px;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+}
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+  border-collapse: separate;
+}
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+th, td {
+  padding: 7.5px; 
+  text-align: left;
+  vertical-align: top;
+  border-left: 0.125rem solid black;    
+}
+td {
+  border-top: 1px solid black;    
+}
+th:first-child, td:first-child {
+  border-left: 0.125rem solid black;    
+}
+thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {
+  border-radius: 2px 0 0 0;
+}
+thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td:first-child {
+  border-radius: 0 0 0px 2px;
+}
+
+
+/* Code Blocks */
+pre {
+  border-radius: 5px 5px 5px 5px;
+}
+
+pre:hover {
+  border-radius: 5px 5px 5px 5px;
+}
+
+pre > div.code {
+  position: relative;
+}
+
+pre > div.code > pre {
+  background: white !important;
+  border: 0.125rem solid black!important;
+}
+
+/* TODO: Need to add this for WebKit and Firefox */
+pre > div.code > button.copy-code-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  color: #000000;
+  background-color: transparent;
+  border: none;
+  font-size: 15px;
+}
+
+/* Inline code strings */
+
+/* Firefox support via JavaScript */
+@supports not (-moz-appearance:none) {
+  pre:has(> code.language-code-string), code.language-code-string {
+    all: unset !important;
+  }
+}
+
+div.code > pre > code.language-code-string > span {
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  color: #414141;
+  background-color: #EBEAEA;
+  padding: 1.75px 3px;
+  border-radius: 5px;
+}
+
+/* Miscellaneous */
+
+img {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.badge {
+  margin-right: 5px;
+}
+
+/* Firefox support added to BlogContent.jsx */
+@supports not (-moz-appearance: none) {
+  a:has(> sup) {
+    text-decoration-line: none !important;
+  }
+}
+
+a > sup {
+  color: lightslategray;
+  position: relative;
+}
+a > sup::before {
+  content: "｢ "; /* Using U+2009 'Narrow Thin Space' for space before '｣' */
+  position: relative;
+}
+a > sup::after {
+  content: " ｣"; /* Using U+2009 'Narrow Thin Space' for space before '｣' */
+  position: relative;
+}
+
+footer > div {
+  font-size: small;
+}
+
+/* List Items */
+
+
+/* Checkbox Lists */
+
+@supports not (-moz-appearance: none) {
+  li:has(> input[type='checkbox']) {
+    display: flex;
+    align-items: center;
+    padding-left: 0rem;
+    margin-left: -1.30rem;
+  }
+}
+
+ul > li > input[type="checkbox"] {
+  appearance: none;
+  padding-left: 0px;
+  border: 2px solid black;
+  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  background-color: transparent;
+  margin-right: 10px;
+}
+
+ul > li > input[type="checkbox"]:checked:after {
+  content: '\2714';
+  font-size: 12px;
+  color: black;
+  position: relative;
+  top: -6px;
+  left: 2.5px;
+  font-family: 'Arial', sans-serif; /* Fallback font */
+}
+
+blockquote > ul > li > input[type="checkbox"]:checked:after {
+  top: -4px;
+}
+
+/* Scrollbars */
+
+/* For non-Firefox browsers */
+@supports not (-moz-appearance: none) {
+  pre::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+    background:transparent;
+  }
+
+  pre::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 3.5px solid transparent;
+    border-radius: 25px;
+  }
+
+  pre:hover::-webkit-scrollbar-thumb {
+    background-color: black;
+    border: 3.5px solid white;
+    border-radius: 25px;
+  }
+}
+pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+pre:hover {
+  scrollbar-color: black transparent;
+}
+
+
+/* pre::-webkit-scrollbar-track{
+  background-color: lightgray;
+
+} */
+/* background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="25"><circle cx="13.5" cy="12.5" r="11" fill="white" stroke="black" stroke-width="2"/></svg>'); */
+/* background-position: center center; */
+/* background-repeat: no-repeat, no-repeat; */
+/* background-size: 25px; */
+
+/* Hover  -- TODO: Add support for Firefox */
+/* Select all <a> elements inside <p> or <ul> that don't have <sup> or <sub> descendants */
+p a:not(:has(> sup)):not(:has(> sub)), ul a:not(:has(> sup)):not(:has(> sub)) {
+  color: black;
+  text-decoration: none;
+  background-image: linear-gradient(black, black);
+  background-repeat: no-repeat;
+  background-position: 0% 100%;
+  background-size: 100% 1.5px;
+  transition: background-size .4s, background-position .2s ease-in .4s;
+}
+
+/* Hover effect for <a> elements inside <p> or <ul> that don't have <sup> or <sub> descendants */
+p a:not(:has(> sup)):not(:has(> sub)):hover, ul a:not(:has(> sup)):not(:has(> sub)):hover {
+  color: white;
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  transition: background-position .4s, background-size .2s ease-in .4s, color .2s ease-in .4s;
+}
+
+img {
+  max-width: 100%; /* So images don't overflow */
+  height: auto;
+}
+

@@ -1,0 +1,29 @@
+// Define a mixin to set font properties
+.font {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+// Define a class that uses the mixin
+.heading {
+  .font; // Include the mixin
+  text-decoration: underline;
+}
+
+// Define a variable for a color
+@primary-color: #428bca;
+
+// Define a class that uses the variable
+.button {
+  background-color: @primary-color;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background-color: darken(@primary-color, 10%);
+  }
+}

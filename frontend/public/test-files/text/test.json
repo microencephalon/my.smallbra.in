@@ -1,0 +1,66 @@
+{
+  "company": "Acme Inc.",
+  "employees": [
+    {
+      "name": "John Smith",
+      "position": "Software Engineer",
+      "salary": 100000,
+      "hire_date": "2022-01-01"
+    },
+    {
+      "name": "Jane Doe",
+      "position": "Marketing Manager",
+      "salary": 75000,
+      "hire_date": "2022-02-15"
+    },
+    {
+      "name": "Bob Johnson",
+      "position": "Sales Representative",
+      "salary": 50000,
+      "hire_date": "2022-03-20"
+    }
+  ],
+  "offices": {
+    "New York": {
+      "address": "123 Main St.",
+      "phone": "(555) 123-4567"
+    },
+    "Los Angeles": {
+      "address": "456 Maple Ave.",
+      "phone": "(555) 987-6543"
+    },
+    "Chicago": {
+      "address": "789 Oak St.",
+      "phone": "(555) 555-5555"
+    }
+  },
+  "projects": [
+    {
+      "name": "Project A",
+      "start_date": "2022-04-01",
+      "end_date": "2022-06-30",
+      "team": [
+        "John Smith",
+        "Jane Doe"
+      ]
+    },
+    {
+      "name": "Project B",
+      "start_date": "2022-07-01",
+      "end_date": "2022-09-30",
+      "team": [
+        "John Smith",
+        "Bob Johnson"
+      ]
+    },
+    {
+      "name": "Project C",
+      "start_date": "2022-10-01",
+      "end_date": "2022-12-31",
+      "team": [
+        "Jane Doe",
+        "Bob Johnson"
+      ]
+    }
+  ]
+}

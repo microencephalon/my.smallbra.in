@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/svg/smallbrain-logo3.svg';
+import logo from '../../assets/svg/smallbrain-logo3.svg';
 // import nav from '../assets/svg/navbar-smbrain.svg';
-import { navItems } from '../assets/svg/navbarItems';
+import { navItems } from '../../assets/svg/navbarItems';
 // import Spinner from '../components/Spinner';
+// TODO: Implement usecallback for the navItems as part of refactoring
+// import { useCallback } from 'react';
 
 function Home() {
   return (
@@ -39,6 +41,8 @@ function Home() {
           >
             {navItems().map((item) => item())}
           </svg>
+          {/* TODO: Set this up */}
+          <p>{/* <Link to='/portfolio/bj-rotary/'>Django server</Link> */}</p>
         </nav>
       </div>
     </>

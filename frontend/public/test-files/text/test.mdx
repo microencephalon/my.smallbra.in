@@ -1,0 +1,33 @@
+import React from 'react'
+import { Link } from 'gatsby'
+import { MDXRenderer } from 'gatsby-plugin-mdx'
+import Layout from '../components/layout'
+
+const BlogPostTemplate = ({ data }) => {
+  const { mdx } = data
+  const { frontmatter, body } = mdx
+
+  return (
+    <Layout>
+      <h1>{frontmatter.title}</h1>
+      <p>Written by {frontmatter.author} on {frontmatter.date}</p>
+      <MDXRenderer>{body}</MDXRenderer>
+      <Link to="/blog">Back to Blog</Link>
+    </Layout>
+  )
+}
+
+export default BlogPostTemplate
+
+export const query = graphql`
+  query ($slug: String!) {
+    mdx(frontmatter: { slug: { eq: $slug } }) {
+      frontmatter {
+        title
+        author
+        date(formatString: "MMMM DD, YYYY")
+      }
+      body
+    }
+  }
+`

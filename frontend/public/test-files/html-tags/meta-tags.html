@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Website</title>
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://localhost:3000">
+    <!-- Meta Description -->
+    <meta name="description" content="Opinions, tutorials, and more.">
+    <!-- Meta Keywords -->
+    <meta name="keywords" content="blog, opinion, tutorials, education, computers, coding">
+    <!-- Meta Robots -->
+    <meta name="robots" content="index,follow,noarchive">
+    <!-- <meta name="robots" content="noindex,follow"> -->
+    <!-- <meta name="robots" content="none"> -->
+    
+    <meta http-equiv="refresh" content="15; url=http://localhost:3000/test-files/html-tags/meta-tags.html">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="Mon, 26 Jul 1997 05:00:00 GMT">
+    <meta http-equiv="set-cookie" content="name=value; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/">
+
+    <!-- rel='next' and rel='prev' -->
+    <link rel="prev" href="https://localhost:3000/page1.html">
+    <link rel="next" href="https://localhost:3000/page3.html">
+
+    <!-- hreflang -->
+    <link rel="alternate" href="https://localhost:3000" hreflang="x-default">
+    <link rel="alternate" href="https://localhost:3000" hreflang="en-US">
+    <link rel="alternate" href="https://localhost:3000/uk" hreflang="en-GB">
+    <link rel="alternate" href="https://localhost:3000/cn/" hreflang="zh-CN">
+    <link rel="alternate" href="https://localhost:3000/jp/" hreflang="ja-JP">
+
+    <!-- rel='alternate' -->
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://localhost:3000/feed.xml">
+    <link rel="alternate" media="print" href="https://localhost:3000/test-files/print.html">
+    <link rel="alternate" type="application/json" title="JSON Feed" href="https://localhost:3000/feed.json">
+
+
+
+
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+    <header>
+      <h1>My Website</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section>
+        <h2>Welcome to my website!</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum dapibus, sapien vel feugiat vestibulum, nisl ipsum tristique tellus, sed posuere magna velit eu velit.</p>
+      </section>
+      <section>
+        <h2>About Me</h2>
+        <p>My name is John Smith and I am a web developer based in New York City. I specialize in front-end development using HTML, CSS, and JavaScript.</p>
+      </section>
+      <section>
+        <h2>Contact Me</h2>
+        <form action="submit.php" method="post">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" required></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 My Website</p>
+    </footer>
+  </body>
+</html>
