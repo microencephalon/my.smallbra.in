@@ -1,10 +1,10 @@
 # Users/danatolman/Documents/GitHub/my.smallbra.in/storage/static_files.nginx
 server {
     listen 8081;
-    server_name localhost;
+    server_name localhost 192.168.1.66;
 
     set $cors_origin "";
-    if ($http_origin ~* (https?://localhost(:[0-9]+)?$)) {
+    if ($http_origin ~* (https?://(localhost|192.168.1.66)(:[0-9]+)?$)) {
         set $cors_origin $http_origin;
     }
 
@@ -30,10 +30,15 @@ server {
     }
 
     location / {
-        return 403; # return a 403 Forbidden HTTP response code by default for other locations
+        # return a 403 Forbidden HTTP response code by default for other locations
+        return 403;
     }
 
     location = /storage/static_files.nginx {
+        return 403;
+    }
+
+    location = /storage/test-files/ {
         return 403;
     }
 
@@ -42,6 +47,10 @@ server {
     }
 
     location = /storage/posts/ {
+        return 403;
+    }
+
+    location = /storage/resumes/ {
         return 403;
     }
 }

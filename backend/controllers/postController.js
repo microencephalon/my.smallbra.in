@@ -4,14 +4,11 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Post = require('../models/postModel');
-const mongoose = require('mongoose');
 
 // Multer Configuration
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const { category } = req.body;
-
     // Get today's date and format it
     const date = new Date();
     const year = date.getFullYear().toString();
@@ -19,15 +16,7 @@ const storage = multer.diskStorage({
     const day = date.getDate().toString().padStart(2, '0');
     const datePath = `${year}/${month}/${day}`;
 
-    const dir = path.join(
-      __dirname,
-      '..',
-      '..',
-      'storage',
-      'posts',
-      datePath,
-      category
-    );
+    const dir = path.join(__dirname, '..', '..', 'storage', 'posts', datePath);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -50,6 +39,22 @@ const upload = multer({ storage: storage });
 const getPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find({});
   res.json(posts);
+});
+
+// DESC: Get paginated posts
+// @route GET /api/posts/pg
+// @access Public
+const getPaginatedPosts = asyncHandler(async (req, res) => {
+  const pageSize = 5; // number of posts per page
+  const page = Number(req.query.page) || 1; // update query parameter name to 'page'
+
+  const count = await Post.countDocuments({});
+  const posts = await Post.find({})
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  const data = { posts, page, pages: Math.ceil(count / pageSize) };
+  res.json(data);
 });
 
 // DESC: Get a post by ID
@@ -89,7 +94,7 @@ const getPostHead = asyncHandler(async (req, res) => {
 // @route OPTIONS /api/posts/:id
 // @access Public
 const getOptions = asyncHandler(async (req, res) => {
-  res.header('Allow', 'GET, POST, PATCH, PATCH, HEAD, OPTIONS');
+  res.header('Allow', 'GET, POST, PATCH, HEAD, OPTIONS');
   res.status(204).end();
 });
 
@@ -102,23 +107,44 @@ const createPost = asyncHandler(async (req, res) => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
   const day = date.getDate().toString().padStart(2, '0');
 
-  const { title, author, category, visible } = req.body;
+  const {
+    title,
+    author,
+    category,
+    visible,
+    summary,
+    tags,
+    relatedPosts,
+    likes,
+    views,
+    facebookShares,
+    twitterShares,
+    pinterestPins,
+  } = req.body;
   const slug = req.body.slug || `${title.replace(/\s/g, '-').toLowerCase()}`;
 
   // As the user field is required, we are using a placeholder user ID.
-  const placeholderUserId = mongoose.Types.ObjectId();
+  // const placeholderUserId = mongoose.Types.ObjectId();
 
   const fileExtension = path.extname(req.file.originalname);
-  const content = `/storage/posts/${year}/${month}/${day}/${category}/${slug}${fileExtension}`;
+  const content = `/storage/posts/${year}/${month}/${day}/${slug}${fileExtension}`;
 
   const post = new Post({
-    user: placeholderUserId, // TODO: user: req.user._id <-- add back later when auth set up
+    user: req.user._id,
     title,
     author,
     category,
     content,
     slug,
     visible,
+    summary,
+    tags,
+    relatedPosts,
+    likes,
+    views,
+    facebookShares,
+    twitterShares,
+    pinterestPins,
   });
 
   const createdPost = await post.save();
@@ -138,7 +164,6 @@ const createPost = asyncHandler(async (req, res) => {
     `${year}`,
     `${month}`,
     `${day}`,
-    category,
     `${slug}${fileExtension}`
   );
 
@@ -151,7 +176,6 @@ const createPost = asyncHandler(async (req, res) => {
     `${year}`,
     `${month}`,
     `${day}`,
-    category,
     newFileName
   );
 
@@ -159,7 +183,7 @@ const createPost = asyncHandler(async (req, res) => {
   fs.renameSync(currentFilePath, newFilePath);
 
   // Update the content field of the post with the new file path
-  createdPost.content = `/storage/posts/${year}/${month}/${day}/${category}/${newFileName}`;
+  createdPost.content = `/storage/posts/${year}/${month}/${day}/${newFileName}`;
 
   // Save the updated post back to the database
   await createdPost.save();
@@ -198,7 +222,7 @@ const patchPost = asyncHandler(async (req, res) => {
       const oldPost = await Post.findById(req.params.id);
       const fileExtension = path.extname(oldPost.content);
       const oldDatePath = oldPost.content.match(
-        /\/posts\/(\d{4}\/\d{2}\/\d{2})\/[^/]*\/[^/]*$/
+        /\/storage\/posts\/(\d{4}\/\d{2}\/\d{2})\/[^/]*$/
       )[1];
       const postId = oldPost._id;
       const oldFilePath = path.join(__dirname, '../../', oldPost.content);
@@ -208,7 +232,6 @@ const patchPost = asyncHandler(async (req, res) => {
         'storage',
         'posts',
         oldDatePath,
-        oldPost.category,
         `${postId}-${slug}${fileExtension}`
       );
 
@@ -216,15 +239,13 @@ const patchPost = asyncHandler(async (req, res) => {
       fs.renameSync(oldFilePath, newFilePath);
 
       req.body.slug = slug;
-      req.body.content = `/storage/posts/${oldDatePath}/${oldPost.category}/${postId}-${slug}${fileExtension}`;
+      req.body.content = `/storage/posts/${oldDatePath}/${postId}-${slug}${fileExtension}`;
     }
 
-    // Update the dateModified field
-    req.body.dateModified = new Date();
-
+    const updatedFields = { ...req.body, dateModified: new Date() };
     const post = await Post.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updatedFields,
       { new: true, runValidators: true, context: 'query' } // Options
     );
 
@@ -275,6 +296,7 @@ const deletePost = asyncHandler(async (req, res) => {
 
 module.exports = {
   getPosts,
+  getPaginatedPosts,
   getPostById,
   createPost,
   upload,
