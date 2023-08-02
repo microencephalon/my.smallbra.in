@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
-const Post = require('./models/postModel');
-const Artifact = require('./models/artifactModel');
-const { createOrUpdateSearchItem } = require('./controllers/searchHelpers');
+const Post = require('../models/postModel');
+const Artifact = require('../models/artifactModel');
+const { createOrUpdateSearchItem } = require('../controllers/searchHelpers');
 
 const run = async () => {
   // Connect to your MongoDB database
   await mongoose.connect('mongodb://localhost:27017/mysmallbrain', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
   });
 
   // Fetch all posts and artifacts
