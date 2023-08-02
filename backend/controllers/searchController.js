@@ -1,7 +1,7 @@
 // backend/controllers/searchController.js
 
-const Artifact = require('../models/artifactModel');
-const Post = require('../models/postModel');
+// NOTE: Import the SearchItem model
+const SearchItem = require('../models/searchItemModel');
 
 const searchItems = async (req, res) => {
   const {
@@ -84,53 +84,24 @@ const searchItems = async (req, res) => {
     }
   }
 
-  let totalArtifacts = 0;
-  let totalPosts = 0;
-
-  // calculate total count for Artifacts and Posts matching the filter query
-  if (!type || type === 'portfolio') {
-    totalArtifacts = await Artifact.countDocuments(filterQuery);
-  }
-
-  if (!type || type === 'blog') {
-    totalPosts = await Post.countDocuments(filterQuery);
-  }
-
-  const totalCount = totalArtifacts + totalPosts;
+  // NOTE: When counting the total number of documents and fetching the search results, use the SearchItem model
+  const totalCount = await SearchItem.countDocuments(filterQuery);
   const totalPages = Math.ceil(totalCount / limit);
 
-  let artifacts = [];
-  let posts = [];
+  // NOTE: Consolidate into 'results array', no need to combine different results from models anymore
+  let results = [];
 
   if (page) {
     const itemsPerPage = Number(limit);
     const startIndex = (Number(page) - 1) * itemsPerPage;
 
-    if (!type || type === 'portfolio') {
-      artifacts = await Artifact.find(filterQuery)
-        .sort(sortQuery)
-        .skip(startIndex)
-        .limit(itemsPerPage);
-    }
-
-    if (!type || type === 'blog') {
-      posts = await Post.find(filterQuery)
-        .sort(sortQuery)
-        .skip(startIndex)
-        .limit(itemsPerPage);
-    }
+    results = await SearchItem.find(filterQuery)
+      .sort(sortQuery)
+      .skip(startIndex)
+      .limit(itemsPerPage);
   } else {
-    if (!type || type === 'portfolio') {
-      artifacts = await Artifact.find(filterQuery).sort(sortQuery);
-    }
-
-    if (!type || type === 'blog') {
-      posts = await Post.find(filterQuery).sort(sortQuery);
-    }
+    results = await SearchItem.find(filterQuery).sort(sortQuery);
   }
-
-  // Combine artifacts and posts into one array
-  const results = artifacts.concat(posts);
 
   // Sort the combined array based on user query preferences
   results.sort((a, b) => {

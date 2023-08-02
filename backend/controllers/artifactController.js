@@ -1,6 +1,8 @@
 // backend/controllers/artifactController.js
 const asyncHandler = require('express-async-handler');
 const Artifact = require('../models/artifactModel');
+const { createOrUpdateSearchItem } = require('./searchHelpers');
+const SearchItem = require('../models/searchItemModel');
 
 // DESC: Get all artifacts
 // @route GET /api/artifacts
@@ -99,6 +101,9 @@ const createArtifact = asyncHandler(async (req, res) => {
 
   const createdArtifact = await artifact.save();
 
+  // NOTE: Add this line after creating the artifact
+  await createOrUpdateSearchItem(createdArtifact, 'Artifact');
+
   res.status(201).json(createdArtifact);
 });
 
@@ -122,6 +127,9 @@ const patchArtifact = asyncHandler(async (req, res) => {
       { new: true, runValidators: true, context: 'query' } // Options
     );
 
+    // NOTE: Add this line after updating the artifact
+    await createOrUpdateSearchItem(artifact, 'Artifact');
+
     if (!artifact) {
       return res.status(404).json({ error: 'Artifact not found' });
     }
@@ -139,6 +147,9 @@ const patchArtifact = asyncHandler(async (req, res) => {
 const deleteArtifact = asyncHandler(async (req, res) => {
   const artifact = await Artifact.findById(req.params.id);
   if (artifact) {
+    // NOTE: Add this line before removing the artifact
+    await SearchItem.findOneAndDelete({ refId: req.params.id });
+
     await artifact.remove();
     res.json({ message: 'Artifact removed' });
   } else {

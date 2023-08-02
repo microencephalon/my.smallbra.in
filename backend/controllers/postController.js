@@ -4,6 +4,8 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Post = require('../models/postModel');
+const { createOrUpdateSearchItem } = require('./searchHelpers');
+const SearchItem = require('../models/searchItemModel');
 
 // Multer Configuration
 
@@ -188,6 +190,9 @@ const createPost = asyncHandler(async (req, res) => {
   // Save the updated post back to the database
   await createdPost.save();
 
+  // NOTE: Add this line after creating the post
+  await createOrUpdateSearchItem(createdPost, 'Post');
+
   res.status(201).json(createdPost);
 });
 
@@ -249,6 +254,9 @@ const patchPost = asyncHandler(async (req, res) => {
       { new: true, runValidators: true, context: 'query' } // Options
     );
 
+    // NOTE: Add this line after updating the post
+    await createOrUpdateSearchItem(post, 'Post');
+
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
@@ -271,6 +279,9 @@ const deletePost = asyncHandler(async (req, res) => {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
+
+    // NOTE: Add this line before removing the post
+    await SearchItem.findOneAndDelete({ refId: req.params.id });
 
     await post.remove();
 
