@@ -1,0 +1,123 @@
+/* 
+Location: users[ POST /users, POST /users/login ]
+Description: Add prompting note to the right hand side of the operation block for JWT retrieval to gain authorization
+*/
+div > button.opblock-summary-control::after {
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+div#operations-users-registerUser > div > button.opblock-summary-control::after,
+div#operations-users-logInUser > div > button.opblock-summary-control::after {
+  content: "🗝️ provides bearer token";
+}
+
+div#operations-blog-createBlogPost > div > button.opblock-summary-control::after,
+div#operations-blog-patchBlogPost > div > button.opblock-summary-control::after,
+div#operations-blog-deleteBlogPost > div > button.opblock-summary-control::after,
+div#operations-blog-createPostCategory > div > button.opblock-summary-control::after,
+div#operations-blog-patchPostCategory > div > button.opblock-summary-control::after,
+div#operations-blog-deletePostCategory > div > button.opblock-summary-control::after,
+div#operations-portfolio-createPortfolioArtifact > div > button.opblock-summary-control::after,
+div#operations-portfolio-patchPortfolioArtifact > div > button.opblock-summary-control::after,
+div#operations-portfolio-deletePortfolioArtifact > div > button.opblock-summary-control::after,
+div#operations-portfolio-createArtifactCategory > div > button.opblock-summary-control::after,
+div#operations-portfolio-patchArtifactCategory > div > button.opblock-summary-control::after,
+div#operations-portfolio-deleteArtifactCategory > div > button.opblock-summary-control::after {
+  content: "🏛 req. admin";
+}
+
+/* 
+Location: blog[ PATCH /posts/update-post/{postId} ]
+Description: Grey out the section, disable the 'Try It Out' button, and set the description text to red.
+*/
+
+/* operation block */
+
+/* Background color of op-block */
+#operations-blog-updatePostContent {
+  background: gainsboro;
+  border-color: #aaa;
+}
+
+/* Background color of opblock section header */
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.opblock-section-header {
+  background: transparent;
+}
+
+/* gray text */
+#operations-blog-updatePostContent > div.opblock-summary.opblock-summary-patch > button.opblock-summary-control > span.opblock-summary-path > a > span,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.opblock-section-header > div.tab-header > div > h4.opblock-title > span,
+#operations-blog-updatePostContent > div > button.opblock-summary-control > div,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.parameters-container > div > table > thead > tr > th.col_header,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.parameters-container > div > table > tbody > tr > td.parameters-col_name > div.parameter__name.required,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.parameters-container > div > table > tbody > tr > td.parameters-col_name > div.parameter__name.required > span,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.parameters-container > div > table > tbody > tr > td.parameters-col_name > div.parameter__name.required::after,
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.parameters-container > div > table > tbody > tr > td.parameters-col_name > div.parameter__type {
+  color: #aaa;
+}
+
+/* Bar under 'Parameters' */
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.opblock-section-header > div.tab-header > div > h4.opblock-title > span:after {
+  background-color: #aaa;
+}
+
+div#operations-blog-updatePostContent, #operations-blog-updatePostContent > div {
+  border: none;
+  border-radius: 2.5px 2.5px 2.5px 2.5px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+
+/* HTTP request PATCH badge */
+
+#operations-blog-updatePostContent > div > button.opblock-summary-control > span.opblock-summary-method {
+  background: gainsboro;
+  color: #aaa;
+  text-shadow: none;
+}
+
+/* endpoint background */
+#operations-blog-updatePostContent > div.opblock-summary.opblock-summary-patch {
+  background: gainsboro;
+}
+
+/* 'Try it out' button */
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-section > div.opblock-section-header > div.try-out > button.try-out__btn {
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: not-allowed
+}
+
+/* description text color */
+#operations-blog-updatePostContent > div.no-margin > div > div.opblock-description-wrapper > div > div > p {
+  font-weight: bold;
+  color: red;
+}
+
+/* 
+Location: Schemas
+Description: Make transparent the background for the headers for each schema, the headers for each schema properties, and the 'expand/collapse' all buttons
+*/
+div.no-margin > article.json-schema-2020-12 > div.json-schema-2020-12-head > button.json-schema-2020-12-accordion,
+div.no-margin > article.json-schema-2020-12 > div.json-schema-2020-12-head > button.json-schema-2020-12-expand-deep-button,
+div.no-margin > article.json-schema-2020-12 > div.json-schema-2020-12-body > div.json-schema-2020-12-keyword--properties > ul > li.json-schema-2020-12-property > article.json-schema-2020-12--embedded > div.json-schema-2020-12-head > button.json-schema-2020-12-accordion,
+div.no-margin > article.json-schema-2020-12 > div.json-schema-2020-12-body > div.json-schema-2020-12-keyword--properties > ul > li.json-schema-2020-12-property > article.json-schema-2020-12--embedded > div.json-schema-2020-12-head > button.json-schema-2020-12-expand-deep-button {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* 
+  For Status Code 204, hide body response default
+  (usually contains default text '😱 Could not render Dn, see the console.'
+ */
+tr[data-code='204'] > td.response-col_description > div.model-example {
+  display: none;
+}
+
+tr[data-code='204'] > td.response-col_description > div.headers-wrapper > h4.headers__title {
+  margin-top: 2rem;
+}
