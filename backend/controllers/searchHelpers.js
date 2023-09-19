@@ -16,7 +16,7 @@ const createOrUpdateSearchItem = async (doc, modelType) => {
       title: doc.title,
       author: doc.author,
       category: doc.category,
-      description: modelType === 'Post' ? doc.content : doc.description,
+      description: doc.description || null,
       summary: doc.summary || null,
       tags: doc.tags || [],
       slug: doc.slug,
@@ -32,8 +32,7 @@ const createOrUpdateSearchItem = async (doc, modelType) => {
     searchItem.title = doc.title || searchItem.title;
     searchItem.author = doc.author || searchItem.author;
     searchItem.category = doc.category || searchItem.category;
-    searchItem.description =
-      modelType === 'Post' ? doc.content : doc.description;
+    searchItem.description = doc.description || searchItem.description;
     searchItem.summary = doc.summary || searchItem.summary;
     searchItem.tags = doc.tags || searchItem.tags;
     searchItem.slug = doc.slug || searchItem.slug;

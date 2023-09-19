@@ -119,7 +119,7 @@ export const useLiveSearch = (initialItem) => {
 
     try {
       const response = await axios.get(endpoint);
-      const mappedItems = response.data.map((item_1) => ({
+      const mappedItems = response.data.results.map((item_1) => ({
         title: item_1.title ?? '',
         id: item_1._id,
         type: item_1.relatedPosts ? 'blog' : 'portfolio',

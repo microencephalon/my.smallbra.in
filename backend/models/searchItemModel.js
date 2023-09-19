@@ -31,7 +31,7 @@ const searchItemSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
     summary: {
       type: String,

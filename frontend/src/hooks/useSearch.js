@@ -213,6 +213,24 @@ export const useSearch = (initialItem) => {
   }, [page]);
 
   useEffect(() => {
+    if (item.trim() === '' || !item.startsWith('tag:')) {
+      setTagQueries([]);
+      const prefixes = [
+        'title:',
+        't:',
+        'category:',
+        'cat:',
+        'summary:',
+        'sum:',
+        'description:',
+        'desc:',
+      ];
+      if (!prefixes.some((prefix) => item.startsWith(prefix))) {
+        setSearchMode('general');
+        setOmnibarLeftIco('search');
+        setIsSpecSearch(false);
+      }
+    }
     getSearchTypeAndIcon(item);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
