@@ -175,8 +175,7 @@ export const useSearch = (initialItem) => {
 
     try {
       const response = await axios.get(endpoint);
-      console.log(response);
-      const mappedItems = response.data.map((item_1) => ({
+      const mappedItems = response.data.results.map((item_1) => ({
         title: item_1.title ?? '',
         dateCreated: item_1.dateCreated ?? null,
         id: item_1._id,

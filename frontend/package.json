@@ -5,12 +5,16 @@
   "proxy": false,
   "proxy-comments": "Use 'https://localhost:4500' as proxy to use backend with frontend",
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-private-methods": "^7.22.5",
+    "@babel/plugin-transform-private-property-in-object": "^7.22.11",
     "@blueprintjs/core": "^5.0.0",
     "@blueprintjs/icons": "^5.0.0",
     "@blueprintjs/select": "^5.0.0",
     "@blueprintjs/table": "^5.0.0",
     "@cloudinary/react": "^1.11.0",
     "@cloudinary/url-gen": "^1.9.1",
+    "@craco/craco": "^7.1.0",
     "@reduxjs/toolkit": "^1.9.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -35,11 +39,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "start-production": "react-scripts start --public my.smallbra.in --allowedHosts my.smallbra.in",
+    "start": "craco start --verbose",
+    "build": "craco build --verbose",
+    "start-production": "craco start --public my.smallbra.in --allowedHosts my.smallbra.in --verbose",
     "serve": "serve -s build",
-    "test": "react-scripts test",
+    "test": "craco test --verbose",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
