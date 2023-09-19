@@ -21,7 +21,7 @@ router
 router
   .route('/:id')
   .get(getPostCategoryById)
-  .put(protect, isAdmin, updatePostCategory)
+  .patch(protect, isAdmin, updatePostCategory)
   .delete(protect, isAdmin, deletePostCategory);
 
 module.exports = router;

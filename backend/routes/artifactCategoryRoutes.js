@@ -21,7 +21,7 @@ router
 router
   .route('/:id')
   .get(getArtifactCategoryById)
-  .put(protect, isAdmin, updateArtifactCategory)
+  .patch(protect, isAdmin, updateArtifactCategory)
   .delete(protect, isAdmin, deleteArtifactCategory);
 
 module.exports = router;

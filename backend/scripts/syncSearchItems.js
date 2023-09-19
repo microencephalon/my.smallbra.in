@@ -1,9 +1,13 @@
+// backend/scripts/syncSearchItems.js
 const mongoose = require('mongoose');
 const Post = require('../models/postModel');
 const Artifact = require('../models/artifactModel');
 const { createOrUpdateSearchItem } = require('../controllers/searchHelpers');
 
 const run = async () => {
+  // Set strictQuery option for Mongoose
+  mongoose.set('strictQuery', true);
+
   // Connect to your MongoDB database
   await mongoose.connect('mongodb://localhost:27017/mysmallbrain', {
     useNewUrlParser: true,

@@ -1,5 +1,14 @@
 // backend/controllers/postController.js
 const asyncHandler = require('express-async-handler');
+
+let nFetch;
+
+(async () => {
+  nFetch = await import('node-fetch').then((module) => module.default);
+})();
+
+const { pipeline } = require('stream');
+const { promisify } = require('util');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -86,7 +95,7 @@ const getPostHead = asyncHandler(async (req, res) => {
   }
 
   if (post) {
-    res.status(200).end();
+    res.status(204).end();
   } else {
     res.status(404).end();
   }
@@ -125,10 +134,58 @@ const createPost = asyncHandler(async (req, res) => {
   } = req.body;
   const slug = req.body.slug || `${title.replace(/\s/g, '-').toLowerCase()}`;
 
+  let file;
+  let fileFromURL = false;
+  if (req.body.file && req.body.file.startsWith('http')) {
+    // If file URL is provided, download the file
+    const response = await nFetch(req.body.file);
+    if (!response.ok) {
+      res.status(502);
+      throw new Error('Failed to fetch the file from the provided URL');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch the file');
+    }
+
+    const fileExtension = path.extname(req.body.file);
+    const tempFilePath = path.join(
+      __dirname,
+      '../../',
+      'storage',
+      'tmp',
+      `${slug}${fileExtension}`
+    );
+    const writeStream = fs.createWriteStream(tempFilePath);
+
+    await promisify(pipeline)(response.body, writeStream);
+
+    file = {
+      originalname: `${slug}${fileExtension}`,
+      path: tempFilePath,
+    };
+    fileFromURL = true;
+  } else {
+    // Take the file binary upload
+    file = req.file;
+  }
+
+  if (!title || !author || !category || visible === undefined || !file) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
+
   // As the user field is required, we are using a placeholder user ID.
   // const placeholderUserId = mongoose.Types.ObjectId();
 
-  const fileExtension = path.extname(req.file.originalname);
+  const fileExtension = path.extname(file.originalname);
+
+  // Check if file extension is .md
+  if (fileExtension !== '.md') {
+    res.status(415);
+    throw new Error('Unsupported Media Type. Only accepts markdown files.');
+  }
+
   const content = `/storage/posts/${year}/${month}/${day}/${slug}${fileExtension}`;
 
   const post = new Post({
@@ -158,16 +215,24 @@ const createPost = asyncHandler(async (req, res) => {
   const newFileName = `${postId}-${slug}${fileExtension}`;
 
   // Get the current file path
-  const currentFilePath = path.join(
-    __dirname,
-    '../../',
-    'storage',
-    'posts',
-    `${year}`,
-    `${month}`,
-    `${day}`,
-    `${slug}${fileExtension}`
-  );
+  const currentFilePath = fileFromURL
+    ? path.join(
+        __dirname,
+        '../../',
+        'storage',
+        'tmp',
+        `${slug}${fileExtension}`
+      )
+    : path.join(
+        __dirname,
+        '../../',
+        'storage',
+        'posts',
+        `${year}`,
+        `${month}`,
+        `${day}`,
+        `${slug}${fileExtension}`
+      );
 
   // Generate the new file path with the updated file name
   const newFilePath = path.join(
@@ -194,6 +259,11 @@ const createPost = asyncHandler(async (req, res) => {
   await createOrUpdateSearchItem(createdPost, 'Post');
 
   res.status(201).json(createdPost);
+
+  // Delete the temporary file
+  if (file && req.body.file && req.body.file.startsWith('http')) {
+    fs.unlinkSync(file.path);
+  }
 });
 
 // DESC: Update Markdown content of a post
@@ -261,7 +331,7 @@ const patchPost = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    res.json(post);
+    res.status(200).json(post);
   } catch (error) {
     res.status(400).json({ error: error.toString() });
   }
@@ -298,7 +368,7 @@ const deletePost = asyncHandler(async (req, res) => {
       }
     }
 
-    res.json({ message: 'Post removed' });
+    res.status(200).json({ message: 'Post removed' });
   } else {
     res.status(404);
     throw new Error('Post not found');

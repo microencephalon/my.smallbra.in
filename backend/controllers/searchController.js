@@ -1,6 +1,5 @@
 // backend/controllers/searchController.js
 
-// NOTE: Import the SearchItem model
 const SearchItem = require('../models/searchItemModel');
 
 const searchItems = async (req, res) => {
@@ -13,14 +12,32 @@ const searchItems = async (req, res) => {
     tags,
     type,
     page,
-    limit = 10,
+    limit,
     sort,
   } = req.query;
+
+  const canBeInteger = (value) => {
+    const parsedValue = parseInt(value);
+    return !isNaN(parsedValue) && Number.isInteger(parsedValue);
+  };
+
+  if ((limit && !canBeInteger(limit)) || (page && !canBeInteger(page))) {
+    return res.status(400).json({
+      message: 'Invalid page or limit value. They should be integers.',
+    });
+  }
+
+  if (limit && !page) {
+    console.warn(
+      "!!! 'page' parameter not included, 'limit' parameter to be excluded"
+    );
+  }
 
   let filterQuery = {};
   let sortQuery = { dateCreated: -1 };
 
   // Perform a full-text search if a general query is provided
+
   if (query) {
     const queryRegex = new RegExp(query, 'i'); // case-insensitive
     filterQuery = {
@@ -31,36 +48,52 @@ const searchItems = async (req, res) => {
         { category: { $regex: queryRegex } },
       ],
     };
-  } else if (tags) {
-    const tagList = tags.split(',');
-    // Search by tags using the $all operator
-    if (tagList.length > 0) {
-      filterQuery = { tags: { $all: tagList } };
-    } else {
-      return res.status(400).json({ message: 'No tags provided' });
-    }
   } else {
     // If a title is provided, search by title
-    if (title) {
-      const titleRegex = new RegExp(title, 'i'); // case-insensitive
-      filterQuery = { title: { $regex: titleRegex } };
-    }
-    // If a category is provided, search by category
-    else if (category) {
-      const categoryRegex = new RegExp(category, 'i'); // case-insensitive
-      filterQuery = { category: { $regex: categoryRegex } };
-    }
-    // If a description is provided, search by description in artifacts
-    else if (description) {
-      const descriptionRegex = new RegExp(description, 'i'); // case-insensitive
-      filterQuery = { description: { $regex: descriptionRegex } };
-    }
-    // If a summary is provided, search by summary in posts
-    else if (summary) {
-      const summaryRegex = new RegExp(summary, 'i'); // case-insensitive
-      filterQuery = { summary: { $regex: summaryRegex } };
+    if (title || category || description || summary || tags || type) {
+      if (tags) {
+        const tagList = tags.split(',');
+        if (tagList.length > 0) {
+          filterQuery.tags = { $all: tagList };
+        } else {
+          return res.status(400).json({ message: 'No tags provided' });
+        }
+      }
+      if (type) {
+        const typeRegex = new RegExp(type, 'i'); // case-insensitive
+        filterQuery.itemType = { $regex: typeRegex };
+      }
+      if (title) {
+        const titleRegex = new RegExp(title, 'i'); // case-insensitive
+        filterQuery.title = { $regex: titleRegex };
+      }
+      // If a category is provided, search by category
+      if (category) {
+        const categoryRegex = new RegExp(category, 'i'); // case-insensitive
+        filterQuery.category = { $regex: categoryRegex };
+      }
+      // If a description is provided, search by description in artifacts
+      if (description) {
+        if (type === 'blog')
+          console.warn(
+            "!!! 'description' query parameter not available for type 'portfolio', excluding from query"
+          );
+        const descriptionRegex = new RegExp(description, 'i'); // case-insensitive
+        filterQuery.description = { $regex: descriptionRegex };
+      }
+      // If a summary is provided, search by summary in posts
+      if (summary) {
+        if (type === 'portfolio')
+          console.warn(
+            "!!! 'summary' query parameter not available for type 'blog', excluding from query"
+          );
+        const summaryRegex = new RegExp(summary, 'i'); // case-insensitive
+        filterQuery.summary = { $regex: summaryRegex };
+      }
     } else {
-      return res.status(400).json({ message: 'No search query provided' });
+      return res
+        .status(400)
+        .json({ message: 'Invalid or no search query provided' });
     }
   }
 
@@ -141,11 +174,16 @@ const searchItems = async (req, res) => {
       ? res.status(416).json({
           message: `416 Range Not Satisfiable: No resource or page ${page} found.`,
         })
-      : res.status(200).json({ results, totalPages });
+      : res.status(200).json({
+          page: parseInt(page),
+          totalPages,
+          resultsCount: results.length,
+          results,
+        });
   } else if (title || category || description || summary || tags || type) {
-    res.status(200).json({ results });
+    res.status(200).json({ resultsCount: results.length, results });
   } else {
-    res.status(200).json({ results });
+    res.status(200).json({ resultsCount: results.length, results });
   }
 };
 

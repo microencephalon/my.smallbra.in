@@ -37,6 +37,11 @@ const searchItemSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    tags: {
+      type: [String],
+      required: false,
+      default: [],
+    },
     slug: {
       type: String,
       required: true,
@@ -82,6 +87,7 @@ searchItemSchema.index(
     category: 'text',
     description: 'text',
     summary: 'text',
+    tags: 'text',
   },
   { name: 'GeneralIndex' }
 );

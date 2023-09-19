@@ -5,24 +5,40 @@ const PostCategory = require('../models/postCategoryModel');
 
 const getPostCategories = asyncHandler(async (req, res) => {
   const postCategories = await PostCategory.find({});
-  res.json(postCategories);
+  res.status(200).json(postCategories);
 });
 
 const getPostCategoryById = asyncHandler(async (req, res) => {
   const postCategory = await PostCategory.findById(req.params.id);
   if (postCategory) {
-    res.json(postCategory);
+    res.status(200).json(postCategory);
   } else {
-    res.status(404);
-    throw new Error('Post Category not found');
+    res.status(404).json({ message: 'Category not found' });
+    throw new Error('Category not found');
   }
 });
 
 const createPostCategory = asyncHandler(async (req, res) => {
   const { name } = req.body;
+  if (!name) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
   const postCategory = new PostCategory({ name });
-  const createdPostCategory = await postCategory.save();
-  res.status(201).json(createdPostCategory);
+
+  try {
+    const createdPostCategory = await postCategory.save();
+    res.status(201).json(createdPostCategory);
+  } catch (error) {
+    if (error.code === 11000) {
+      const existingCategory = await PostCategory.findOne({ name });
+      res.status(409).json({
+        message:
+          "Database conflict. Unable to create new post category, duplicate entry detected. See 'conflictingData' field.",
+        conflictingData: existingCategory,
+      });
+    }
+  }
 });
 
 const updatePostCategory = asyncHandler(async (req, res) => {
@@ -30,10 +46,10 @@ const updatePostCategory = asyncHandler(async (req, res) => {
   if (postCategory) {
     postCategory.name = req.body.name || postCategory.name;
     const updatedPostCategory = await postCategory.save();
-    res.json(updatedPostCategory);
+    res.status(200).json(updatedPostCategory);
   } else {
     res.status(404);
-    throw new Error('Post Category not found');
+    throw new Error('Category not found');
   }
 });
 
@@ -41,10 +57,10 @@ const deletePostCategory = asyncHandler(async (req, res) => {
   const postCategory = await PostCategory.findById(req.params.id);
   if (postCategory) {
     await postCategory.remove();
-    res.json({ message: 'Post Category removed' });
+    res.status(200).json({ message: 'Category removed' });
   } else {
     res.status(404);
-    throw new Error('Post Category not found');
+    throw new Error('Category not found');
   }
 });
 

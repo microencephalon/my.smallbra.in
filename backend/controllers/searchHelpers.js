@@ -18,6 +18,7 @@ const createOrUpdateSearchItem = async (doc, modelType) => {
       category: doc.category,
       description: modelType === 'Post' ? doc.content : doc.description,
       summary: doc.summary || null,
+      tags: doc.tags || [],
       slug: doc.slug,
       visible: doc.visible,
       onModel: modelType,
@@ -34,6 +35,7 @@ const createOrUpdateSearchItem = async (doc, modelType) => {
     searchItem.description =
       modelType === 'Post' ? doc.content : doc.description;
     searchItem.summary = doc.summary || searchItem.summary;
+    searchItem.tags = doc.tags || searchItem.tags;
     searchItem.slug = doc.slug || searchItem.slug;
     searchItem.visible = doc.visible;
   }

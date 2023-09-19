@@ -40,7 +40,7 @@ const getArtifactHead = asyncHandler(async (req, res) => {
   }
 
   if (artifact) {
-    res.status(200).end();
+    res.status(204).end();
   } else {
     res.status(404).end();
   }
@@ -73,6 +73,11 @@ const createArtifact = asyncHandler(async (req, res) => {
     views,
     relatedArtifacts,
   } = req.body;
+
+  if (!title || !author || !category || visible === undefined) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
 
   const slug =
     req.body.slug ||

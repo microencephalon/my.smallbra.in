@@ -2,12 +2,13 @@
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+require('dotenv').config();
 
 // DESC: Register a new user
 // @route /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, isAdmin } = req.body;
 
   // DESC: Validation
   if (!email || !password) {
@@ -18,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
+    res.status(409);
     throw new Error('User already exists');
   }
 
@@ -27,6 +28,9 @@ const registerUser = asyncHandler(async (req, res) => {
     name: name,
     email: email,
     password: password,
+    isAdmin: !JSON.parse(process.env.ENABLE_ISADMIN_FOR_OWNER_ONLY)
+      ? isAdmin
+      : false,
   });
 
   if (user) {
@@ -34,6 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: generateToken(user._id),
     });
   } else {
@@ -47,6 +52,12 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -165,12 +176,18 @@ const updateUser = asyncHandler(async (req, res) => {
       'profilePicture',
     ];
 
+    if (JSON.parse(process.env.USER_PW_IS_UPDATABLE)) {
+      updatableFields.push('password');
+    }
+
     // Update only the fields that have changed
     updatableFields.forEach((field) => {
       if (field in req.body && req.body[field] !== user[field]) {
         if (field === 'birthday') {
           const newDate = new Date(req.body[field]);
           user[field] = newDate.toISOString();
+        } else if (field === 'password') {
+          user[field] = req.body[field];
         } else {
           user[field] = req.body[field];
         }
