@@ -30,3 +30,17 @@ yarn-debug.log*
 yarn-error.log*
 
 .prettierrc.yaml
+
+# nginx files
+*.nginx
+static_files.nginx
+storage/static_files.nginx
+
+# mongodb dumps
+mongodb_dump/
+
+# storage files
+storage/
+
+# vscode
+.vscode/

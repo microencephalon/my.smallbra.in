@@ -1,17 +1,17 @@
 // backend/controllers/userController.js
 const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+require('dotenv').config();
 
 // DESC: Register a new user
 // @route /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, isAdmin } = req.body;
 
   // DESC: Validation
-  if (!name || !email || !password) {
+  if (!email || !password) {
     res.status(400);
     throw new Error('Please include all fields');
   }
@@ -19,19 +19,18 @@ const registerUser = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
+    res.status(409);
     throw new Error('User already exists');
   }
-
-  // DESC: Hash password
-  const salt = await bcrypt.genSalt(10); // takes amount of rounds you want
-  const hashedPassword = await bcrypt.hash(password, salt);
 
   // DESC: Create User
   const user = await User.create({
     name: name,
     email: email,
-    password: hashedPassword,
+    password: password,
+    isAdmin: !JSON.parse(process.env.ENABLE_ISADMIN_FOR_OWNER_ONLY)
+      ? isAdmin
+      : false,
   });
 
   if (user) {
@@ -39,6 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: generateToken(user._id),
     });
   } else {
@@ -52,10 +52,22 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
+
   const user = await User.findOne({ email });
 
+  if (!user) {
+    // check if user exists or not
+    res.status(401);
+    throw new Error('Invalid credentials');
+  }
+
   // DESC: Check user and passwords match
-  if (user && (await bcrypt.compare(password, user.password))) {
+  if (await user.matchPasswords(password)) {
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -66,16 +78,137 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error('Invalid credentials');
   }
-
-  res.send('Login Route');
 });
 
 // DESC: Get current user
 // @route /api/users/me
 // @access private
 const getMe = asyncHandler(async (req, res) => {
-  const { id, email, name } = req.user;
-  res.status(200).json({ id, email, name });
+  const user = await User.findById(req.user.id);
+
+  if (user) {
+    const updatableFields = [
+      'id',
+      'name',
+      'email',
+      'phone',
+      'birthday',
+      'profilePicture',
+    ];
+
+    const userData = updatableFields.reduce((acc, field) => {
+      if (user[field]) {
+        acc[field] = user[field];
+      }
+      return acc;
+    }, {});
+
+    res.status(200).json(userData);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// DESC: Get user by ID
+// @route /api/users/:id
+// @access Private
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// DESC: Get all users
+// @route /api/users
+// @access Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+
+  if (!users || users.length === 0) {
+    res.status(404);
+    throw new Error('No users found');
+  }
+
+  res.json(users);
+});
+
+// DESC: OPTIONS for Users
+// @route /api/users/
+// @access Private
+const optionsUsers = asyncHandler(async (req, res) => {
+  res.header('Allow', 'GET, POST, PATCH, DELETE, OPTIONS');
+  res.status(200).json();
+});
+
+// DESC: Delete user
+// @route DELETE /api/users/:id
+// @access Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+    res.json({ message: 'User removed' });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// DESC: Update user
+// @route PATCH /api/users/:id
+// @access Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    // Define the fields that can be updated by a user
+    const updatableFields = [
+      'name',
+      'email',
+      'phone',
+      'birthday',
+      'profilePicture',
+    ];
+
+    if (JSON.parse(process.env.USER_PW_IS_UPDATABLE)) {
+      updatableFields.push('password');
+    }
+
+    // Update only the fields that have changed
+    updatableFields.forEach((field) => {
+      if (field in req.body && req.body[field] !== user[field]) {
+        if (field === 'birthday') {
+          const newDate = new Date(req.body[field]);
+          user[field] = newDate.toISOString();
+        } else if (field === 'password') {
+          user[field] = req.body[field];
+        } else {
+          user[field] = req.body[field];
+        }
+      }
+    });
+
+    // Only allow admins to update the isAdmin property
+    if (req.user && req.user.isAdmin && 'isAdmin' in req.body) {
+      user.isAdmin = req.body.isAdmin;
+    }
+
+    // Save user and handle potential validation errors
+    try {
+      const updatedUser = await user.save();
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
 });
 
 // DESC: Generate token
@@ -85,9 +218,28 @@ const generateToken = (id) => {
   });
 };
 
+// DESC: Check if user is an admin
+// @route GET /api/users/verify-if-admin
+// @access private
+const verifyIfAdmin = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+
+  if (user && user.isAdmin) {
+    res.status(200).json({ isAdmin: true });
+  } else {
+    res.status(200).json({ isAdmin: false });
+  }
+});
+
 // DESC: Export the functions
 module.exports = {
   registerUser,
   loginUser,
+  optionsUsers,
   getMe,
+  getUser,
+  getUsers,
+  deleteUser,
+  updateUser,
+  verifyIfAdmin,
 };

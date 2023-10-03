@@ -1,102 +1,143 @@
 // frontend/src/pages/Blog/Blogroll.jsx
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+// import '../../assets/css/blog.css';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Card, Row } from 'react-bootstrap';
+import { Card, Elevation, Text, Button, Icon } from '@blueprintjs/core';
+import BlogCard from '../../components/blog/BlogCard';
+import HomeLogo from '../../components/common/HomeLogo';
 
-axios.defaults.baseURL = 'http://localhost:4500';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const Blogroll = () => {
+  const fadeInRef = useRef(null);
+
   const [posts, setPosts] = useState([]);
-  const [hasMorePosts, setHasMorePosts] = useState(true);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const loadMoreRef = useRef();
+  const navigate = useNavigate();
 
-  const getPosts = useCallback(async () => {
-    const response = await axios.get(`/api/posts?page=${page}`);
-    if (response.data.length > 0) {
-      const visiblePosts = response.data.filter(
-        (post) => post.visible !== false
-      ); // filter posts to only include visible ones
-      setPosts((prevPosts) => {
-        const lastPost = prevPosts[prevPosts.length - 1];
-        const lastNewPost = visiblePosts[visiblePosts.length - 1];
-        if (lastPost && lastNewPost && lastPost.id === lastNewPost.id) {
-          setHasMorePosts(false);
-          return prevPosts;
+  const getInitialPosts = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get(`/api/posts?page=1`);
+      const { posts, pages } = response.data;
+
+      const visiblePosts = posts
+        .filter((post) => post.visible !== false)
+        .map((post) => ({ data: post, isLoading: true }));
+      visiblePosts.sort(
+        (a, b) => new Date(b.data.dateCreated) - new Date(a.data.dateCreated)
+      );
+
+      setPosts(visiblePosts);
+      setTotalPages(pages);
+    } catch (error) {
+      console.error('Error fetching initial posts:', error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setPosts((prevPosts) =>
+          prevPosts.map((postObj) => ({ ...postObj, isLoading: false }))
+        );
+      }, 250);
+    }
+  }, []);
+
+  const loadMorePosts = useCallback(async () => {
+    if (loading || page >= totalPages) return;
+
+    try {
+      setLoading(true);
+      const nextPage = page + 1;
+      const response = await axios.get(`/api/posts?page=${nextPage}`);
+      const { posts: newPosts } = response.data;
+
+      const visiblePosts = newPosts.map((post) => ({
+        data: post,
+        isLoading: true,
+      }));
+      setPosts((prevPosts) => [...prevPosts, ...visiblePosts]);
+      setPage(nextPage);
+    } catch (error) {
+      console.error('Error loading more posts:', error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setPosts((prevPosts) =>
+          prevPosts.map((postObj) => ({ ...postObj, isLoading: false }))
+        );
+      }, 500);
+    }
+  }, [loading, page, totalPages]);
+
+  const renderCard = (postObj, idx) => (
+    <div
+      key={postObj.data._id}
+      className={`${
+        postObj.isLoading
+          ? 'blog-post-card-container'
+          : 'blog-post-card-container fade-in-card'
+      }`}
+    >
+      <BlogCard
+        className={`blog-post-card ${postObj.isLoading ? 'bp5-skeleton' : ''}`}
+        date={new Date(postObj.data.dateCreated).toLocaleDateString()}
+        title={postObj.data.title}
+        summary={postObj.data.summary}
+        onClick={() =>
+          navigate(`/blog/${postObj.data.slug}/${postObj.data._id}`)
         }
-        return [...prevPosts, ...visiblePosts];
-      });
-    } else {
-      setHasMorePosts(false);
-    }
-  }, [page]); // getPosts is now dependent on the page state
-
-  useEffect(() => {
-    if (hasMorePosts) {
-      getPosts();
-    }
-  }, [page, getPosts, hasMorePosts]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting === true && hasMorePosts) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-  }, [loadMoreRef, hasMorePosts]);
-
-  const renderShortCard = (post) => (
-    <Link to={`/blog/${post.slug}/${post._id}`}>
-      <Card key={post._id} style={{ width: '16rem' }}>
-        {/* <Card.Img variant='top' src='holder.js/100px180' /> */}
-        <Card.Body>
-          <Card.Title>{post.title}</Card.Title>
-          <br />
-          <Card.Subtitle className='mb-2 text-muted'>
-            {post.author}
-          </Card.Subtitle>
-          <Card.Text>{post.category}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Link>
+      />
+    </div>
   );
 
-  const renderWideCard = (post, idx) => (
-    <Link to={`/blog/${post.slug}/${post._id}`}>
-      <Card key={post._id} style={{ height: '6rem', width: '48rem' }}>
-        <Card.Body>
-          <Card.Title>{post.title}</Card.Title>&nbsp;&nbsp;
-          <Card.Subtitle className='mb-2 text-muted'>
-            {post.author}
-          </Card.Subtitle>
-          <Card.Text>{post.category}</Card.Text>
-        </Card.Body>
-      </Card>
-    </Link>
-  );
+  const handleLoadMore = () => {
+    loadMorePosts();
+    if (fadeInRef.current) {
+      clearTimeout(fadeInRef.current); // Clear any existing timeout
+    }
+    fadeInRef.current = setTimeout(() => {
+      setPosts((prevPosts) =>
+        prevPosts.map((postObj) => ({ ...postObj, isLoading: false }))
+      );
+    }, 500); // Set a timeout to remove the skeleton class and add the fade-in class
+  };
+
+  useEffect(() => {
+    getInitialPosts();
+  }, [getInitialPosts]);
+
+  useEffect(() => {
+    if (fadeInRef.current) {
+      clearTimeout(fadeInRef.current); // Clear any existing timeout when the component unmounts
+    }
+  }, []);
 
   return (
-    <div>
-      <img
-        src='http://localhost:8081/storage/images/smallbrain-logo3.png'
-        alt='Logo of smallbra.in'
-      />
-      <br />
-      <Row xs='auto' sm='auto' md='auto'>
-        {posts.slice(0, 3).map((post, idx) => renderShortCard(post, idx))}
-      </Row>
-      <Row xs='auto' sm='auto' md='auto'>
-        {posts.slice(3).map((post, idx) => renderWideCard(post, idx + 3))}
-      </Row>
-      {hasMorePosts && <div ref={loadMoreRef}>Load More...</div>}
+    <div className='blogroll-container'>
+      <HomeLogo />
+      <Card className='blog-card blog-card-header' elevation={Elevation.ZERO}>
+        <Text className='blog-post-card-title'>Articles</Text>
+      </Card>
+      {posts.map((post, idx) => (
+        <React.Fragment key={post._id}>{renderCard(post, idx)}</React.Fragment>
+      ))}
+      {page < totalPages && (
+        <Button
+          className='load-more-button'
+          minimal={true}
+          large={true}
+          onClick={handleLoadMore}
+          icon={<Icon icon='add' color='#141414' />}
+          disabled={loading}
+        />
+      )}
+
+      <div className='card-footer-bottom-space'>&nbsp;</div>
     </div>
   );
 };

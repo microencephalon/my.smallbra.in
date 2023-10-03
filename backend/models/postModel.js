@@ -25,7 +25,8 @@ const postSchema = mongoose.Schema({
   },
   category: {
     type: String,
-    required: true,
+    ref: 'PostCategory',
+    required: false,
   },
   content: {
     type: String,
@@ -39,7 +40,56 @@ const postSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  summary: {
+    type: String,
+    required: false,
+  },
+  previewImage: {
+    type: String,
+    required: false,
+  },
+  tags: [
+    {
+      type: String,
+    },
+  ],
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  views: {
+    type: Number,
+    default: 0,
+  },
+  relatedPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post',
+    },
+  ],
+  facebookShares: {
+    type: Number,
+    default: 0,
+  },
+  twitterShares: {
+    type: Number,
+    default: 0,
+  },
+  pinterestPins: {
+    type: Number,
+    default: 0,
+  },
 });
+
+postSchema.index(
+  {
+    title: 'text',
+    author: 'text',
+    category: 'text',
+    summary: 'text',
+  },
+  { name: 'GeneralIndex' }
+);
 
 const Post = mongoose.model('Post', postSchema);
 

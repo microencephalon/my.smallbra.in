@@ -1,17 +1,25 @@
 // backend/controllers/postController.js
 const asyncHandler = require('express-async-handler');
+
+let nFetch;
+
+(async () => {
+  nFetch = await import('node-fetch').then((module) => module.default);
+})();
+
+const { pipeline } = require('stream');
+const { promisify } = require('util');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Post = require('../models/postModel');
-const mongoose = require('mongoose');
+const { createOrUpdateSearchItem } = require('./searchHelpers');
+const SearchItem = require('../models/searchItemModel');
 
 // Multer Configuration
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const { category } = req.body;
-
     // Get today's date and format it
     const date = new Date();
     const year = date.getFullYear().toString();
@@ -19,15 +27,7 @@ const storage = multer.diskStorage({
     const day = date.getDate().toString().padStart(2, '0');
     const datePath = `${year}/${month}/${day}`;
 
-    const dir = path.join(
-      __dirname,
-      '..',
-      '..',
-      'storage',
-      'posts',
-      datePath,
-      category
-    );
+    const dir = path.join(__dirname, '..', '..', 'storage', 'posts', datePath);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -44,12 +44,45 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// DESC: Get all posts
-// @route GET /api/posts
-// @access Public
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({});
-  res.json(posts);
+  const page = Number(req.query.page);
+  const home = 'home' in req.query;
+
+  if (page && home) {
+    return res.status(400).json({
+      message: "The 'home' and 'page' query params must be used exclusively",
+    });
+  }
+
+  let pageSize = 7; // default pageSize
+
+  if (home) {
+    pageSize = 5; // pageSize for 'home' parameter
+  }
+
+  // If either 'page' or 'home' parameter is present, return paginated result
+  if (home || page) {
+    const count = await Post.countDocuments({});
+    const totalPages = Math.ceil(count / pageSize);
+
+    if (page > totalPages) {
+      return res.status(416).json({
+        message: `416 Range Not Satisfiable: No resource or page ${page} found.`,
+      });
+    }
+
+    const posts = await Post.find({})
+      .sort({ dateCreated: -1 }) // sorting by dateCreated field, newest first
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    const data = { posts, page, pages: totalPages };
+    return res.json(data);
+  }
+
+  // If neither 'page' nor 'home' parameter is present, return all posts sorted by 'dateCreated' from newest to oldest.
+  const posts = await Post.find({}).sort({ dateCreated: -1 });
+  return res.json(posts);
 });
 
 // DESC: Get a post by ID
@@ -79,7 +112,7 @@ const getPostHead = asyncHandler(async (req, res) => {
   }
 
   if (post) {
-    res.status(200).end();
+    res.status(204).end();
   } else {
     res.status(404).end();
   }
@@ -89,7 +122,7 @@ const getPostHead = asyncHandler(async (req, res) => {
 // @route OPTIONS /api/posts/:id
 // @access Public
 const getOptions = asyncHandler(async (req, res) => {
-  res.header('Allow', 'GET, POST, PATCH, PATCH, HEAD, OPTIONS');
+  res.header('Allow', 'GET, POST, PATCH, HEAD, OPTIONS');
   res.status(204).end();
 });
 
@@ -102,23 +135,103 @@ const createPost = asyncHandler(async (req, res) => {
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
   const day = date.getDate().toString().padStart(2, '0');
 
-  const { title, author, category, visible } = req.body;
+  const {
+    title,
+    author,
+    category,
+    visible,
+    summary,
+    tags,
+    relatedPosts,
+    likes,
+    views,
+    facebookShares,
+    twitterShares,
+    pinterestPins,
+  } = req.body;
+
+  // Check if the request's content type is multipart/form-data
+  if (req.headers['content-type'].startsWith('multipart/form-data')) {
+    console.log('Changing');
+    console.log(tags);
+    const individualTags = Array.isArray(tags) ? tags : tags.split(',');
+    console.log(individualTags);
+    req.body.tags = individualTags;
+    console.log(req.body.tags);
+  }
+
   const slug = req.body.slug || `${title.replace(/\s/g, '-').toLowerCase()}`;
 
-  // As the user field is required, we are using a placeholder user ID.
-  const placeholderUserId = mongoose.Types.ObjectId();
+  let file;
+  let fileFromURL = false;
+  if (req.body.file && req.body.file.startsWith('http')) {
+    // If file URL is provided, download the file
+    const response = await nFetch(req.body.file);
+    if (!response.ok) {
+      res.status(502);
+      throw new Error('Failed to fetch the file from the provided URL');
+    }
 
-  const fileExtension = path.extname(req.file.originalname);
-  const content = `/storage/posts/${year}/${month}/${day}/${category}/${slug}${fileExtension}`;
+    if (!response.ok) {
+      throw new Error('Failed to fetch the file');
+    }
+
+    const fileExtension = path.extname(req.body.file);
+    const tempFilePath = path.join(
+      __dirname,
+      '../../',
+      'storage',
+      'tmp',
+      `${slug}${fileExtension}`
+    );
+    const writeStream = fs.createWriteStream(tempFilePath);
+
+    await promisify(pipeline)(response.body, writeStream);
+
+    file = {
+      originalname: `${slug}${fileExtension}`,
+      path: tempFilePath,
+    };
+    fileFromURL = true;
+  } else {
+    // Take the file binary upload
+    file = req.file;
+  }
+
+  if (!title || !author || !category || visible === undefined || !file) {
+    res.status(400);
+    throw new Error('Please include all fields');
+  }
+
+  // As the user field is required, we are using a placeholder user ID.
+  // const placeholderUserId = mongoose.Types.ObjectId();
+
+  const fileExtension = path.extname(file.originalname);
+
+  // Check if file extension is .md
+  if (fileExtension !== '.md') {
+    res.status(415);
+    throw new Error('Unsupported Media Type. Only accepts markdown files.');
+  }
+
+  const content = `/storage/posts/${year}/${month}/${day}/${slug}${fileExtension}`;
 
   const post = new Post({
-    user: placeholderUserId, // TODO: user: req.user._id <-- add back later when auth set up
+    user: req.user._id,
     title,
     author,
     category,
     content,
     slug,
     visible,
+    summary,
+    tags: req.body.tags || tags,
+    relatedPosts,
+    likes,
+    views,
+    facebookShares,
+    twitterShares,
+    pinterestPins,
   });
 
   const createdPost = await post.save();
@@ -130,17 +243,24 @@ const createPost = asyncHandler(async (req, res) => {
   const newFileName = `${postId}-${slug}${fileExtension}`;
 
   // Get the current file path
-  const currentFilePath = path.join(
-    __dirname,
-    '../../',
-    'storage',
-    'posts',
-    `${year}`,
-    `${month}`,
-    `${day}`,
-    category,
-    `${slug}${fileExtension}`
-  );
+  const currentFilePath = fileFromURL
+    ? path.join(
+        __dirname,
+        '../../',
+        'storage',
+        'tmp',
+        `${slug}${fileExtension}`
+      )
+    : path.join(
+        __dirname,
+        '../../',
+        'storage',
+        'posts',
+        `${year}`,
+        `${month}`,
+        `${day}`,
+        `${slug}${fileExtension}`
+      );
 
   // Generate the new file path with the updated file name
   const newFilePath = path.join(
@@ -151,7 +271,6 @@ const createPost = asyncHandler(async (req, res) => {
     `${year}`,
     `${month}`,
     `${day}`,
-    category,
     newFileName
   );
 
@@ -159,12 +278,20 @@ const createPost = asyncHandler(async (req, res) => {
   fs.renameSync(currentFilePath, newFilePath);
 
   // Update the content field of the post with the new file path
-  createdPost.content = `/storage/posts/${year}/${month}/${day}/${category}/${newFileName}`;
+  createdPost.content = `/storage/posts/${year}/${month}/${day}/${newFileName}`;
 
   // Save the updated post back to the database
   await createdPost.save();
 
+  // NOTE: Add this line after creating the post
+  await createOrUpdateSearchItem(createdPost, 'Post');
+
   res.status(201).json(createdPost);
+
+  // Delete the temporary file
+  if (file && req.body.file && req.body.file.startsWith('http')) {
+    fs.unlinkSync(file.path);
+  }
 });
 
 // DESC: Update Markdown content of a post
@@ -198,7 +325,7 @@ const patchPost = asyncHandler(async (req, res) => {
       const oldPost = await Post.findById(req.params.id);
       const fileExtension = path.extname(oldPost.content);
       const oldDatePath = oldPost.content.match(
-        /\/posts\/(\d{4}\/\d{2}\/\d{2})\/[^/]*\/[^/]*$/
+        /\/storage\/posts\/(\d{4}\/\d{2}\/\d{2})\/[^/]*$/
       )[1];
       const postId = oldPost._id;
       const oldFilePath = path.join(__dirname, '../../', oldPost.content);
@@ -208,7 +335,6 @@ const patchPost = asyncHandler(async (req, res) => {
         'storage',
         'posts',
         oldDatePath,
-        oldPost.category,
         `${postId}-${slug}${fileExtension}`
       );
 
@@ -216,23 +342,24 @@ const patchPost = asyncHandler(async (req, res) => {
       fs.renameSync(oldFilePath, newFilePath);
 
       req.body.slug = slug;
-      req.body.content = `/storage/posts/${oldDatePath}/${oldPost.category}/${postId}-${slug}${fileExtension}`;
+      req.body.content = `/storage/posts/${oldDatePath}/${postId}-${slug}${fileExtension}`;
     }
 
-    // Update the dateModified field
-    req.body.dateModified = new Date();
-
+    const updatedFields = { ...req.body, dateModified: new Date() };
     const post = await Post.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updatedFields,
       { new: true, runValidators: true, context: 'query' } // Options
     );
+
+    // NOTE: Add this line after updating the post
+    await createOrUpdateSearchItem(post, 'Post');
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    res.json(post);
+    res.status(200).json(post);
   } catch (error) {
     res.status(400).json({ error: error.toString() });
   }
@@ -251,6 +378,9 @@ const deletePost = asyncHandler(async (req, res) => {
       fs.unlinkSync(filePath);
     }
 
+    // NOTE: Add this line before removing the post
+    await SearchItem.findOneAndDelete({ refId: req.params.id });
+
     await post.remove();
 
     // remove empty directories
@@ -266,7 +396,7 @@ const deletePost = asyncHandler(async (req, res) => {
       }
     }
 
-    res.json({ message: 'Post removed' });
+    res.status(200).json({ message: 'Post removed' });
   } else {
     res.status(404);
     throw new Error('Post not found');

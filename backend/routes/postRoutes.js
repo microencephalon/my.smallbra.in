@@ -12,28 +12,34 @@ const {
   getOptions,
 } = require('../controllers/postController');
 
-// TODO: Use authentication middleware
-// const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
+const { isAdmin } = require('../middleware/adminMiddleware');
+const validateCategory = require('../middleware/categoryMiddleware');
+
+const PostCategory = require('../models/postCategoryModel');
 
 const router = express.Router();
-
-// TODO: For authentication
-// router.route('/').get(getPosts).post(protect, ...createPost);
 router
   .route('/')
   .get(getPosts)
-  .post(upload.single('file'), createPost)
+  .post(
+    protect,
+    isAdmin,
+    upload.single('file'),
+    validateCategory(PostCategory),
+    createPost
+  )
   .head(getPostHead)
   .options(getOptions);
 
 router
   .route('/:id')
   .get(getPostById)
-  .patch(patchPost)
-  .delete(deletePost)
+  .patch(protect, isAdmin, validateCategory(PostCategory), patchPost)
+  .delete(protect, isAdmin, deletePost)
   .head(getPostHead)
   .options(getOptions);
 
-router.route('/update-post/:id').post(updateContent);
+router.route('/update-post/:id').post(protect, isAdmin, updateContent);
 
 module.exports = router;

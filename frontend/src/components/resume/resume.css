@@ -1,0 +1,106 @@
+/* frontend/src/assets/css/resume.css */
+
+/* Headers */
+
+h1.resume-h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2em;
+}
+
+h2.resume-h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5em;
+}
+
+h3.resume-h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.3em;
+}
+
+h4.resume-h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1em;
+}
+
+h5.resume-h5 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8em;
+}
+
+h6.resume-h6 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7em;
+}
+
+img.resume-img {
+  max-width: 100%; /* So images don't overflow */
+  height: auto;
+}
+
+.resume-anchor {
+  color: #365194;
+  cursor: pointer;
+}
+
+.resume-anchor:hover {
+  text-decoration-line: underline;
+  color: #365194;
+
+  
+}
+
+/* So they don't take up a whole line */
+p.resume-p > div.code {
+  display: inline;
+}
+
+.resume-p {
+  font-family: 'Open Sans', sans-serif;
+}
+
+blockquote.resume-blockquote {
+  background-color: transparent;
+  border: 0px solid;
+  border-color: #424346 !important;
+  border-left-width: 2px !important;
+  border-radius: 0px;
+  color: black;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  line-height: 1.25em;
+  margin: 0 10px;
+  padding: 12px 0 0.1px 12.5px
+}
+
+.resume-details summary {
+  position: relative;
+  cursor: s-resize;
+  list-style-type: none;
+  outline: none;
+}
+
+.resume-details summary:hover {
+  text-decoration-line: underline;
+  color: #365194;
+}
+
+.resume-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.resume-details[open]  {
+  display: block;
+  background-color: #f3f3f3;
+  
+}
+
+.resume-details[open] summary  {
+  display: block;
+  background-color: white;
+}
+
+.resume-details[open] iframe {
+  padding-left: 10px;
+  padding-bottom: 10px;
+}

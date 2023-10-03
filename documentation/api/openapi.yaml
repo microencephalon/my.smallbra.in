@@ -1,0 +1,2769 @@
+openapi: 3.1.0
+info:
+  title: my.smallbra.in
+  description: |-
+    These are the APIs for the my.smallbra.in website based on the [OpenAPI 3.1.0](https://spec.openapis.org/oas/v3.1.0) specification. 
+  version: 1.0.0
+  contact:
+    email: danatolman@icloud.com
+  # license:
+  #   name: Apache 2.0
+  #   url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: users
+    description: CRUD and meta data requests for admin and non-admin users.
+    externalDocs:
+      description: 'Try out the user login and registration portal'
+      url: 'http://localhost:3000/auth'
+  - name: blog
+    description: 'CRUD and meta data requests'
+    externalDocs:
+      description: 'Visit the blog'
+      url: 'http://localhost:3000/blog'
+  - name: portfolio
+    description: 'CRUD and meta data requests'
+    externalDocs:
+      description: 'Visit the portfolio section'
+      url: http://localhost:3000/portfolio
+  - name: search
+    description: 'Omnibar search queries'
+    externalDocs:
+      description: 'Search at the home page with `⌘ + K`'
+      url: 'http://localhost:3000/'
+
+
+paths:
+  # Users
+  /users:
+    post:
+      operationId: registerUser
+      description: Register user with data. Provides user with JWT.
+      summary: Register user
+      tags:
+        - users
+      responses:
+        '201':
+          description: User registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/RegisterUser/201'
+              example:
+                _id: 6503a3b30049cd6bb6a9b9d4
+                name: John Doe
+                email: johndoe@test.com
+                isAdmin: false
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDNhODg0MDA0OWNkNmJiNmE5YjlkNyIsImlhdCI6MTY5NDczODU2NCwiZXhwIjoxNjk3MzMwNTY0fQ.zAvrGwSkYglL18vxumP75udSmyxIFyFOiHW6Dgqcqmo
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                User Already Exists:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserAlreadyExists'         
+      requestBody:
+        $ref: '#/components/RequestBodies/RegisterUser'
+      deprecated: false
+
+  /users/login:
+    post:
+      operationId: logInUser
+      description: Log user in to account. Provides JWT.
+      summary: Log user in to account
+      tags:
+        - users
+      responses:
+        '200':
+          description: Successful response
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/LoginUser/200'
+              example:
+                _id: 6503a3b30049cd6bb6a9b9d4
+                name: John Doe
+                email: johndoe@test.com
+                isAdmin: false
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDNhODg0MDA0OWNkNmJiNmE5YjlkNyIsImlhdCI6MTY5NDczODU2NCwiZXhwIjoxNjk3MzMwNTY0fQ.zAvrGwSkYglL18vxumP75udSmyxIFyFOiHW6Dgqcqmo
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Invalid Credentials:
+                  $ref: '#/components/Responses/shared/4xx-examples/InvalidCredentials'
+      requestBody:
+        $ref: '#/components/RequestBodies/LoginUser'
+      deprecated: false
+
+  /users/me:
+    get:
+      operationId: getLoggedInUser
+      description: Shortcut to retrieving user's personal data object based on current Bearer Token (JWT).
+      summary: Get logged-in user's data
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/GetLoggedInUser/200'
+              example:
+                _id: 6503a3b30049cd6bb6a9b9d4
+                name: John Doe
+                email: johndoe@test.com
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+              examples:
+                User Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserNotFound'
+      deprecated: false
+
+
+
+  /users/{userId}:
+    get:
+      operationId: getUserById
+      description: Get user by ID
+      summary: Get specific user data
+      tags:
+          - users
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/user/userId'
+      responses:
+        '200':
+          description: |-
+            Successful response. May include if registered with GitHub: ['githubId', 'profilePicture'], which is
+            currently reserved for the site owner.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/GetUserById/200'
+              example:
+                _id: 6504f42eaaa7b0d9fc904136
+                __v: 0
+                githubId: "6123987"
+                name: John Doe
+                email: johndoe@test.com
+                password: $2a$10$u9OJFI87wRG9umSl3ebadOhvUg8dcSoUbckW5yXvzuA23p.duWm7C
+                isAdmin: true
+                birthday: "1990-09-15T00:00:00.000Z"
+                phone: "555-555-5555"
+                profilePicture: "http://localhost:8081/images/myprofilepic.png"
+                createdAt: "2023-09-16T00:17:50.336Z"
+                updatedAt: "2023-09-16T00:17:50.336Z"
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                User Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+    
+    patch:
+      operationId: patchUser
+      description: Update user information
+      summary: Update user info
+      tags:
+          - users
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/user/userId'
+      responses:
+        '200':
+          description: |-
+            Successful response. May include if registered with GitHub: ['githubId', 'profilePicture'], which is
+            currently reserved for the site owner.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/GetUserById/200'
+              example:
+                _id: 6504f42eaaa7b0d9fc904136
+                __v: 0
+                name: Johnathan Doe
+                email: johnathandoe@test.com
+                password: $2a$10$u9OJFI87wRG9umSl3ebadOhvUg8dcSoUbckW5yXvzuA23p.duWm7C
+                isAdmin: true
+                birthday: "1980-09-25T00:00:00.000Z"
+                phone: "999-999-9999"
+                createdAt: "2023-09-16T00:17:50.336Z"
+                updatedAt: "2023-09-16T00:17:50.336Z"
+        '400':
+          description: Bad request  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                isAdmin Value Not Boolean:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserValidationFailedCastToBoolean'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                User Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                User Already Exists:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserAlreadyExists'
+      requestBody:
+        $ref: '#/components/RequestBodies/PatchUser'
+      deprecated: false
+    
+    delete:
+      operationId: deleteUserById
+      description: Delete user from database. Users with admin can delete anyone. Users without admin can only delete themselves.
+      summary: Remove user from database
+      tags:
+          - users
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/user/userId'
+      responses:
+        '200':
+          description: Delete successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/users/DeleteUserById/200'
+              example:
+                message: "User removed"
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                User Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/UserNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+
+  # Blog Posts
+  /posts:
+    get:
+      operationId: getBlogPosts
+      description: Get all posts
+      summary: Get all posts' data
+      parameters:
+        - $ref: '#/components/Parameters/blog/page'
+        - $ref: '#/components/Parameters/blog/home'
+      tags:
+        - blog
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/GetBlogPosts/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              examples:
+                Exclusive Query Params:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExclusiveHomePageParams'
+        '416':
+          description: Range Not Satisfiable, no resource or page 𝑛 found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              example:
+                message: '416 Range Not Satisfiable: No resource or page 12 found'
+      deprecated: false
+
+    post:
+      operationId: createBlogPost
+      description: Create a new blog post
+      summary: Create a new blog post
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/CreateBlogPost/201'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Include All Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Unsupported Media Type:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnsupportedMediaTypeMd'
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/5xx'
+              examples:
+                Failed to Fetch From URL:
+                  $ref: '#/components/Responses/shared/5xx-examples/FailedToFetchFromURL'
+      requestBody:
+        $ref: '#/components/RequestBodies/CreatePost'
+      deprecated: false
+
+    head:
+      operationId: getBlogPostsHead
+      description: 'Get the headers only for the /posts endpoint'
+      summary: Get headers only
+      tags:
+        - blog
+      responses:
+        '204':
+          description: No content
+          headers:
+            Access-Control-Allow-Credentials:
+              $ref: '#/components/Headers/security/Access-Control-Allow-Credentials'
+            Access-Control-Allow-Origin:
+              $ref: '#/components/Headers/security/Access-Control-Allow-Origin'
+            Content-Security-Policy:
+              $ref: '#/components/Headers/security/Content-Security-Policy'
+            Cross-Origin-Embedder-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Embedder-Policy'
+            Cross-Origin-Opener-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Opener-Policy'
+            Cross-Origin-Resource-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Resource-Policy'
+            Referrer-Policy:
+              $ref: '#/components/Headers/security/Referrer-Policy'
+            Strict-Transport-Security:
+              $ref: '#/components/Headers/security/Strict-Transport-Security'
+            X-Content-Type-Options:
+              $ref: '#/components/Headers/security/X-Content-Type-Options'
+            X-Download-Options:
+              $ref: '#/components/Headers/security/X-Download-Options'
+            X-Frame-Options:
+              $ref: '#/components/Headers/security/X-Frame-Options'
+            X-Permitted-Cross-Domain-Policies:
+              $ref: '#/components/Headers/security/X-Permitted-Cross-Domain-Policies'
+            X-XSS-Protection:
+              $ref: '#/components/Headers/security/X-XSS-Protection'
+            Connection:
+              $ref: '#/components/Headers/connection/Connection'
+            Keep-Alive:
+              $ref: '#/components/Headers/connection/Keep-Alive'
+            Content-Length:
+              $ref: '#/components/Headers/metadata/Content-Length'
+            Content-Type:
+              $ref: '#/components/Headers/metadata/Content-Type'
+            Date:
+              $ref: '#/components/Headers/metadata/Date'
+            Origin-Agent-Cluster:
+              $ref: '#/components/Headers/optimization/Origin-Agent-Cluster'
+            Vary:
+              $ref: '#/components/Headers/optimization/Vary'
+      deprecated: false
+
+  /posts/{postId}:
+    get:
+      operationId: getBlogPostById
+      description: Get individual blog post by ID
+      summary: Get specific post
+      tags:
+        - blog
+      parameters:
+        - $ref: '#/components/Parameters/blog/postId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/GetBlogPostById/200'
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Post Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/PostNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+    patch:
+      operationId: patchBlogPost
+      description: Update a target blog post
+      summary: Update a post
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/blog/postId'
+      responses:
+        '200':
+          description: Update successful
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/PatchBlogPostById/200'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Post Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/PostNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      requestBody:
+        $ref: '#/components/RequestBodies/PatchPost'
+      deprecated: false
+    
+    delete:
+      operationId: deleteBlogPost
+      description: Delete a post
+      summary: Delete a blog post
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/blog/postId'
+      responses:
+        '200':
+          description: Delete successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/DeleteBlogPostById/200'
+              example:
+                message: 'Post removed'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Post Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/PostNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+  /posts/update-post/{postId}:
+    patch:
+      operationId: updatePostContent
+      description: "For this Swagger UI, this endpoint is currently disabled as it requires the Admin panel to modify. For this endpoint, the data from the blog post's markdown file is called into an editor textarea frame and then upon modifying it and then clicking the 'Save' button, the data is saved to the `.md` file that it belongs to."
+      summary: Update markdown content of post
+      tags:
+        - blog
+      parameters:
+        - $ref: '#/components/Parameters/blog/postId'
+      deprecated: false
+
+  /post-categories:
+    get:
+      operationId: getBlogPostCategory
+      description: Get blog post category
+      summary: Get all post categories
+      tags:
+        - blog
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/GetPostCategories/200'
+      deprecated: false
+
+    post:
+      operationId: createPostCategory
+      description: Create a new blog post category
+      summary: Create new post category
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Successful creation of new category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/CreatePostCategory/201'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                No Category Provided:
+                  $ref: '#/components/Responses/shared/4xx-examples/NoCategoryProvided'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '409':
+          description: Conflict due to duplicate value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Duplicate Value Conflict:
+                  $ref: '#/components/Responses/shared/4xx-examples/DuplicateValueConflict'
+      requestBody:
+        $ref: '#/components/RequestBodies/CreateCategory'
+      deprecated: false
+
+  /post-categories/{postCategoryId}:
+    get:
+      operationId: getPostCategoryById
+      description: Get category for post by ID
+      summary: Get specific post category
+      tags:
+        - blog
+      parameters:
+        - $ref: '#/components/Parameters/blog/postCategoryId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+    patch:
+      operationId: patchPostCategory
+      description: Update name of category with target ID
+      summary: Update specific post category's name
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/blog/postCategoryId'
+      responses:
+        '200':
+          description: Updated successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/PatchPostCategoryById/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      requestBody:
+        $ref: '#/components/RequestBodies/Category'
+      deprecated: false
+
+    delete:
+      operationId: deletePostCategory
+      description: Delete category with target ID
+      summary: Delete specific post category
+      tags:
+        - blog
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/blog/postCategoryId'
+      responses:
+        '200':
+          description: Updated successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/blog/DeletePostCategoryById/200'
+              example:
+                message: Category removed
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+  # Portfolio Artifacts
+  /artifacts:
+    get:
+      operationId: getPortfolioArtifacts
+      description: Get all portfolio artifacts' data
+      summary: Get all artifacts' data
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/page'
+      tags:
+        - portfolio
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/GetPortfolioArtifacts/200'
+        '416':
+          description: Range Not Satisfiable, no resource or page 𝑛 found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              example:
+                message: '416 Range Not Satisfiable: No resource or page 12 found'
+      deprecated: false
+
+    post:
+      operationId: createPortfolioArtifact
+      description: Create a new portfolio artifact
+      summary: Create new artifact
+      tags:
+        - portfolio
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/CreatePortfolioArtifact/201'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                No Category Provided:
+                  $ref: '#/components/Responses/shared/4xx-examples/NoCategoryProvided'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              example:
+                message: 'Not authorized'
+                stack: 'Error: Not authorized\n at ...'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+      requestBody:
+        $ref: '#/components/RequestBodies/CreateArtifact'
+      deprecated: false
+
+    head:
+      operationId: getPortfolioArtifactHead
+      description: Get headers only for portfolio artifacts request at this endpoint
+      summary: Get headers only
+      tags:
+        - portfolio
+      responses:
+        '204':
+          description: No content
+          headers:
+            Access-Control-Allow-Credentials:
+              $ref: '#/components/Headers/security/Access-Control-Allow-Credentials'
+            Access-Control-Allow-Origin:
+              $ref: '#/components/Headers/security/Access-Control-Allow-Origin'
+            Content-Security-Policy:
+              $ref: '#/components/Headers/security/Content-Security-Policy'
+            Cross-Origin-Embedder-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Embedder-Policy'
+            Cross-Origin-Opener-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Opener-Policy'
+            Cross-Origin-Resource-Policy:
+              $ref: '#/components/Headers/security/Cross-Origin-Resource-Policy'
+            Referrer-Policy:
+              $ref: '#/components/Headers/security/Referrer-Policy'
+            Strict-Transport-Security:
+              $ref: '#/components/Headers/security/Strict-Transport-Security'
+            X-Content-Type-Options:
+              $ref: '#/components/Headers/security/X-Content-Type-Options'
+            X-Download-Options:
+              $ref: '#/components/Headers/security/X-Download-Options'
+            X-Frame-Options:
+              $ref: '#/components/Headers/security/X-Frame-Options'
+            X-Permitted-Cross-Domain-Policies:
+              $ref: '#/components/Headers/security/X-Permitted-Cross-Domain-Policies'
+            X-XSS-Protection:
+              $ref: '#/components/Headers/security/X-XSS-Protection'
+            Connection:
+              $ref: '#/components/Headers/connection/Connection'
+            Keep-Alive:
+              $ref: '#/components/Headers/connection/Keep-Alive'
+            Content-Length:
+              $ref: '#/components/Headers/metadata/Content-Length'
+            Content-Type:
+              $ref: '#/components/Headers/metadata/Content-Type'
+            Date:
+              $ref: '#/components/Headers/metadata/Date'
+            Origin-Agent-Cluster:
+              $ref: '#/components/Headers/optimization/Origin-Agent-Cluster'
+            Vary:
+              $ref: '#/components/Headers/optimization/Vary'
+      deprecated: false
+
+  /artifacts/{artifactId}:
+    get:
+      operationId: getArtifactById
+      description: Get individual artifact by target ID
+      summary: Get specific artifact data
+      tags:
+        - portfolio
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactId'
+      responses:
+        '200':
+          description: Successful response
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/GetPortfolioArtifactById/200'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ArtifactNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+    patch:
+      operationId: patchPortfolioArtifact
+      description: Update an existing portfolio artifact by Id
+      summary: Update an existing portfolio artifact
+      tags:
+        - portfolio
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactId'
+      responses:
+        '200':
+          description: Update successful
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/PatchPortfolioArtifactById/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              example:
+                message: 'Not authorized'
+                stack: 'Error: Not authorized\n at ...'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ArtifactNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+
+      requestBody:
+        $ref: '#/components/RequestBodies/PatchArtifact'
+      deprecated: false
+
+    delete:
+      operationId: deletePortfolioArtifact
+      description: Delete an existing portfolio artifact by Id
+      summary: Delete an existing portfolio artifact
+      tags:
+        - portfolio
+      security:
+              - bearerAuth: []
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactId'
+      responses:
+        '200':
+          description: Delete successful
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/DeletePortfolioArtifactById/200'
+              example:
+                message: Artifact removed
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ArtifactNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+  
+
+  /artifact-categories:
+    get:
+      operationId: getArtifactCategories
+      description: Get all portfolio artifact categories
+      summary: Get all artifact categories' data
+      tags:
+        - portfolio
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/GetArtifactCategories/200'
+      deprecated: false
+
+    post:
+      operationId: createArtifactCategory
+      description: Create new portfolio artifact category
+      summary: Create new artifact category
+      tags:
+        - portfolio
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Successful creation of new category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/CreateArtifactCategory/201'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '409':
+          description: Conflict due to duplicate value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Duplicate Value Conflict:
+                  $ref: '#/components/Responses/shared/4xx-examples/DuplicateValueConflict'
+      requestBody:
+        $ref: '#/components/RequestBodies/CreateCategory'
+      deprecated: false
+
+  /artifact-categories/{artifactCategoryId}:
+    get:
+      operationId: getArtifactCategory
+      description: Get individual portfolio artifact category by target ID
+      summary: Get specific artifact category
+      tags:
+        - portfolio
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactCategoryId'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/GetArtifactCategoryById/200'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+    patch:
+      operationId: patchArtifactCategory
+      description: Update individual portfolio artifact category name by target ID
+      summary: Update artifact category's name
+      tags:
+        - portfolio
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactCategoryId'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/PatchArtifactCategoryById/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing Fields:
+                  $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                No Category Provided:
+                  $ref: '#/components/Responses/shared/4xx-examples/NoCategoryProvided'
+                Missing Closing Curly Brace:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                Expected Double-quoted Property Name:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                Unexpected Token:
+                  $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                Bad Control Character:
+                  $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+        '409':
+          description: Conflict due to duplicate value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Duplicate Value Conflict:
+                  $ref: '#/components/Responses/shared/4xx-examples/DuplicateValueConflict'
+      requestBody:
+        $ref: '#/components/RequestBodies/Category'
+      deprecated: false
+
+    delete:
+      operationId: deleteArtifactCategory
+      description: Delete individual portfolio artifact category by target ID
+      summary: Delete artifact category
+      tags:
+        - portfolio
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/artifactCategoryId'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Updated successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/portfolio/DeleteArtifactCategoryById/200'
+              example:
+                message: Category removed
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+        '403':
+          description: Not authorized as admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized as Admin:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorizedAsAdmin'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Category Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/CategoryNotFound'
+                Resource Not Found:
+                  $ref: '#/components/Responses/shared/4xx-examples/ResourceNotFound'
+      deprecated: false
+
+  /search:
+    get:
+      operationId: searchSite
+      summary: Search queries for blog posts and portfolio artifacts
+      description: Search queries for blog posts and portfolio artifacts, general or with sorting and filtering options. Considers values only, not fields of data objects.
+      tags:
+          - search
+      parameters:
+        - $ref: '#/components/Parameters/search/query'
+        - $ref: '#/components/Parameters/search/page'
+        - $ref: '#/components/Parameters/search/limit'
+        - $ref: '#/components/Parameters/search/type'
+        - $ref: '#/components/Parameters/search/title'
+        - $ref: '#/components/Parameters/search/summary'
+        - $ref: '#/components/Parameters/search/description'
+        - $ref: '#/components/Parameters/search/sort'
+        - $ref: '#/components/Parameters/search/category'
+        - $ref: '#/components/Parameters/search/tags'
+        - $ref: '#/components/Parameters/search/invalidParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/search/GetSearchQueryPage/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                  Absent Query:
+                    value:
+                      message: 'Invalid or no search query provided'
+                  Exclusive Querying:
+                    value:
+                      message: 'General queries and specific queries are exclusive in use. Please use only one type.'
+                  Page and Limit Pairing:
+                    value:
+                      message: "The 'page' and 'limit' parameters must be used together."
+                  Invalid Page or Limit Value:
+                    value:
+                      message: 'Invalid page or limit value. They should be integers.'
+                  Blog Type & Description Field Conflict:
+                    value:
+                      message: "The 'description' query parameter not available for type 'portfolio', excluding from query"
+                  Portfolio Type & Summary Field Conflict:
+                    value:
+                      message: "The 'summary' query parameter not available for type 'blog', excluding from query"
+                  Invalid Sorting Method:
+                    value:
+                      message: "Invalid sorting method. Cannot sort with {sortingMethod}. Options: 'asc', 'desc', 'newest', or 'oldest'"
+                  Invalid Query Parameter:
+                    value:
+                      message: "Invalid query parameter: '{key}'."
+                  Missing Closing Curly Brace:
+                    $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
+                  Expected Double-quoted Property Name:
+                    $ref: '#/components/Responses/shared/4xx-examples/ExpectedDoubleQuotedPropertyName'
+                  Unexpected Token:
+                    $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
+                  Bad Control Character:
+                    $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+        '416':
+          description: Range Not Satisfiable, no resource or page 𝑛 found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              example:
+                message: '416 Range Not Satisfiable: No resource or page 12 found'
+    deprecated: false
+
+servers:
+  - url: 'http://localhost:4500/api'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      description: JSON Web Token provision for Authorized HTTP requests
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  Schemas:
+    RegisterUser:
+      schemaId: schemaRegisterUser
+      description: Schematic for object for user registration.
+      required:
+        - email
+        - password
+        - name
+        - isAdmin
+      properties:
+        email:
+          type: string
+          description: User's email, serves as login handle
+          minLength: 6
+          example: janedoe@test.com
+        password:
+          type: string
+          format: password
+          description: User password
+          example: Test@123
+          minLength: 8
+          maxLength: 20
+        name:
+          type: string
+          description: Name of the user
+          minLength: 1
+          example: Jane Doe
+        isAdmin:
+          type: boolean
+          description: Admin privileges boolean
+          example: true
+    LoginUser:
+      description: Schematic for object for user login.
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          $ref: '#/components/Schemas/RegisterUser/properties/email'
+        password:
+          $ref: '#/components/Schemas/RegisterUser/properties/password'
+    PatchUser:
+      description: Schematic for object for updating a user.
+      type: object
+      properties:
+        name:
+          type: string
+          description: User's real name
+          example: "John Doe"
+        email:
+          type: string
+          minLength: 6
+          description: User email, also serves as login handle
+          example: "johndoe@test.com"
+        password:
+          type: string
+          format: password
+          description: User password
+          minLength: 8
+          maxLength: 20
+          example: "password@123"
+        phone:
+          type: string
+          minLength: 12
+          maxLength: 12
+          example: "555-555-5555"
+    CreatePost:
+      description: Schematic for object for creating a new blog post.
+      required:
+        - title
+        - author
+        - category
+        - visible
+        - file
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the post
+          default: Swagger Test
+          minLength: 2
+        author:
+          type: string
+          description: Author's name
+          default: Dana Tolman
+          minLength: 1
+        category:
+          type: string
+          description: Category of the post
+          default: swagger
+          minLength: 1
+        visible:
+          type: boolean
+          description: Visibility status of the post
+          default: true
+        file:
+          type: string
+          default: "http://localhost:8081/storage/test-files/text/test.md"
+          description: Markdown file for the post
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          default: ["swagger1", "swagger2"]
+          description: Tags for the post
+        slug:
+          type: string
+          description: Custom slug for the post. If empty, will auto-generate from the title.
+          minLength: 1
+    CreatePostForm:
+      description: Schematic for object for creating a new blog post.
+      required:
+        - title
+        - author
+        - category
+        - visible
+        - file
+      type: object
+      properties:
+        title:
+          $ref: '#/components/Schemas/CreatePost/properties/title'
+        author:
+          $ref: '#/components/Schemas/CreatePost/properties/author'
+        category:
+          $ref: '#/components/Schemas/CreatePost/properties/category'
+        visible:
+          $ref: '#/components/Schemas/CreatePost/properties/visible'
+        file:
+          type: string
+          format: binary
+          description: Markdown file for the post
+        tags:
+          $ref: '#/components/Schemas/CreatePost/properties/tags'
+        slug:
+          $ref: '#/components/Schemas/CreatePost/properties/slug'
+    PatchPost:
+      description: Schematic for object for updating a blog post.
+      type: object
+      properties:
+        title:
+          type: string
+          example: Swagger Test Title
+        summary:
+          type: string
+          example: A blog post testing out swagger.
+        author:
+          type: string
+          example: John Doe
+        category:
+          type: string
+          example: Personal Thoughts
+        visible:
+          type: string
+          example: true
+        slug:
+          type: string
+          example: swagger-test-title
+          required: false
+        tags:
+          type: array
+          description: if more than one, must be presented as comma-separated values
+          items:
+            type: string
+          example: ['tag 1', 'tag 2', 'tag 3']
+    CreateArtifact:
+      description: Schematic for object for creating a new portfolio artifact.
+      type: object
+      required:
+        - title
+        - author
+        - category
+        - visible
+      properties:
+        title:
+          type: string
+          description: Title of the post
+          minLength: 1
+          example: Swagger Test Portfolio Artifact
+        description:
+          type: string
+          description: Description of portfolio artifact
+          minLength: 1
+          example: This is a description
+        author:
+          type: string
+          description: Author's name
+          minLength: 1
+          example: Dana Tolman
+        category:
+          type: string
+          description: Category of the portfolio artifact
+          minLength: 1
+          example: swagger
+        url:
+          type: string
+          description: URL to the portfolio artifact. Can be a preview or a live display.
+          minLength: 7
+          example: https://www.example.com
+        repository:
+          type: string
+          description: URL to the repository that hoolds the portfolio artifact, e.g. a GitHub repo.
+          minLength: 7
+          example: https://www.github.com/user/repo-name
+        visible:
+          type: boolean
+          description: Visibility status of the portfolio artifact
+          default: true
+          example: true
+        previewImage:
+          type: string
+          description: A URL to an image file which will serve as a preview image for the artifact.
+          example: "http://localhost:8081/storage/images/smallbrain-logo3.png"
+        tags:
+          type: array
+          description: Can be a single tag or a list of tags.
+          items:
+            type: string
+          example: ['swagger 1', 'swagger 2', 'swagger 3']
+        slug:
+          type: string
+          description: Custom slug for the artifact. If empty, will auto-generate from the title.
+          minLength: 1
+          required: false
+          example: swagger-portfolio-artifact
+    PatchArtifact:
+      description: Schematic for object for updating a portfolio artifact.
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the portfolio artifact
+          minLength: 1
+          example: Swagger Portfolio Artifact Patched
+        description:
+          type: string
+          description: Description of portfolio artifact
+          minLength: 1
+          example: A portfolio artifact testing out swagger.
+        author:
+          type: string
+          description: Author's name
+          minLength: 1
+          example: John Doe
+        category:
+          type: string
+          description:  Category of the portfolio artifact
+          minLength: 1
+          example: swagger
+        url:
+          type: string
+          description: URL to the portfolio artifact. Can be a preview or live display
+          minLength: 7
+          example: https://example.com
+        repository:
+          type: string
+          description: URL to the repository that holds the portfolio artifact.
+          minLength: 7
+          example: https://www.github.com/user/repo-name
+        visible:
+          type: boolean
+          description: Visibility status of the portfolio artifact
+          example: true
+        previewImage:
+          type: string
+          description: A URL to an image file which will serve as a preview image for the artifact
+          example: "https://source.unsplash.com/random/300x200"
+        slug:
+          type: string
+          description: "Slug path for the file. Should appear at '/portfolio/<slug>'. If none is provided, then the slug will be auto-generated."
+          example: swagger-test-title
+          required: false
+        tags:
+          type: array
+          description: if more than one, must be presented as comma-separated values
+          items:
+            type: string
+          example: ['tag 1', 'tag 2', 'tag 3']
+    Category:
+      description: Schematic for object for CRUD operations on blog post and portfolio artifact categories.
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: swagger
+  RequestBodies:
+    RegisterUser:
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/RegisterUser'
+      description: Object to register new user with
+    LoginUser:
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/LoginUser'
+    PatchUser:
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/PatchUser'
+      description: Object to update user with
+    CreatePost:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/Schemas/CreatePostForm'
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/CreatePost'
+      description: Object to create new blog post
+    PatchPost:
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/PatchPost'
+      description: Object to update blog post
+    CreateArtifact:
+      type: object
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/Schemas/CreateArtifact'
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/CreateArtifact'
+      description: Object to create new portfolio artifact
+    PatchArtifact:
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/PatchArtifact'
+      description: Object to update portfolio artifact
+    CreateCategory:
+      type: object
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/Schemas/Category'
+        application/json:
+          schema:
+            $ref: '#/components/Schemas/Category'
+      description: Create Category for blog posts
+  Parameters:
+    search:
+      query:
+        in: query
+        name: query
+        schema:
+          type: string
+        description: |-
+          General query. Titles, categories, and portfolio descriptions, and blog summaries are considerd in this search.
+          This general queries and specific queries are exclusive in use. The general query will disable any of the query specifiers, so query specifiers need to be used without this general query. If paired, there will be a '400' response. Please see the '*Exclusive Querying*' example.
+
+          ---
+          Example value: 'Title'
+      page:
+        in: query
+        name: page
+        schema:
+          oneOf:
+            - type: string
+            - type: integer
+              format: int32
+        description: |-
+          Sets limit for number of items per request. **Will only work if using with** *limit* **query parameter**. A '400' response ensues without pairing. Please see the '*Page and Limit*' pairing example. Must take an integer or string that is convertible to an integer as its value. Please see the '*Invalid Page or Limit Value*' example.'
+
+          ---
+          Example value: 2
+      limit:
+        in: query
+        name: limit
+        schema:
+          oneOf:
+            - type: string
+            - type: integer
+              format: int32
+        description: |-
+          Sets limit for number of items per request. **Will only work if using with** *page* **query parameter**. A '400' response ensues without pairing. Please see the '*Page and Limit*' pairing example. Must take an integer or string that is convertible to an integer as its value. Please see the '*Invalid Page or Limit Value*' example.'
+
+          ---
+          Example value: 10
+      type:
+        in: query
+        name: type
+        schema:
+          type: string
+          enum: [blog, portfolio]
+        description: |-
+          Filters query 'portfolio' ⊻ 'blog'. The 'portfolio' parameter cannot be paired with 'summary' and 'blog' cannot be paired with 'description' since both of them do not include those fields that are respective each other. If these are paired, you will receive a '400' request. Please see the examples, '*Blog Type & Description Field Conflict*' and '*Portfolio Type & Summary Field Conflict*'.
+      title:
+        in: query
+        name: title
+        schema:
+          type: string
+        description: |-
+          Search by title for blog posts and portfolio artifacts.
+
+          ---
+          Example value: 'Title'
+      summary:
+        in: query
+        name: summary
+        schema:
+          type: string
+        description: |-
+          Search by summaries for blog posts.
+
+          ---
+          Example value: 'ipsum'
+      description:
+        in: query
+        name: description
+        schema:
+          type: string
+        description: |-
+          Search by descriptions for portfolio artifacts.
+
+          ---
+          Example value: 'Lorem'
+      sort:
+        in: query
+        name: sort
+        schema:
+          type: string
+          enum: [asc, desc, newest, oldest]
+        description: |-
+          Sorts all data queries by order option.
+      category:
+        in: query
+        name: category
+        schema:
+          type: string
+        description: |-
+          Search by category.
+
+          ---
+          Example value: 'technology'
+      tags:
+        in: query
+        name: tags
+        schema:
+          type: string
+        description: |-
+          Search by tag(s) for blog posts and portfolio artifacts. Use comma-separated list to search for multiple tags. Whitespace where the comma is must be trimmed.
+
+          ---
+          Example single value: 'tag1'
+          Example value list: 'tag1,tag2'
+      invalidParam:
+        in: query
+        name: invalidParam
+        schema:
+          type: string
+        description: |-
+          This is used to reproduce the '400' response example, '*Invalid Query Parameter*'. This must be left empty as a condition to produce '200' or '416' responses. If querying via the browser or with an app like [Postman](https://www.postman.com), the user should get this same '400' response with any invalid parameter. For example, if using 'balloon=<value>' as a query key and value. 
+    user:
+      userId:
+        in: path
+        name: userId
+        schema:
+            type: string
+            example: 64af158ea648c662f88d39f5
+            default: 64af158ea648c662f88d39f5
+    blog:
+      page:
+        in: query
+        name: page
+        required: false
+        description: Will return a page with 7 items. Designated for the the blog listing page. Must be used exclusively.
+        schema:
+          type: int32
+      home:
+        in: query
+        name: home
+        description: Will return the first 5 items. Designated for the home page. Must be used exclusively.
+        required: false
+        schema:
+          type: Boolean
+          example: true
+      postId:
+        in: path
+        name: postId
+        required: true
+        schema:
+          type: string
+          example: 64f8b444f765d8d6170da38b
+          default: 64f8b444f765d8d6170da38b
+      postCategoryId:
+        in: path
+        name: postCategoryId
+        required: true
+        schema:
+          type: string
+          example: 64f8b417f765d8d6170da381
+          default: 64f8b417f765d8d6170da381
+    portfolio:
+      page:
+        $ref: '#/components/Parameters/blog/page'
+      artifactId:
+        in: path
+        name: artifactId
+        required: true
+        schema:
+          type: string
+          example: 64fc1440f1ecf0d1c0c9f989
+          default: 64fc1440f1ecf0d1c0c9f989
+      artifactCategoryId:
+        in: path
+        name: artifactCategoryId
+        required: true
+        schema:
+          type: string
+          example: 64fc1440f1ecf0d1c0c9f987
+          default: 64fc1440f1ecf0d1c0c9f987
+  Responses:
+    shared:
+      '416':
+        schemaId: 416-response
+        type: object
+        properties:
+          message:
+            type: string
+      '4xx':
+        schemaId: 4xx-responses
+        type: object
+        properties:
+          message:
+            type: string
+          stack:
+            type: string
+      '4xx-examples':
+        ExclusiveHomePageParams:
+          value:
+            message: "The 'home' and 'page' query params must be used exclusively"
+        IncludeAllFields:
+          value:
+            message: "Please include all fields"
+            stack: "Error: Please include all fields\n    at ..."
+        NoCategoryProvided:
+          value:
+            message: "No category provided"
+            stack: "Error: No category provided\n    at ..."
+        InvalidCredentials:
+          value:
+            message: 'Invalid Credentials'
+            stack: 'Error: Invalid Credentials\n at ...'
+        MissingClosingCurlyBrace:
+          value:
+            message: "Expected ',' or '}' after property value in JSON at position 67"
+            stack: "SyntaxError: Expected ',' or '}' after property value ..."
+        ExpectedDoubleQuotedPropertyName:
+          value:
+            message: "Expected double-quoted property name in JSON at position 23"
+            stack: "SyntaxError: Expected double-quoted property name in JSON at position 23"
+        UnexpectedToken:
+          value:
+            message: |-
+              Unexpected token '}', \"{\n  \"name\":\n}\" is not valid JSON
+            stack: |-
+              SyntaxError: Unexpected token '}', \"{\n  \"name\":\n}\" ...
+        BadControlCharacter:
+          value:
+            message: "Bad control character in string literal in JSON at position 78"
+            stack: "SyntaxError: Bad control character in string literal in JSON at position 78 ..."
+        UserAlreadyExists:
+          value:
+            message: 'User already exists'
+            stack: 'Error: User already exists\n    at ...'
+        UserNotFound:
+          value:
+            message: "User not found."
+            stack: "Error: User not found.\n    at ..."
+        ResourceNotFound:
+          value:
+            message: "Resource not found"
+            stack: "CastError: Resource not found.\n    at ..."
+        PostNotFound:
+          value:
+            message: "Post not found"
+            stack: "Error: Post not found\n    at ..."
+        ArtifactNotFound:
+          value:
+            message: "Artifact not found"
+            stack: "Error: Artifact not found\n    at ..."
+        CategoryNotFound:
+          value:
+            message: "Category not found"
+            stack: "Error: Category not found\n    at ..."
+        DuplicateValueConflict:
+          value:
+            message: "Confluct due to duplicate value"
+            stack: 'Error: Conflict due to duplicate value\n at ...'
+        NotAuthorized:
+          value:
+            message: 'Not authorized'
+            stack: 'Error: Not authorized\n at ...'
+        NotAuthorizedAsAdmin:
+          value:
+            message: 'Not authorized as admin'
+            stack: 'Error: Not authorized as admin\n at ...'
+        UnsupportedMediaTypeMd:
+          value:
+            message: 'Unsupported Media Type. Only accepts markdown files.'
+            stack: 'Error: Unsupported Media Type. Only accepts markdown files.\n at ...'
+        UserValidationFailedCastToBoolean:
+          value:
+            message: |-
+              User validation failed: isAdmin: Cast to Boolean failed for value \"123\" (type number) at path \"isAdmin\" because of \"CastError\
+      '5xx':
+        schemaId: 5xx-responses
+        $ref: '#/components/Responses/shared/4xx'
+      '5xx-examples':
+        FailedToFetchFromURL:
+          value:
+            message: 'Failed to fetch the file from the provided URL'
+            stack: 'Error: Failed to fetch the file from the provided URL\n at ...'
+
+    users:
+      RegisterUser:
+        '201':
+          schemaId: 201-users-RegisterUser
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+            isAdmin:
+              type: boolean
+            token:
+              type: string
+      LoginUser:
+        '200':
+          schemaId: 200-users-LoginUser
+          $ref: '#/components/Responses/users/RegisterUser/201'
+      GetLoggedInUser:
+        '200':
+          schemaId: 200-users-GetLoggedInUser
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+      GetUserById:
+        '200':
+          schemaId: 200-users-GetUserById
+          type: object
+          properties:
+            _id:
+              type: string
+            __v:
+              type: integer
+              format: int32
+            githubId:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+              format: password
+            isAdmin:
+              type: boolean
+            birthday:
+              type: string
+              format: date-time
+              nullable: true
+            phone:
+              type: string
+            profilePicture:
+              type: string
+              format: url
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+      PatchUserById:
+        '200':
+          schemaId: 200-users-PatchUserById
+          $ref: '#/components/Responses/users/GetUserById/200'
+      DeleteUserById:
+        '200':
+          schemaId: 200-users-DeleteUserById
+          $ref: '#/components/Responses/shared/416'
+    blog:
+      GetBlogPosts:
+        '200':
+          schemaId: 200-blog-GetBlogPosts
+          type: array
+          items:
+            $ref: '#/components/Responses/blog/GetBlogPostById/200'
+      CreateBlogPost:
+        '201':
+          schemaId: 201-blog-CreateBlogPost
+          $ref: '#/components/Responses/blog/GetBlogPostById/200'
+      PatchBlogPostById:
+        '200':
+          schemaId: 200-blog-PatchBlogPostById
+          $ref: '#/components/Responses/blog/GetBlogPostById/200'
+      DeleteBlogPostById:
+        '200':
+          schemaId: 200-blog-DeleteBlogPostById
+          $ref: '#/components/Responses/shared/416'
+      GetBlogPostById:
+        '200':
+          schemaId: 200-blog-GetBlogPostById
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 6480fcc6e8072f4f54048b44
+            __v:
+              type: integer
+              format: int32
+              example: 0
+            user:
+              type: string
+              example: 64795583044992cd9c87b696
+            title:
+              type: string
+              example: My First Blog Post
+            author:
+              type: string
+              example: John Doe
+            category:
+              type: string
+              example: Technology
+            content:
+              description: path to markdown file
+              type: string
+              example: /storage/posts/2023/06/07/6480fcc6e8072f4f54048b44-my-first-blog-post.md
+            slug:
+              type: string
+              example: my-first-blog-post
+            visible:
+              type: boolean
+              example: true
+            tags:
+              type: array
+              items:
+                type: string
+                example: tag1
+            summary:
+              type: string
+              example: |-
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore 
+                magna aliqua. Proin sed libero enim sed faucibus turpis in. Diam quis enim lobortis scelerisque fermentum dui. 
+                Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam. Tortor posuere ac ut consequat semper 
+                viverra nam. Sed vulputate mi sit amet mauris commodo quis imperdiet massa. Risus nec feugiat in fermentum. Ut 
+                ornare lectus sit amet est placerat in egestas.
+            likes:
+              type: integer
+              format: int32
+              example: 1
+            views:
+              type: integer
+              format: int64
+              example: 2
+            relatedPosts:
+              type: array
+              items:
+                type: string
+                example: 669475dad3d74f7fcf20d344
+            facebookShares:
+              type: integer
+              format: int32
+              example: 0
+            twitterShares:
+              type: integer
+              format: int32
+              example: 0
+            pinterestPins:
+              type: integer
+              format: int32
+              example: 0
+            dateCreated:
+              type: string
+              format: date-time
+              example: 2023-06-07T21:55:18.409Z
+            dateModified:
+              type: string
+              format: date-time
+              example: 2023-06-23T04:55:36.467Z
+      GetPostCategories:
+        '200':
+          schemaId: 200-blog-GetPostCategories
+          type: array
+          items:
+            $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      CreatePostCategory:
+        '201':
+          schemaId: 201-blog-CreatePostCategory
+          $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      GetPostCategoryById: 
+        '200':
+          schemaId: 200-blog-GetPostCategoryById
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 6480df3e483750387355d127
+            __v:
+              type: integer
+              format: int32
+              example: 0
+            name:
+              type: string
+              example: technology
+      PatchPostCategoryById:
+        '200':
+          schemaId: 200-blog-PatchPostCategoryById
+          $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      DeletePostCategoryById:
+        '200':
+          schemaId: 200-blog-DeletePostCategoryById
+          $ref: '#/components/Responses/shared/416'
+    portfolio:
+      GetPortfolioArtifacts:
+        '200':
+          schemaId: 200-portfolio-GetPortfolioArtifacts
+          type: array
+          items:
+            $ref: '#/components/Responses/portfolio/GetPortfolioArtifactById/200'
+      CreatePortfolioArtifact:
+        '201':
+          schemaId: 201-portfolio-CreatePortfolioArtifact
+          $ref: '#/components/Responses/portfolio/GetPortfolioArtifactById/200'
+      PatchPortfolioArtifactById:
+        '200':
+          schemaId: 200-portfolio-PatchPortfolioArtifactById
+          $ref: '#/components/Responses/portfolio/GetPortfolioArtifactById/200'
+      DeletePortfolioArtifactById:
+        '200':
+          schemaId: 200-portfolio-DeletePortfolioArtifactById
+          $ref: '#/components/Responses/shared/416'
+      GetPortfolioArtifactById:
+        '200':
+          schemaId: 200-portfolio-GetPortfolioArtifactById
+          type: object
+          properties:
+            _id:
+              type: string
+              example: 64947cd0d3d74e7fcf20c3d1
+            __v:
+              type: integer
+              format: int32
+              example: 0
+            user:
+              type: string
+              example: 648b998e693e9e7df2a5ad22
+            title:
+              type: string
+              example: Test Artifact 1
+            teaser:
+              description: A small teaser text used as a preview for the artifact
+              type: string
+              example: |-
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore 
+                magna aliqua. Ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Libero volutpat 
+                sed cras ornare arcu dui vivamus arcu felis.
+            description:
+              description: A full description of the portfolio artifact on a particular ID's page
+              type: string
+              example: |-
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                dolore magna aliqua. Curabitur gravida arcu ac tortor dignissim convallis. Tempus urna et pharetra pharetra 
+                massa massa ultricies mi quis. Tempor commodo ullamcorper a lacus vestibulum sed arcu non odio. Laoreet non 
+                curabitur gravida arcu ac tortor dignissim convallis aenean. Eu tincidunt tortor aliquam nulla facilisi cras 
+                fermentum. Amet consectetur adipiscing elit duis tristique sollicitudin nibh. Eget sit amet tellus cras 
+                adipiscing enim. Id porta nibh venenatis cras sed. Eget dolor morbi non arcu.\n\nVenenatis urna cursus eget 
+                nunc. Nisl vel pretium lectus quam id leo in vitae. Sodales ut eu sem integer vitae justo. Ut aliquam purus 
+                sit amet luctus venenatis lectus magna. Facilisis gravida neque convallis a cras semper auctor neque vitae. 
+                Euismod elementum nisi quis eleifend quam adipiscing. Ipsum consequat nisl vel pretium lectus quam id leo in. 
+                Nisl vel pretium lectus quam id leo in vitae. Nullam vehicula ipsum a arcu cursus. Vulputate sapien nec sagittis 
+                aliquam malesuada. Eget gravida cum sociis natoque penatibus et magnis. Nunc sed velit dignissim sodales ut eu sem 
+                integer.
+            author:
+              type: string
+              example: John Doe
+            category:
+              type: string
+              example: technology
+            url:
+              description: URL to a preview or live display of the artifact
+              type: string
+              format: url
+              example: "https://example.com"
+            repository:
+              description: URL to the code repository the artifact is stored in
+              type: string
+              format: url
+              example: "https://www.github.com/user/repo"
+            slug:
+              type: string
+              example: test-artifact-1
+            visible:
+              type: boolean
+              example: true
+            previewImage:
+              description: Preview image for the media item
+              type: string
+              format: url
+              example: http://localhost:8081/gc9a37006a6f26dc5cd80c6142ca7f46f3d7cfb04f3c05dcfcca5d6b535d949eed94f966e83196de9b9f6b96ef65a90a65817a4f1565c5caf65a3503177da4c3ab2e3eaf15e3e766b422644aa02b6c04e_640.png
+            media:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64947d22d3d74e7fcf20c433
+                  format:
+                    description: media type ('image' or 'video')
+                    type: string
+                    example: image
+                  src:
+                    description: URL to the media resource
+                    type: string
+                    format: url
+                    example: http://localhost:8081/storage/images/test-images/image1.webp
+                  alt:
+                    description: for the 'alt' attribute of the media's HTML element
+                    type: string
+                    example: Image 1
+                  caption:
+                    description: The caption for the HTML media element
+                    type: string
+                    example: Image 1
+            tags:
+              type: array
+              items:
+                type: string
+                example: tag1
+            views:
+              type: integer
+              format: int64
+              example: 2
+            relatedArtifacts:
+              type: array
+              items:
+                type: string
+                example: 64947e5cd3d74e7fcf20c553
+            dateCreated:
+              type: string
+              format: date-time
+              example: 2023-06-22T16:54:40.903Z
+            dateModified:
+              type: string
+              format: date-time
+              example: 2023-09-02T22:52:41.476Z
+      GetArtifactCategories:
+        '200':
+          schemaId: 200-portfolio-GetArtifactCategories
+          type: array
+          items:
+            $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      CreateArtifactCategory:
+        '201':
+          schemaId: 201-portfolio-CreateArtifactCategories
+          $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      GetArtifactCategoryById:
+        '200':
+          schemaId: 200-portfolio-GetArtifactCategoryById
+          $ref: '#/components/Responses/blog/GetPostCategoryById/200'      
+      PatchArtifactCategoryById:
+        '200':
+          schemaId: 200-portfolio-PatchArtifactCategoryById
+          $ref: '#/components/Responses/blog/GetPostCategoryById/200'
+      DeleteArtifactCategoryById:
+        '200':
+          schemaId: 200-portfolio-DeleteArtifactCategoryById
+          $ref: '#/components/Responses/shared/416'
+    search:
+      GetSearchQuery:
+        '200':
+          schemaId: 200-search-GetSearchQuery
+          type: object
+          properties:
+            resultsCount:
+              type: integer
+              format: int32
+              example: 10
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64c9d4ecba59fcb5eca68bf9
+                  __v:
+                    type: integer
+                    format: int32
+                    example: 0
+                  refId:
+                    type: string
+                    example: 64947cd0d3d74e7fcf20c3d1
+                  dateCreated:
+                    type: string
+                    format: date-time
+                    example: 2023-06-22T16:54:40.903Z
+                  dateModified:
+                    type: string
+                    format: date-time
+                    example: 2023-09-02T22:52:41.476Z
+                  user:
+                    type: string
+                  title:
+                    type: string
+                    example: My First Portfolio Item
+                  author:
+                    type: string
+                    example: John Doe
+                  category:
+                    type: string
+                    category: technology
+                  description:
+                    type: string
+                    example: |-
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                      dolore magna aliqua. Curabitur gravida arcu ac tortor dignissim convallis. Tempus urna et pharetra pharetra 
+                      massa massa ultricies mi quis. Tempor commodo ullamcorper a lacus vestibulum sed arcu non odio. Laoreet non 
+                      curabitur gravida arcu ac tortor dignissim convallis aenean. Eu tincidunt tortor aliquam nulla facilisi cras 
+                      fermentum. Amet consectetur adipiscing elit duis tristique sollicitudin nibh. Eget sit amet tellus cras 
+                      adipiscing enim. Id porta nibh venenatis cras sed. Eget dolor morbi non arcu.\n\nVenenatis urna cursus eget 
+                      nunc. Nisl vel pretium lectus quam id leo in vitae. Sodales ut eu sem integer vitae justo. Ut aliquam purus 
+                      sit amet luctus venenatis lectus magna. Facilisis gravida neque convallis a cras semper auctor neque vitae. 
+                      Euismod elementum nisi quis eleifend quam adipiscing. Ipsum consequat nisl vel pretium lectus quam id leo in. 
+                      Nisl vel pretium lectus quam id leo in vitae. Nullam vehicula ipsum a arcu cursus. Vulputate sapien nec sagittis 
+                      aliquam malesuada. Eget gravida cum sociis natoque penatibus et magnis. Nunc sed velit dignissim sodales ut eu sem 
+                      integer.
+                  summary:
+                    type: string
+                    nullable: true
+                    example: null
+                  slug:
+                    type: string
+                    example: my-first-portfolio-item
+                  visible:
+                    type: boolean
+                    example: true
+                  onModel:
+                    type: string
+                    example: Artifact
+                  itemType:
+                    type: string
+                    example: portfolio
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: 2023-08-02T04:00:44.203Z
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: 2023-09-02T22:52:41.493Z
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                      example: tag1
+      GetSearchQueryPage:
+        '200':
+          schemaId: 200-search-GetSearchQueryByPage
+          type: object
+          properties:
+            page:
+              type: integer
+              format: int32
+              example: 2
+            totalPages:
+              type: integer
+              format: int32
+              example: 20
+            resultsCount:
+              type: integer
+              format: int32
+              example: 10
+            results:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 64c9d4ecba59fcb5eca68bf9
+                  __v:
+                    type: integer
+                    format: int32
+                    example: 0
+                  refId:
+                    type: string
+                    example: 64947cd0d3d74e7fcf20c3d1
+                  dateCreated:
+                    type: string
+                    format: date-time
+                    example: 2023-06-22T16:54:40.903Z
+                  dateModified:
+                    type: string
+                    format: date-time
+                    example: 2023-09-02T22:52:41.476Z
+                  user:
+                    type: string
+                  title:
+                    type: string
+                    example: My First Portfolio Item
+                  author:
+                    type: string
+                    example: John Doe
+                  category:
+                    type: string
+                    category: technology
+                  description:
+                    type: string
+                    example: |-
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                      dolore magna aliqua. Curabitur gravida arcu ac tortor dignissim convallis. Tempus urna et pharetra pharetra 
+                      massa massa ultricies mi quis. Tempor commodo ullamcorper a lacus vestibulum sed arcu non odio. Laoreet non 
+                      curabitur gravida arcu ac tortor dignissim convallis aenean. Eu tincidunt tortor aliquam nulla facilisi cras 
+                      fermentum. Amet consectetur adipiscing elit duis tristique sollicitudin nibh. Eget sit amet tellus cras 
+                      adipiscing enim. Id porta nibh venenatis cras sed. Eget dolor morbi non arcu.\n\nVenenatis urna cursus eget 
+                      nunc. Nisl vel pretium lectus quam id leo in vitae. Sodales ut eu sem integer vitae justo. Ut aliquam purus 
+                      sit amet luctus venenatis lectus magna. Facilisis gravida neque convallis a cras semper auctor neque vitae. 
+                      Euismod elementum nisi quis eleifend quam adipiscing. Ipsum consequat nisl vel pretium lectus quam id leo in. 
+                      Nisl vel pretium lectus quam id leo in vitae. Nullam vehicula ipsum a arcu cursus. Vulputate sapien nec sagittis 
+                      aliquam malesuada. Eget gravida cum sociis natoque penatibus et magnis. Nunc sed velit dignissim sodales ut eu sem 
+                      integer.
+                  summary:
+                    type: string
+                    nullable: true
+                    example: null
+                  slug:
+                    type: string
+                    example: my-first-portfolio-item
+                  visible:
+                    type: boolean
+                    example: true
+                  onModel:
+                    type: string
+                    example: Artifact
+                  itemType:
+                    type: string
+                    example: portfolio
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: 2023-08-02T04:00:44.203Z
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: 2023-09-02T22:52:41.493Z
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                      example: tag1              
+  Headers:
+    security:
+      Access-Control-Allow-Credentials:
+        description: Indicates whether the browser should include credentials with cross-origin requests
+        schema:
+          type: boolean
+          example: true
+      Access-Control-Allow-Origin:
+        description: Which origin sites are allowed to read the response
+        schema:
+          type: string
+          example: http://localhost:4000
+      Content-Security-Policy:
+        description: To prevent cross-site scripting (XSS) and other code injection attacks
+        schema:
+          type: string
+          example: |-
+            default-src 'self';
+            base-uri 'self';
+            font-src 'self' https: data:;
+            form-action 'self';
+            frame-ancestors 'self';
+            img-src 'self' data:;
+            object-src 'none';
+            script-src 'self';
+            script-src-attr 'none';
+            style-src 'self' https: 'unsafe-inline';
+            upgrade-insecure-requests
+      Cross-Origin-Embedder-Policy:
+        description: To isolate documents from potential threats
+        schema:
+          type: string
+          example: credentialless
+      Cross-Origin-Opener-Policy:
+        description: How the document can interact with other origins
+        schema:
+          type: string
+          example: same-origin
+      Cross-Origin-Resource-Policy:
+        description: Which origins can embed the current resource
+        schema:
+          type: string
+          example: same-origin
+      Referrer-Policy:
+        description: Which referrer information should be sent with requests
+        schema:
+          type: string
+          example: no-referrer
+      Strict-Transport-Security:
+        description:  To ensure the browser only uses HTTPS
+        schema:
+          type: string
+          example: |-
+            max-age=15552000; 
+            includeSubDomains; 
+            preload
+      X-Content-Type-Options:
+        description: To prevent MIME type sniffing
+        schema:
+          type: string
+          example: nosniff
+      X-Download-Options:
+        description: Feature for IE8 to prevent executing web applications in the context of your sitetbd
+        schema:
+          type: string
+          example: noopen
+      X-Frame-Options:
+        description: To protect against clickjacking attacks
+        schema:
+          type: string
+          example: SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+        description: To restrict Adobe Flash Player's access to data
+        schema:
+          type: string
+          example: none
+      X-XSS-Protection:
+        description: XSS protection header (said to be deprecated)
+        schema:
+          type: string
+          example: "0"
+    connection:
+      Connection:
+        description: Whether the network connection stays open after the transaction finishes
+        schema:
+          type: string
+          example: keep-alive
+      Keep-Alive:
+        description: How long a persistent connection should stay open
+        schema:
+          type: string
+          example: timeout=5
+    metadata:
+      Content-Length:
+        description: The size of the response body
+        schema:
+          type: integer
+          format: int64
+          example: 283
+      Content-Type:
+        description: The media type of the resource or data
+        schema:
+          type: string
+          example: application/json; charset=utf-8
+      Date:
+        description: The date and time at which the message was sent
+        schema:
+          type: string
+          example: Fri,15 Sep 2023 17:19:36 GMT
+    optimization:
+      Origin-Agent-Cluster:
+        description: To improve performance by isolating web pages from each other
+        schema:
+          type: string
+          example: ?1
+      Vary:
+        description: Indicates the server response content might be different based on different parts of the request (like headers)
+        schema:
+          type: string
+          example: Origin
