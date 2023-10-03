@@ -17,24 +17,23 @@ export const OmnibarHelpDialog = ({
   isLiveSearch,
 }) => (
   <Dialog
-    className='mysb-omnibar-help'
+    id='search-help-modal'
     isOpen={isDialogOpen}
     onClose={handleCloseDialog}
     canOutsideClickClose={true}
     canEscapeKeyClose={true}
     lazy={true}
   >
-    <div className={`${Classes.DIALOG_HEADER} mysb-omnibar-help-header`}>
-      <span className='mysb-omnibar-help-header-text'>
-        Search Bar Cheat Sheet
-      </span>
+    <div id='search-help-modal-header' className={Classes.DIALOG_HEADER}>
+      <span id='search-help-header-text'>Search Bar Cheat Sheet</span>
       <Button
+        id='search-help-close-btn'
         icon={<Icon icon='cross' color='whitesmoke' />}
         minimal={true}
         onClick={handleCloseDialog}
       />
     </div>
-    <div className={`${Classes.DIALOG_BODY} mysb-omnibar-help-body`}>
+    <div id='search-help-modal-body' className={Classes.DIALOG_BODY}>
       <OmnibarHelpTable isLiveSearch={isLiveSearch} />
     </div>
   </Dialog>
@@ -56,7 +55,7 @@ const OmnibarHelpTable = (isLiveSearch) => (
             <tr>
               <td>
                 <Button
-                  className='mysb-omnibar-help-kbd-btns'
+                  className='search-help-modal-kbd-btns'
                   icon={<Icon icon='key-enter' />}
                 />
               </td>
@@ -68,7 +67,7 @@ const OmnibarHelpTable = (isLiveSearch) => (
             <tr>
               <td>
                 <Button
-                  className='mysb-omnibar-help-kbd-btns'
+                  className='search-help-modal-kbd-btns'
                   icon={<Icon icon='filter' />}
                 />
               </td>
@@ -80,7 +79,7 @@ const OmnibarHelpTable = (isLiveSearch) => (
             <tr>
               <td>
                 <Button
-                  className='mysb-omnibar-help-kbd-btns'
+                  className='search-help-modal-kbd-btns'
                   icon={<Icon icon='sort' />}
                 />
               </td>
@@ -92,7 +91,7 @@ const OmnibarHelpTable = (isLiveSearch) => (
             <tr>
               <td>
                 <Button
-                  className='mysb-omnibar-help-kbd-btns'
+                  className='search-help-modal-kbd-btns'
                   icon={<Icon icon='help' color='#CCCCCC' />}
                   minimal={true}
                 />

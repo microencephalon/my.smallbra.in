@@ -12,7 +12,7 @@ import {
 import { Omnibar } from '@blueprintjs/select';
 import { OmnibarContext } from '../../store/contexts/OmnibarContext';
 import { useLiveSearch } from '../../hooks/useLiveSearch';
-import { highlightQuery as handleHighlight } from '../../helpers/queryHighlighter';
+import { highlightQuery as handleHighlight } from '../../helpers/string';
 import { omniShowHotkey } from '../../store/hotkeys/omnibarKeys';
 import { OmnibarHelpDialog } from './SBOmnibarHelpDialog';
 
@@ -149,13 +149,17 @@ const SBOmnibarLive = () => {
         text={renderMenuItemContent(val, highlighted)}
         active={menuItemProps.modifiers.active}
         roleStructure='listoption'
-        className={`mysb-omnibar-menu-item ${loading ? 'bp5-skeleton' : ''}`}
+        className={`search-menu-item ${loading ? 'bp5-skeleton' : ''}`}
       />
     );
   };
 
   const handleItemListRender = ({ items, renderItem }) => {
-    return <Menu className='mysb-omnibar-menu'>{items.map(renderItem)}</Menu>;
+    return (
+      <Menu id='search-results-menu' className='mysb-omnibar-menu'>
+        {items.map(renderItem)}
+      </Menu>
+    );
   };
 
   const handleOmniLeftIcoMouseLeave = () => {
@@ -194,7 +198,7 @@ const SBOmnibarLive = () => {
     rightElement: OmnibarRightEle,
     leftElement: isSpecSearch ? (
       <Button
-        className='mysb-omnibar-tag-btn fade-in'
+        className='search-mode-icon fade-in'
         minimal={true}
         onMouseEnter={() => setOmnibarLeftIco('small-cross')}
         onMouseLeave={handleOmniLeftIcoMouseLeave}

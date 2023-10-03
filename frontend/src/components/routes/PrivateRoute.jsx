@@ -1,4 +1,4 @@
-// frontend/src/components/PrivateRoute.jsx
+// frontend/src/components/routes/PrivateRoute.jsx
 import { Navigate } from 'react-router-dom';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { Spinner, SpinnerSize } from '@blueprintjs/core';

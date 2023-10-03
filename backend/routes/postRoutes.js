@@ -2,7 +2,6 @@
 const express = require('express');
 const {
   getPosts,
-  getPaginatedPosts,
   getPostById,
   createPost,
   upload,
@@ -32,8 +31,6 @@ router
   )
   .head(getPostHead)
   .options(getOptions);
-
-router.route('/pg').get(getPaginatedPosts);
 
 router
   .route('/:id')

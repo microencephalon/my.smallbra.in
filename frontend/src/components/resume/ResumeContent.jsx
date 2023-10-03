@@ -19,8 +19,8 @@ axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 // TODO: Look at the code above for how to use react-markdown to import 'md' files as posts
 
 const ResumeContent = () => {
-  const [postContent, setPostContent] = useState('');
-  const [resumeInfo, setResumeInfo] = useState({
+  const [resumeContent, setResumeContent] = useState('');
+  const [, setResumeInfo] = useState({
     category: '',
     title: '',
     dateCreated: '',
@@ -45,7 +45,7 @@ const ResumeContent = () => {
           /==([^=]+)==/g,
           '<span style="background-color: #FFECB1;">$1</span>'
         );
-        setPostContent(highlightedMdContent);
+        setResumeContent(highlightedMdContent);
 
         const formattedDate = new Date(resume.dateCreated).toLocaleDateString(
           'en-US',
@@ -228,7 +228,7 @@ const ResumeContent = () => {
             },
           }}
         >
-          {postContent}
+          {resumeContent}
         </Markdown>
         <footer></footer>
       </div>

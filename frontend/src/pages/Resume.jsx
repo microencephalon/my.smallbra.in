@@ -4,6 +4,8 @@ import React from 'react';
 import ResumeContent from '../components/resume/ResumeContent';
 import { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
+import { Spinner, SpinnerSize } from '@blueprintjs/core';
+import ErrorCard from '../components/global/ErrorCard';
 
 export const ThemeContext = createContext();
 
@@ -37,12 +39,16 @@ function Resume() {
     fetchData();
   }, []);
 
-  if (isFetching && !isNotFound) {
-    return <div>Loading...</div>;
+  if (isNotFound) {
+    return <ErrorCard responseCode={'404'} />;
   }
 
-  if (isNotFound) {
-    return <div>404 Not Found</div>;
+  if (isFetching && !isNotFound) {
+    return (
+      <div className='portfolio-artifact'>
+        <Spinner size={SpinnerSize.LARGE} tagName='g' />
+      </div>
+    );
   }
 
   return (

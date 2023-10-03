@@ -30,7 +30,12 @@ const allowedOrigins = [];
 if (STAGE) {
   let origins;
   if (STAGE === 'development') {
-    origins = ['http://localhost:3000', 'http://localhost:4000'];
+    origins = [
+      'http://localhost:3000',
+      'http://192.168.1.66:3000',
+      'http://localhost:4000',
+      'http://192.168.1.66:4000',
+    ];
   } else if (STAGE === 'production') {
     origins = ['https://my.smallbra.in', 'https://my.smallbra.in/api-docs'];
   }

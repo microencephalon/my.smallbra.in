@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Card,
   Text,
@@ -14,42 +15,49 @@ export function ArtifactCard({
   previewImage,
   onClick,
 }) {
+  const [imageError, setImageError] = useState(null);
   const spinner = () => {
     return <Spinner />;
   };
+
   return (
     <Card
       className={`portfolio-card ${className}`}
       elevation={Elevation.ZERO}
       onClick={onClick}
     >
-      {previewImage ? (
+      {previewImage && !imageError ? (
         <img
-          // src={splash}
           src={previewImage}
           alt=''
           className={`artifact-preview-image`}
           onLoad={spinner}
+          onError={() => {
+            setImageError('Error occurred while retrieving the image.');
+          }}
         />
       ) : (
         <NonIdealState
           className='artifact-preview-image-not-found'
-          icon='issue'
+          icon={imageError ? 'error' : 'issue'}
           iconSize={NonIdealStateIconSize.SMALL}
-          title='Image Not Found'
-          description="Sorry, an image doesn't exist or it could not be retrieved."
+          title={imageError ? 'Error Loading Image' : 'Image Not Found'}
+          description={
+            imageError || "Sorry, an image doesn't exist for this item."
+          }
         />
       )}
-
       <br />
-      <Text className='portfolio-artifact-card-title'>{title}</Text>
-      <Text
-        tagName='p'
-        className='portfolio-artifact-card-description'
-        ellipsize={false}
-      >
-        {description}
-      </Text>
+      <div className='portfolio-artifact-card-content'>
+        <Text className='portfolio-artifact-card-title'>{title}</Text>
+        <Text
+          tagName='p'
+          className='portfolio-artifact-card-description'
+          ellipsize={false}
+        >
+          {description}
+        </Text>
+      </div>
     </Card>
   );
 }

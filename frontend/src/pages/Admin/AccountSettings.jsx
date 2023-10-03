@@ -111,7 +111,7 @@ const AccountSettings = () => {
     setEditedUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  const formatDate = (dateString) => {
+  const formatAcctSetingsDate = (dateString) => {
     const date = new Date(dateString);
     const timezoneOffset = date.getTimezoneOffset() * 60 * 1000; // Offset in milliseconds
     const adjustedDate = new Date(date.getTime() + timezoneOffset);
@@ -220,7 +220,7 @@ const AccountSettings = () => {
             id='birthday'
             name='birthday'
             type='date'
-            value={formatDate(user.birthday)}
+            value={formatAcctSetingsDate(user.birthday)}
             onClick={() => startEditing('birthday')}
           />
         )}

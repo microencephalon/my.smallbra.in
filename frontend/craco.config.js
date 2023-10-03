@@ -19,7 +19,7 @@ const headers = {
   'X-Permitted-Cross-Domain-Policies': 'none',
   'X-XSS-Protection': '1; mode=block',
   'Content-Security-Policy':
-    "default-src 'self' 'unsafe-inline' ws://localhost:3000 wss://localhost:3000 https://cdn.jsdelivr.net https://unpkg.com http://localhost:8081 http://192.168.1.66:8081 http://localhost:3000 http://localhost:4500 https://fonts.gstatic.com https://fonts.cdnfonts.com https://fonts.googleapis.com https://applesocial.s3.amazonaws.com https://mdg.imgix.net/assets/images/san-juan-mountains.jpg https://www.youtube.com youtube.com https://i.ytimg.com i.ytimg.com ytimg.com https://www.google.com google.com https://yt3.ggpht.com yt3.ggpht.com 192.168.1.66 applesocial.s3.amazonaws.com fonts.cdnfonts.com localhost unpkg.com www.youtube.com;",
+    "default-src 'self' 'unsafe-inline' ws://localhost:3000 wss://localhost:3000 https://avatars.githubusercontent.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:8081 http://192.168.1.66:8081 http://localhost:3000 http://192.168.1.66:3000 http://localhost:4500 http://192.168.1.66:4500 http://localhost:4000 http://192.168.1.66:4000 https://fonts.gstatic.com https://fonts.cdnfonts.com https://fonts.googleapis.com https://applesocial.s3.amazonaws.com https://mdg.imgix.net/assets/images/san-juan-mountains.jpg https://www.youtube.com youtube.com https://i.ytimg.com i.ytimg.com ytimg.com https://www.google.com google.com https://yt3.ggpht.com yt3.ggpht.com 192.168.1.66 applesocial.s3.amazonaws.com fonts.cdnfonts.com localhost unpkg.com www.youtube.com;",
 };
 
 // https://webpack.js.org/configuration/

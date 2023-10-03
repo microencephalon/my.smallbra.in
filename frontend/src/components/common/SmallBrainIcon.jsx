@@ -1,5 +1,3 @@
-import React from 'react';
-
 const SmallBrainIcon = ({ color }) => (
   <svg
     width='20'

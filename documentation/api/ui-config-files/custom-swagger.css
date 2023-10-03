@@ -121,3 +121,20 @@ tr[data-code='204'] > td.response-col_description > div.model-example {
 tr[data-code='204'] > td.response-col_description > div.headers-wrapper > h4.headers__title {
   margin-top: 2rem;
 }
+
+/* Set text for invalidParam to red */
+tr[data-param-name="invalidParam"] > td.parameters-col_name > div.parameter__name,
+tr[data-param-name="invalidParam"] > td.parameters-col_name > div.parameter__type,
+tr[data-param-name="invalidParam"] > td.parameters-col_description > div.renderedMarkdown > p {
+  color: #7c0101;
+}
+
+tr[data-param-name="invalidParam"] > td.parameters-col_name > div.parameter__in {
+  color: #AF838A;
+}
+
+input[placeholder='invalidParam'], 
+input[placeholder='invalidParam']::placeholder {
+  background-color: #FFEDF0 !important;
+  color: #AF838A !important;
+}

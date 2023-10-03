@@ -1,24 +1,61 @@
 // frontend/src/hooks/useSearch.js
-import { useState, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import axios from 'axios';
+import { throttle as _throttle } from 'lodash';
+import { OmnibarContext } from '../store/contexts/OmnibarContext';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 export const useSearch = (initialItem) => {
-  const [loading, setLoading] = useState(false);
-  const [item, setItem] = useState(initialItem);
-  const [items, setItems] = useState([]);
-  const [isSpecSearch, setIsSpecSearch] = useState(false);
-  const [omnibarLeftIco, setOmnibarLeftIco] = useState('search');
-  const [searchMode, setSearchMode] = useState('general');
-  const [tagQueries, setTagQueries] = useState([]);
-  const [specificQuery, setSpecificQuery] = useState('');
-  const [searchPerformed, setSearchPerformed] = useState(false);
+  const resets = {
+    loading: false,
+    item: '',
+    isSpecSearch: false,
+    searchMode: 'general',
+    omnibarLeftIco: 'search',
+    specificQuery: '',
+    searchPerformed: false,
+    sort: null,
+    type: null,
+    page: 1,
+    lastLoadedPage: 0,
+    totalPages: null,
+    limit: 20,
+  };
 
-  const [sort, setSort] = useState(null); // 'asc', 'desc', 'newest', 'oldest'
-  const [page, setPage] = useState(1); // pagination page number
-  const [limit, setLimit] = useState(null); // items per page
-  const [type, setType] = useState(null); // 'artifact', 'post'
+  const {
+    menuRef,
+    item,
+    setItem,
+    items,
+    setItems,
+    loading,
+    setLoading,
+    isSpecSearch,
+    setIsSpecSearch,
+    omnibarLeftIco,
+    setOmnibarLeftIco,
+    searchMode,
+    setSearchMode,
+    tagQueries,
+    setTagQueries,
+    specificQuery,
+    setSpecificQuery,
+    searchPerformed,
+    setSearchPerformed,
+    sort,
+    setSort,
+    type,
+    setType,
+    page,
+    setPage,
+    lastLoadedPage,
+    setLastLoadedPage,
+    totalPages,
+    setTotalPages,
+    limit,
+    setLimit,
+  } = useContext(OmnibarContext);
 
   const searchPrefixMap = {
     'tag:': {
@@ -92,14 +129,14 @@ export const useSearch = (initialItem) => {
       }
 
       setOmnibarLeftIco(searchPrefix.omnibarIcon);
-      setIsSpecSearch(true);
+      setIsSpecSearch(!resets.isSpecSearch);
       setSpecificQuery(searchQuery);
       setTagQueries(searchPrefix.splitQuery ? searchQuery : []);
       setSearchMode(searchPrefix.searchMode);
     } else {
-      setSearchMode('general');
-      setOmnibarLeftIco('search');
-      setIsSpecSearch(false);
+      setSearchMode(resets.searchMode);
+      setOmnibarLeftIco(resets.omnibarLeftIco);
+      setIsSpecSearch(resets.isSpecSearch);
     }
   };
 
@@ -119,15 +156,15 @@ export const useSearch = (initialItem) => {
       }
 
       setOmnibarLeftIco(searchPrefix.omnibarIcon);
-      setIsSpecSearch(true);
+      setIsSpecSearch(!resets.isSpecSearch);
       setSpecificQuery(searchQuery);
       setTagQueries(searchPrefix.splitQuery ? searchQuery : []);
       setSearchMode(searchPrefix.searchMode);
       endpoint = `/api/search?${searchPrefix.endpointParam}=${searchQuery}`;
     } else {
-      setSearchMode('general');
-      setOmnibarLeftIco('search');
-      setIsSpecSearch(false);
+      setSearchMode(resets.searchMode);
+      setOmnibarLeftIco(resets.omnibarLeftIco);
+      setIsSpecSearch(resets.isSpecSearch);
       endpoint = `/api/search?query=${item}`;
     }
 
@@ -139,62 +176,75 @@ export const useSearch = (initialItem) => {
     if (newParams.length > 0) {
       endpoint += `&${newParams.join('&')}`;
     }
-    console.log('Endpoint:' + endpoint);
+    console.debug('Endpoint:' + endpoint);
 
     return endpoint;
   };
 
   const handleSearchReset = () => {
-    setLoading(false);
-    setItem('');
+    setLoading(resets.loading);
+    setItem(resets.item);
     setItems([]);
-    setIsSpecSearch(false);
-    setOmnibarLeftIco('search');
-    setSearchMode('general');
+    setIsSpecSearch(resets.isSpecSearch);
+    setOmnibarLeftIco(resets.omnibarLeftIco);
+    setSearchMode(resets.searchMode);
     setTagQueries([]);
-    setSpecificQuery('');
-    setSearchPerformed(false);
-    setSort(null);
-    setPage(null);
-    setLimit(null);
-    setType(null);
+    setSpecificQuery(resets.specificQuery);
+    setSearchPerformed(resets.searchPerformed);
+    setSort(resets.sort);
+    setPage(resets.page);
+    setLastLoadedPage(resets.lastLoadedPage);
+    setLimit(resets.limit);
+    setType(resets.type);
   };
 
-  const handleSearchRequest = async () => {
-    if (!item.trim()) {
-      setLoading(false);
-      setItem('');
-      setItems([]);
-      setSearchPerformed(true);
-      return;
-    }
+  const handleSearchRequest = async (endpoint) => {
+    if (!endpoint) {
+      if (!item.trim()) {
+        setLoading(resets.loading);
+        setItem(resets.item);
 
-    setLoading(true);
-    setItems([]);
-    const endpoint = getEndpoint(item);
+        if (page === 1) {
+          // condition to disable resetting
+          setItems([]);
+        }
+        setSearchPerformed(!resets.searchPerformed);
+        return;
+      }
+
+      setLoading(!resets.loading);
+      if (page === 1) {
+        // condition to disable resetting
+        setItems([]);
+      }
+
+      endpoint = getEndpoint(item);
+    }
 
     try {
       const response = await axios.get(endpoint);
+      setTotalPages(response.data.totalPages);
       const mappedItems = response.data.results.map((item_1) => ({
         title: item_1.title ?? '',
         dateCreated: item_1.dateCreated ?? null,
-        id: item_1._id,
-        type: item_1.relatedPosts ? 'blog' : 'portfolio',
+        refId: item_1.refId,
+        itemType: item_1.itemType,
         slug: item_1.slug ?? '',
         description: item_1.description ?? '',
         summary: item_1.summary ?? '',
         tags: item_1.tags ?? (searchMode !== 'tag' ? null : []),
         category: item_1.category ?? '',
+        pageNum: response.data.page,
       }));
       setItems((prevItems) => [...prevItems, ...mappedItems]);
-      setLoading(false);
-      setSearchPerformed(true);
+      setLoading(resets.loading);
+      setSearchPerformed(!resets.searchPerformed);
       return response;
     } catch (error) {
       console.error(error);
-      setLoading(false);
-      setItems([]); // clear previous search results on error
-      setSearchPerformed(true);
+      setLoading(resets.loading);
+      setItems([]);
+      setSearchPerformed(!resets.searchPerformed);
     }
   };
 
@@ -205,13 +255,15 @@ export const useSearch = (initialItem) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, type]);
 
+  // DESC: When page changes, execute search request to fetch more results
   useEffect(() => {
-    if (page > 1) {
+    if (page >= 1 && searchPerformed) {
       handleSearchRequest();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  // DESC: Change left icon with text prefixes in search input bar
   useEffect(() => {
     if (item.trim() === '' || !item.startsWith('tag:')) {
       setTagQueries([]);
@@ -226,14 +278,46 @@ export const useSearch = (initialItem) => {
         'desc:',
       ];
       if (!prefixes.some((prefix) => item.startsWith(prefix))) {
-        setSearchMode('general');
-        setOmnibarLeftIco('search');
-        setIsSpecSearch(false);
+        setSearchMode(resets.searchMode);
+        setOmnibarLeftIco(resets.omnibarLeftIco);
+        setIsSpecSearch(resets.isSpecSearch);
       }
     }
     getSearchTypeAndIcon(item);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
+
+  useEffect(() => {
+    // DESC: for infinite scrolling for search results
+    const handleScroll = _throttle(() => {
+      if (menuRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = menuRef.current;
+        const isNearBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px threshold
+
+        if (isNearBottom && !loading && page < totalPages) {
+          console.debug('Near bottom, loading more results...');
+          setPage(page + 1);
+          setLastLoadedPage(page - 1);
+        }
+      }
+    }, 750); // The function won't be called more than once every 750ms
+
+    const currentMenuRef = menuRef.current;
+
+    // Attach the throttled scroll handler
+    if (currentMenuRef) {
+      currentMenuRef.addEventListener('scroll', handleScroll);
+    }
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      if (currentMenuRef) {
+        currentMenuRef.removeEventListener('scroll', handleScroll);
+      }
+      handleScroll.cancel(); // Cancel any pending executions of the throttled function
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, totalPages, loading, menuRef]);
 
   return {
     states: {
@@ -259,6 +343,10 @@ export const useSearch = (initialItem) => {
       setSort,
       page,
       setPage,
+      lastLoadedPage,
+      setLastLoadedPage,
+      totalPages,
+      setTotalPages,
       limit,
       setLimit,
       type,
@@ -268,5 +356,10 @@ export const useSearch = (initialItem) => {
       handleSearchReset,
       handleSearchRequest,
     },
+    refs: {
+      menuRef,
+    },
+    resets,
+    initialItem,
   };
 };

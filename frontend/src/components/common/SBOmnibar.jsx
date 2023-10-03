@@ -1,5 +1,5 @@
 // frontend/src/components/SBOmnibar.jsx
-import { useState, useContext, useEffect } from 'react';
+import { useContext, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Menu,
@@ -12,29 +12,47 @@ import {
   NonIdealState,
   MenuDivider,
   Position,
+  Spinner,
 } from '@blueprintjs/core';
 import { Omnibar, Select } from '@blueprintjs/select';
 import { OmnibarContext } from '../../store/contexts/OmnibarContext';
 import { useSearch } from '../../hooks/useSearch';
 import { omniShowHotkey } from '../../store/hotkeys/omnibarKeys';
 
-import { highlightQuery as handleHighlight } from '../../helpers/queryHighlighter';
-import { formatDate } from '../../helpers/formateDate';
+import { highlightQuery as handleHighlight } from '../../helpers/string';
+import { formatDate } from '../../helpers/string';
 
 import { OmnibarHelpDialog } from './SBOmnibarHelpDialog';
 
 import OMNIBAR_OPTIONS from '../../store/options/omnibarOptions';
 
 const SBOmnibar = () => {
-  const { FILTER_DEFAULT, FILTER_OPTIONS, SORT_DEFAULT, SORT_OPTIONS } =
-    OMNIBAR_OPTIONS;
+  const { FILTER_OPTIONS, SORT_OPTIONS, omnibarResets } = OMNIBAR_OPTIONS;
 
-  const { open, handleOmnibar, handleOmnibarClose, handleOmnibarToggle } =
-    useContext(OmnibarContext);
+  const {
+    open,
+    isDialogOpen,
+    setIsDialogOpen,
+    selectedFilter,
+    setSelectedFilter,
+    selectedSort,
+    setSelectedSort,
+    isClearedFilter,
+    setIsClearedFilter,
+    isClearedSort,
+    setIsClearedSort,
+    handleOmnibarClose,
+    handleOmnibarToggle,
+  } = useContext(OmnibarContext);
 
   const navigate = useNavigate();
 
-  const { states: searchStates, handlers: searchHandlers } = useSearch('');
+  const {
+    states: searchStates,
+    handlers: searchHandlers,
+    refs: searchRefs,
+    resets: searchResets,
+  } = useSearch('');
   const {
     loading,
     item,
@@ -53,48 +71,38 @@ const SBOmnibar = () => {
     setSort,
     page,
     setPage,
-    limit,
+    lastLoadedPage,
+    totalPages,
     setLimit,
     setType,
   } = searchStates;
 
   const { handleSearchReset, handleSearchRequest } = searchHandlers;
 
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState(FILTER_DEFAULT);
-  const [selectedSort, setSelectedSort] = useState(SORT_DEFAULT); // Set default sort option
-  const [isClearedFilter, setIsClearedFilter] = useState(true);
-  const [isClearedSort, setIsClearedSort] = useState(true);
+  const { menuRef } = searchRefs;
 
   const handleSearchClose = () => {
     handleSearchReset();
-    setSelectedFilter(FILTER_DEFAULT);
-    setSelectedSort(SORT_DEFAULT);
-    setIsClearedFilter(true);
-    setIsClearedSort(true);
-    setDialogOpen(false);
+    setSelectedFilter(omnibarResets.selectedFilter);
+    setSelectedSort(omnibarResets.selectedSort);
+    setIsClearedFilter(omnibarResets.isClearedFilter);
+    setIsClearedSort(omnibarResets.isClearedSort);
+    setIsDialogOpen(omnibarResets.isDialogOpen);
     handleOmnibarClose();
   };
 
-  const handleItemRender = (val, menuItemProps) => {
-    const fields = ['title', 'category', 'description', 'summary'];
-    const highlighted = {};
+  // DEBUG: Menu item content in place of renderMenuItemContent
+  const MenuItemContent = memo(({ val, highlighted }) => {
+    // Menu item content rendering logic
 
-    fields.forEach((field) => {
-      highlighted[field] = handleHighlight({
-        searchMode,
-        searchModeStr: field,
-        specQ,
-        val: val[field],
-        item,
-        highlightClass:
-          field === 'title' ? 'mysb-omnibar-hl-yield-title' : undefined,
-      });
+    const matchingTags = val.tags?.filter((tag) => {
+      const regex = new RegExp(tagQueries.join('|'), 'i'); // Create a regex pattern from tagQueries
+      return regex.test(tag);
     });
 
     const subItems = [
       {
-        data: tagQueries?.map((tag, i) => (
+        data: matchingTags?.map((tag, i) => (
           <Tag key={i} minimal={false} style={{ color: 'white' }}>
             {tag}
           </Tag>
@@ -119,15 +127,8 @@ const SBOmnibar = () => {
       },
     ];
 
-    const handleMenuItemClick = (val) => {
-      return () => {
-        handleOmnibar();
-        navigate(`/${val.type}/${val.slug}/${val.id}`);
-      };
-    };
-
-    const renderMenuItemContent = (val, highlighted) => (
-      <div className={loading ? 'bp5-skeleton fade-in' : 'fade-in'}>
+    return (
+      <div>
         {/* Menu Item Title */}
         <div
           style={{
@@ -155,113 +156,147 @@ const SBOmnibar = () => {
         ))}
       </div>
     );
+  });
+
+  const handleItemRender = (val, menuItemProps) => {
+    // For highlighting the text of the search results
+    const fields = ['title', 'category', 'description', 'summary'];
+    const highlighted = {};
+    fields.forEach((field) => {
+      highlighted[field] = handleHighlight({
+        searchMode,
+        searchModeStr: field,
+        specQ,
+        val: val[field],
+        item,
+        highlightClass:
+          field === 'title' ? 'mysb-omnibar-hl-yield-title' : undefined,
+      });
+    });
+
+    const handleMenuItemClick = (val) => {
+      return () => {
+        handleSearchReset();
+        handleOmnibarClose();
+        navigate(`/${val.itemType}/${val.slug}/${val.refId}`);
+      };
+    };
+
+    const shouldFadeIn = val.pageNum > lastLoadedPage;
 
     return (
       <MenuItem
         onClick={handleMenuItemClick(val)}
-        key={val.id}
-        text={renderMenuItemContent(val, highlighted)}
+        key={val.refId}
+        text={<MenuItemContent val={val} highlighted={highlighted} />}
         active={menuItemProps.modifiers.active}
         roleStructure='listoption'
-        className={`mysb-omnibar-menu-item ${loading ? 'bp5-skeleton' : ''}`}
+        className={`search-menu-item ${shouldFadeIn ? 'fade-in' : ''}`}
       />
     );
   };
 
   const handleItemListRender = ({ items, renderItem }) => {
+    const NonIdealMenuItem = ({ title }) => (
+      <MenuItem
+        id={'search-menu-item-non-ideal'}
+        text={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Icon icon='issue' />
+            <div style={{ marginLeft: '10px' }}>
+              <NonIdealState
+                className='mysb-omnibar-no-search-yields'
+                layout='horizontal'
+                title={title}
+              />
+            </div>
+          </div>
+        }
+        disabled={true}
+        roleStructure='none'
+      />
+    );
+
+    const MenuSpinner = () => {
+      return (
+        <div style={{ textAlign: 'center', padding: '10px' }}>
+          <Spinner size={20} />
+        </div>
+      );
+    };
+
+    const MenuHeader = () => {
+      return (
+        <>
+          <MenuItem
+            tagName='div'
+            className='search-menu-header'
+            textClassName='search-menu-header-text'
+            text={
+              <span id='search-menu-header-text'>
+                Search {items.length === 1 ? 'result' : 'results'} for{' '}
+                <em>{item}</em>
+              </span>
+            }
+            disabled={true}
+            roleStructure='menuitem'
+          />
+          <MenuDivider />
+        </>
+      );
+    };
+
+    const TerminalMenuDivider = () => {
+      return (
+        <div id='search-menu-terminal-divider'>
+          <MenuDivider />
+        </div>
+      );
+    };
+
+    const renderMenu = (children) => (
+      <Menu
+        id='search-results-menu'
+        className='mysb-omnibar-menu'
+        ulRef={menuRef}
+      >
+        {children}
+      </Menu>
+    );
+
+    const NoResultsMenu = () => {
+      return renderMenu(
+        <>
+          <MenuHeader />
+          <NonIdealMenuItem title='Sorry, no results found.' />
+        </>
+      );
+    };
+
+    const EmptyQueryMenu = () => {
+      return renderMenu(
+        <>
+          <MenuDivider />
+          <NonIdealMenuItem title='Sorry, search query cannot be empty.' />
+        </>
+      );
+    };
+
     if (searchPerformed) {
       if (items.length === 0 && item.trim()) {
-        return (
-          <Menu className='mysb-omnibar-menu'>
-            <MenuItem
-              className='mysb-omnibar-menu-item-header'
-              text={
-                <span className='mysb-omnibar-menu-item-header-text'>
-                  Search {items.length === 1 ? 'result' : 'results'} for{' '}
-                  <em>{item}</em>
-                </span>
-              }
-              disabled={true}
-            />
-            <MenuDivider />
-            <MenuItem
-              text={
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Icon icon='issue' />
-                  <div style={{ marginLeft: '10px' }}>
-                    <NonIdealState
-                      className='mysb-omnibar-no-search-yields'
-                      layout='horizontal'
-                      title='Sorry, no results found.'
-                    />
-                  </div>
-                </div>
-              }
-              disabled={true}
-              roleStructure='none'
-            />
-          </Menu>
-        );
+        return <NoResultsMenu />;
       } else if (!item.trim()) {
-        return (
-          <Menu className='mysb-omnibar-menu'>
-            <MenuDivider />
-            <MenuItem
-              text={
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Icon icon='issue' />
-                  <div style={{ marginLeft: '10px' }}>
-                    <NonIdealState
-                      className='mysb-omnibar-no-search-yields'
-                      layout='horizontal'
-                      title='Sorry, search query cannot be empty.'
-                    />
-                  </div>
-                </div>
-              }
-              disabled={true}
-              roleStructure='none'
-            />
-          </Menu>
-        );
+        return <EmptyQueryMenu />;
       }
     }
 
-    return (
-      <Menu className='mysb-omnibar-menu'>
-        {searchPerformed && (
-          <>
-            <MenuItem
-              tagName='div'
-              className='mysb-omnibar-menu-item-header'
-              textClassName='mysb-omnibar-menu-item-header-text'
-              text={
-                <span className='mysb-omnibar-menu-item-header-text'>
-                  Search {items.length === 1 ? 'result' : 'results'} for{' '}
-                  <em>{item}</em>
-                </span>
-              }
-              disabled={true}
-              roleStructure='menuitem'
-            />
-            <MenuDivider />
-          </>
-        )}
+    return renderMenu(
+      <>
+        {searchPerformed && <MenuHeader />}
         {items.map(renderItem)}
-        {searchPerformed && (
-          <>
-            <MenuDivider />
-            <Button
-              icon={<Icon icon='more' />}
-              fill={true}
-              minimal={true}
-              onClick={() => {
-                setPage(page + 1);
-              }} // add a function to handle loading an additional page, which is 10 more items, from the backend
-            />
-          </>
-        )}
-      </Menu>
+        {loading && <MenuSpinner />}
+        {searchPerformed && page >= totalPages && <TerminalMenuDivider />}
+      </>
     );
   };
 
@@ -281,7 +316,7 @@ const SBOmnibar = () => {
         setOmnibarLeftIco('search-template');
         break;
       default:
-        setOmnibarLeftIco('search');
+        setOmnibarLeftIco(searchResets.omnibarLeftIco);
         break;
     }
   };
@@ -324,14 +359,20 @@ const SBOmnibar = () => {
         onItemSelect={(item) => {
           setSelectedFilter(item);
           setType(item.value);
+          setPage(searchResets.page);
+          if (menuRef.current) {
+            // if the menu is scrolled down, it will trigger
+            menuRef.current.scrollTop = 0;
+          }
           item.label === 'Clear Filter'
-            ? setIsClearedFilter(true)
+            ? setIsClearedFilter(omnibarResets.isClearedFilter)
             : setIsClearedFilter(false);
         }}
         activeItem={selectedFilter}
         itemRenderer={(item, { handleClick, modifiers }) => {
           return (
             <MenuItem
+              id={`search-filter-option-${item.value ? item.value : 'clear'}`}
               active={modifiers.active}
               icon={
                 selectedFilter.value === item.value &&
@@ -375,6 +416,9 @@ const SBOmnibar = () => {
         }}
       >
         <Button
+          id={`search-btn-filter${
+            selectedFilter.value ? '-' + selectedFilter.value : ''
+          }`}
           outlined={true}
           icon={
             selectedFilter && !selectedFilter.label.startsWith('Clear')
@@ -397,14 +441,20 @@ const SBOmnibar = () => {
         onItemSelect={(item) => {
           setSelectedSort(item);
           setSort(item.value);
+          setPage(searchResets.page);
+          if (menuRef.current) {
+            // if the menu is scrolled down, it will trigger
+            menuRef.current.scrollTop = 0;
+          }
           item.label === 'Clear Sorting'
-            ? setIsClearedSort(true)
+            ? setIsClearedSort(omnibarResets.isClearedSort)
             : setIsClearedSort(false);
         }}
         activeItem={selectedSort}
         itemRenderer={(item, { handleClick, modifiers }) => {
           return (
             <MenuItem
+              id={`search-sort-option-${item.value ? item.value : 'clear'}`}
               active={modifiers.active}
               icon={
                 selectedSort.value === item.value &&
@@ -448,6 +498,9 @@ const SBOmnibar = () => {
         }}
       >
         <Button
+          id={`search-btn-sort${
+            selectedSort.value ? '-' + selectedSort.value : ''
+          }`}
           outlined={true}
           icon={
             selectedSort
@@ -461,26 +514,44 @@ const SBOmnibar = () => {
     );
   };
 
-  const OmnibarRightEle = (
-    <ButtonGroup>
+  const HelpDialogButton = () => {
+    return (
       <Button
+        id={'search-btn-help'}
         icon={<Icon icon='help' color='#CCCCCC' />}
         minimal={true}
-        onClick={() => setDialogOpen(true)}
+        onClick={() => setIsDialogOpen(true)}
       />
-      <SortButton />
-      <FilterButton />
+    );
+  };
+
+  const SubmitQueryButton = () => {
+    return (
       <Button
+        id={'search-btn-submit'}
         icon={<Icon icon='key-enter' />}
         disabled={searchPerformed ? true : false}
-        onClick={handleSearchRequest}
+        onClick={() => {
+          if (!searchPerformed) {
+            handleSearchRequest();
+          }
+        }}
       />
+    );
+  };
+
+  const OmnibarRightEle = (
+    <ButtonGroup>
+      <HelpDialogButton />
+      <SortButton />
+      <FilterButton />
+      <SubmitQueryButton />
     </ButtonGroup>
   );
 
   const OmnibarLeftEle = isSpecSearch ? (
     <Button
-      className='mysb-omnibar-tag-btn fade-in'
+      className='search-mode-icon fade-in'
       minimal={true}
       onMouseEnter={() => setOmnibarLeftIco('small-cross')}
       onMouseLeave={handleOmniLeftIcoMouseLeave}
@@ -491,13 +562,14 @@ const SBOmnibar = () => {
       }}
     />
   ) : (
-    <Icon icon='search' />
+    <Icon id='search-mode-icon-default' icon='search' />
   );
 
   const omnibarInputProps = {
     tagName: 'div',
     placeholder: 'Search...',
     type: 'text',
+    className: 'search-input-box',
     onKeyDown: OmnibarKeyDownQuery,
     rightElement: OmnibarRightEle,
     leftElement: OmnibarLeftEle,
@@ -505,29 +577,35 @@ const SBOmnibar = () => {
 
   useEffect(() => {
     setItems([]);
-    setSearchPerformed(false);
+    setSearchPerformed(searchResets.searchPerformed);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
   return (
     <HotkeysTarget2 hotkeys={omniShowHotkey(handleOmnibarToggle)}>
-      <OmnibarHelpDialog
-        isDialogOpen={isDialogOpen}
-        handleCloseDialog={() => setDialogOpen(false)}
-        isLiveSearch={false}
-      />
-      <Omnibar
-        onClose={handleSearchClose}
-        query={item}
-        onQueryChange={(newQuery) => setItem(newQuery)}
-        itemRenderer={handleItemRender}
-        itemListRenderer={handleItemListRender}
-        isOpen={open}
-        activeItem={item}
-        items={loading ? [] : items}
-        inputProps={omnibarInputProps}
-        className='mysb-omnibar'
-      />
+      <>
+        <OmnibarHelpDialog
+          isDialogOpen={isDialogOpen}
+          handleCloseDialog={() => setIsDialogOpen(omnibarResets.isDialogOpen)}
+          isLiveSearch={false}
+        />
+        <Omnibar
+          onClose={() => handleSearchClose()}
+          query={item}
+          onQueryChange={(newQuery) => {
+            setItem(newQuery);
+            setPage(searchResets.page);
+            setLimit(searchResets.limit);
+          }}
+          itemRenderer={handleItemRender}
+          itemListRenderer={handleItemListRender}
+          isOpen={open}
+          activeItem={item}
+          items={items}
+          inputProps={omnibarInputProps}
+          className='mysb-omnibar'
+        />
+      </>
     </HotkeysTarget2>
   );
 };

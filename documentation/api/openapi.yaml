@@ -388,6 +388,9 @@ paths:
       operationId: getBlogPosts
       description: Get all posts
       summary: Get all posts' data
+      parameters:
+        - $ref: '#/components/Parameters/blog/page'
+        - $ref: '#/components/Parameters/blog/home'
       tags:
         - blog
       responses:
@@ -397,6 +400,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/Responses/blog/GetBlogPosts/200'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              examples:
+                Exclusive Query Params:
+                  $ref: '#/components/Responses/shared/4xx-examples/ExclusiveHomePageParams'
+        '416':
+          description: Range Not Satisfiable, no resource or page 𝑛 found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              example:
+                message: '416 Range Not Satisfiable: No resource or page 12 found'
       deprecated: false
 
     post:
@@ -846,6 +866,8 @@ paths:
       operationId: getPortfolioArtifacts
       description: Get all portfolio artifacts' data
       summary: Get all artifacts' data
+      parameters:
+        - $ref: '#/components/Parameters/portfolio/page'
       tags:
         - portfolio
       responses:
@@ -855,6 +877,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/Responses/portfolio/GetPortfolioArtifacts/200'
+        '416':
+          description: Range Not Satisfiable, no resource or page 𝑛 found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/416'
+              example:
+                message: '416 Range Not Satisfiable: No resource or page 12 found'
       deprecated: false
 
     post:
@@ -1369,6 +1399,7 @@ paths:
         - $ref: '#/components/Parameters/search/sort'
         - $ref: '#/components/Parameters/search/category'
         - $ref: '#/components/Parameters/search/tags'
+        - $ref: '#/components/Parameters/search/invalidParam'
       responses:
         '200':
           description: Successful response
@@ -1383,9 +1414,30 @@ paths:
               schema:
                 $ref: '#/components/Responses/shared/4xx'
               examples:
+                  Absent Query:
+                    value:
+                      message: 'Invalid or no search query provided'
+                  Exclusive Querying:
+                    value:
+                      message: 'General queries and specific queries are exclusive in use. Please use only one type.'
+                  Page and Limit Pairing:
+                    value:
+                      message: "The 'page' and 'limit' parameters must be used together."
                   Invalid Page or Limit Value:
                     value:
                       message: 'Invalid page or limit value. They should be integers.'
+                  Blog Type & Description Field Conflict:
+                    value:
+                      message: "The 'description' query parameter not available for type 'portfolio', excluding from query"
+                  Portfolio Type & Summary Field Conflict:
+                    value:
+                      message: "The 'summary' query parameter not available for type 'blog', excluding from query"
+                  Invalid Sorting Method:
+                    value:
+                      message: "Invalid sorting method. Cannot sort with {sortingMethod}. Options: 'asc', 'desc', 'newest', or 'oldest'"
+                  Invalid Query Parameter:
+                    value:
+                      message: "Invalid query parameter: '{key}'."
                   Missing Closing Curly Brace:
                     $ref: '#/components/Responses/shared/4xx-examples/MissingClosingCurlyBrace'
                   Expected Double-quoted Property Name:
@@ -1783,7 +1835,7 @@ components:
           type: string
         description: |-
           General query. Titles, categories, and portfolio descriptions, and blog summaries are considerd in this search.
-          This general queries and specific queries are exclusive in use. The general query will disable any of the query specifiers, so query specifiers need to be used without this general query.
+          This general queries and specific queries are exclusive in use. The general query will disable any of the query specifiers, so query specifiers need to be used without this general query. If paired, there will be a '400' response. Please see the '*Exclusive Querying*' example.
 
           ---
           Example value: 'Title'
@@ -1791,10 +1843,12 @@ components:
         in: query
         name: page
         schema:
-          type: integer
-          format: int32
+          oneOf:
+            - type: string
+            - type: integer
+              format: int32
         description: |-
-          Sets limit for number of items per request. **Will only work if using with** *limit* **query parameter**.
+          Sets limit for number of items per request. **Will only work if using with** *limit* **query parameter**. A '400' response ensues without pairing. Please see the '*Page and Limit*' pairing example. Must take an integer or string that is convertible to an integer as its value. Please see the '*Invalid Page or Limit Value*' example.'
 
           ---
           Example value: 2
@@ -1802,10 +1856,12 @@ components:
         in: query
         name: limit
         schema:
-          type: integer
-          format: int32
+          oneOf:
+            - type: string
+            - type: integer
+              format: int32
         description: |-
-          Sets limit for number of items per request. **Will only work if using with** *page* **query parameter**.
+          Sets limit for number of items per request. **Will only work if using with** *page* **query parameter**. A '400' response ensues without pairing. Please see the '*Page and Limit*' pairing example. Must take an integer or string that is convertible to an integer as its value. Please see the '*Invalid Page or Limit Value*' example.'
 
           ---
           Example value: 10
@@ -1816,7 +1872,7 @@ components:
           type: string
           enum: [blog, portfolio]
         description: |-
-          Filters query 'portfolio' ⊻ 'blog'.
+          Filters query 'portfolio' ⊻ 'blog'. The 'portfolio' parameter cannot be paired with 'summary' and 'blog' cannot be paired with 'description' since both of them do not include those fields that are respective each other. If these are paired, you will receive a '400' request. Please see the examples, '*Blog Type & Description Field Conflict*' and '*Portfolio Type & Summary Field Conflict*'.
       title:
         in: query
         name: title
@@ -1876,6 +1932,13 @@ components:
           ---
           Example single value: 'tag1'
           Example value list: 'tag1,tag2'
+      invalidParam:
+        in: query
+        name: invalidParam
+        schema:
+          type: string
+        description: |-
+          This is used to reproduce the '400' response example, '*Invalid Query Parameter*'. This must be left empty as a condition to produce '200' or '416' responses. If querying via the browser or with an app like [Postman](https://www.postman.com), the user should get this same '400' response with any invalid parameter. For example, if using 'balloon=<value>' as a query key and value. 
     user:
       userId:
         in: path
@@ -1885,6 +1948,21 @@ components:
             example: 64af158ea648c662f88d39f5
             default: 64af158ea648c662f88d39f5
     blog:
+      page:
+        in: query
+        name: page
+        required: false
+        description: Will return a page with 7 items. Designated for the the blog listing page. Must be used exclusively.
+        schema:
+          type: int32
+      home:
+        in: query
+        name: home
+        description: Will return the first 5 items. Designated for the home page. Must be used exclusively.
+        required: false
+        schema:
+          type: Boolean
+          example: true
       postId:
         in: path
         name: postId
@@ -1902,6 +1980,8 @@ components:
           example: 64f8b417f765d8d6170da381
           default: 64f8b417f765d8d6170da381
     portfolio:
+      page:
+        $ref: '#/components/Parameters/blog/page'
       artifactId:
         in: path
         name: artifactId
@@ -1935,6 +2015,9 @@ components:
           stack:
             type: string
       '4xx-examples':
+        ExclusiveHomePageParams:
+          value:
+            message: "The 'home' and 'page' query params must be used exclusively"
         IncludeAllFields:
           value:
             message: "Please include all fields"

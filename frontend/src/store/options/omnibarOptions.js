@@ -44,11 +44,20 @@ const SORT_OPTIONS = [
   { value: null, label: 'Clear Sorting', icon: 'delete' },
 ];
 
+const omnibarResets = {
+  isDialogOpen: false,
+  selectedFilter: FILTER_DEFAULT,
+  selectedSort: SORT_DEFAULT,
+  isClearedFilter: true,
+  isClearedSort: true,
+};
+
 const OMNIBAR_OPTIONS = {
   FILTER_DEFAULT,
   FILTER_OPTIONS,
   SORT_DEFAULT,
   SORT_OPTIONS,
+  omnibarResets,
 };
 
 export default OMNIBAR_OPTIONS;

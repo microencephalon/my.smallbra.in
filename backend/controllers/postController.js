@@ -44,28 +44,45 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// DESC: Get all posts
-// @route GET /api/posts
-// @access Public
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({});
-  res.json(posts);
-});
+  const page = Number(req.query.page);
+  const home = 'home' in req.query;
 
-// DESC: Get paginated posts
-// @route GET /api/posts/pg
-// @access Public
-const getPaginatedPosts = asyncHandler(async (req, res) => {
-  const pageSize = 5; // number of posts per page
-  const page = Number(req.query.page) || 1; // update query parameter name to 'page'
+  if (page && home) {
+    return res.status(400).json({
+      message: "The 'home' and 'page' query params must be used exclusively",
+    });
+  }
 
-  const count = await Post.countDocuments({});
-  const posts = await Post.find({})
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
+  let pageSize = 7; // default pageSize
 
-  const data = { posts, page, pages: Math.ceil(count / pageSize) };
-  res.json(data);
+  if (home) {
+    pageSize = 5; // pageSize for 'home' parameter
+  }
+
+  // If either 'page' or 'home' parameter is present, return paginated result
+  if (home || page) {
+    const count = await Post.countDocuments({});
+    const totalPages = Math.ceil(count / pageSize);
+
+    if (page > totalPages) {
+      return res.status(416).json({
+        message: `416 Range Not Satisfiable: No resource or page ${page} found.`,
+      });
+    }
+
+    const posts = await Post.find({})
+      .sort({ dateCreated: -1 }) // sorting by dateCreated field, newest first
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    const data = { posts, page, pages: totalPages };
+    return res.json(data);
+  }
+
+  // If neither 'page' nor 'home' parameter is present, return all posts sorted by 'dateCreated' from newest to oldest.
+  const posts = await Post.find({}).sort({ dateCreated: -1 });
+  return res.json(posts);
 });
 
 // DESC: Get a post by ID
@@ -132,6 +149,17 @@ const createPost = asyncHandler(async (req, res) => {
     twitterShares,
     pinterestPins,
   } = req.body;
+
+  // Check if the request's content type is multipart/form-data
+  if (req.headers['content-type'].startsWith('multipart/form-data')) {
+    console.log('Changing');
+    console.log(tags);
+    const individualTags = Array.isArray(tags) ? tags : tags.split(',');
+    console.log(individualTags);
+    req.body.tags = individualTags;
+    console.log(req.body.tags);
+  }
+
   const slug = req.body.slug || `${title.replace(/\s/g, '-').toLowerCase()}`;
 
   let file;
@@ -197,7 +225,7 @@ const createPost = asyncHandler(async (req, res) => {
     slug,
     visible,
     summary,
-    tags,
+    tags: req.body.tags || tags,
     relatedPosts,
     likes,
     views,
@@ -377,7 +405,6 @@ const deletePost = asyncHandler(async (req, res) => {
 
 module.exports = {
   getPosts,
-  getPaginatedPosts,
   getPostById,
   createPost,
   upload,

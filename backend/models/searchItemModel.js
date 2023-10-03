@@ -81,6 +81,8 @@ const searchItemSchema = new mongoose.Schema(
 
 searchItemSchema.index(
   {
+    dateCreated: 1,
+    dateModified: 1,
     itemType: 'text',
     title: 'text',
     author: 'text',

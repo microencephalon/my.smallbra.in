@@ -1,8 +1,9 @@
-// frontend/src/assets/js/queryHighlighters.js
+// frontend/src/assets/js/string.js
 
 // Helper function to check if string contains substring
-const stringContains = (str, substr) =>
+export function stringContains(str, substr) {
   str.toLowerCase().includes(substr.toLowerCase());
+}
 
 // Function to highlight the matching part in a string
 function highlightText(text, highlight) {
@@ -45,6 +46,8 @@ function cropText(textParts) {
 
 // Function to get highlighted and cropped text
 function getHighlightedAndCroppedText(value, item, highlightClass) {
+  if (typeof value !== 'string') value = '';
+
   if (stringContains(value, item)) {
     let highlightedText = highlightText(value, item);
     let croppedText = cropText(highlightedText);
@@ -75,4 +78,17 @@ export function highlightQuery({
   return searchMode === searchModeStr
     ? getHighlightedAndCroppedText(val, specQ, highlightClass)
     : getHighlightedAndCroppedText(val, item, highlightClass);
+}
+
+export function formatDate(dateString) {
+  if (!dateString) {
+    return 'YYYY/MM/DD';
+  }
+
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}/${month}/${day}`;
 }

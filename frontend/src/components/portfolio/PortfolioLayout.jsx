@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PortfolioRoll from '../../pages/Portfolio/PortfolioRoll';
 import PortfolioArtifact from '../../pages/Portfolio/PortfolioArtifact';
-import Error from '../../pages/Error';
+import ErrorCard from '../global/ErrorCard';
 
 const PortfolioLayout = () => {
   return (
@@ -11,7 +11,7 @@ const PortfolioLayout = () => {
       <Routes>
         <Route path='' element={<PortfolioRoll />} />
         <Route path='/:slug/:id' element={<PortfolioArtifact />} />
-        <Route path='*' element={<Error responseCode={'404'} />} />
+        <Route path='*' element={<ErrorCard responseCode={'404'} />} />
       </Routes>
     </>
   );

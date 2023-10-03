@@ -39,6 +39,28 @@
 
 /* Blog Posts */
 
+#blog-post-metadata-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+#blog-post-metadata-profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+
+#blog-post-metadata-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  margin-left: 12px;
+  
+}
+
 /* Disable default where display: block for every div. */
 div.blog-div {
   display: unset;
@@ -46,7 +68,7 @@ div.blog-div {
 
 @media (min-width: 768px) {
   .blog-toc {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Open Sans', sans-serif;
     position: fixed;
     top: 0;
     left: 0;
@@ -62,15 +84,16 @@ div.blog-div {
   display: none;
 }
 
-.blog-p, .blog-ul, .blog-li {
-  font-family: 'Source Serif 4', serif;
+.blog-p, .blog-ul, .blog-li, .blog-anchor {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px !important;
 }
 
 /* Main content styles */
 
 @media (min-width: 320px) {
   .blog-post {
-    font-family: 'Source Serif 4', serif;
+    font-family: 'Open Sans', sans-serif;
     margin-left: 220px; /* leave space for the sidebar */
     padding-bottom: 400px;
     max-width: 800px;
@@ -80,7 +103,7 @@ div.blog-div {
 }
 
 .blog-post {
-  font-family: 'Source Serif 4', serif;
+  font-family: 'Open Sans', sans-serif;
   padding: 20px;
   box-sizing: border-box;
   margin-left: 5px;
@@ -88,8 +111,6 @@ div.blog-div {
   max-width: calc(100% - 10px); /* Adjust the max-width to accommodate the left and right margins */
   margin: 0 auto;
 }
-
-
 
 blockquote.blog-blockquote {
   background-color: transparent;
@@ -99,15 +120,19 @@ blockquote.blog-blockquote {
   border-radius: 0px;
   color: black;
   font-family: inherit;
-  font-size: inherit;
   font-style: inherit;
   line-height: 1.25em;
   margin: 0 10px;
   padding: 12px 0 0.1px 12.5px
 }
+
 blockquote.blog-blockquote > p.blog-p {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
+  font-size: 18px !important;
+}
+blockquote.blog-blockquote > span > div > pre > code.language-code-string > span {
+  font-size: 10px !important;
 }
 
 .blog-post > h1, h2, h3, h4, h5, h6 {
@@ -120,7 +145,6 @@ blockquote.blog-blockquote > p.blog-p {
 h1.blog-h1, h1.blog-h1 > * {
   font-family: 'Oswald', sans-serif;
   font-size: 3em;
-  margin-bottom: 0px;
 }
 
 h2.blog-h2, h2.blog-h2 > * {
@@ -198,6 +222,12 @@ thead.blog-thead:last-child tr.blog-tr:last-child th.blog-th:first-child, tbody.
 
 
 /* Code Blocks */
+
+/* For any not in a code block */
+:not(pre.blog-pre) > div.code {
+  display: inline;
+}
+
 pre.blog-pre {
   border-radius: 2px 2px 2px 2px;
 }
@@ -215,6 +245,60 @@ pre.blog-pre > div > pre {
   border: 1px solid #141414 !important;
 }
 
+pre.blog-pre > code > span {
+  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace !important;
+  font-size: 14px;
+}
+
+/* Code Block Copy Buttons */
+
+.code-copy-btn {
+  position: absolute !important;
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+  z-index: 1 !important;
+  width: 66px;
+  transition: background-color 0.3s ease-in-out
+}
+
+.code-copy-btn.code-copied {
+  background-color: lightgreen !important;
+}
+
+.code-copy-btn.code-copied:hover {
+  background-color: rgb(134, 221, 134) !important;
+  transition: background-color 0.3s ease-in-out
+}
+
+.code-copy-btn > span {
+  transition: transform 0.2s ease-in-out;
+}
+
+.code-copy-btn:hover > span {
+  transform: scale(1.1);
+}
+
+
+div.copied-popover {
+  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace !important;
+  font-size: 12px !important;
+  padding: 10px;
+}
+
+
+.code-copy-btn {
+  color: #000000 !important;
+  background-color: whitesmoke !important;
+  border: none !important;
+  font-size: 15px !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+.code-copy-btn:hover {
+  background-color: #DEE0E4 !important;
+}
+
 /* Inline code strings */
 
 /* Firefox support via JavaScript */
@@ -226,11 +310,12 @@ pre.blog-pre > div > pre {
 
 
 div > pre.blog-pre > code.language-code-string > span {
-  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace;
   color: #414141;
   background-color: #EBEAEA;
+  font-size: 16px !important;
   padding: 1.75px 3px;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 /* Miscellaneous */
@@ -298,7 +383,7 @@ ul.blog-ul > li.blog-li > input[type="checkbox"]:checked:after {
   font-size: 12px;
   color: black;
   position: relative;
-  top: -6px;
+  /* top: ; */
   left: 2.5px;
   font-family: 'Arial', sans-serif; /* Fallback font */
 }
@@ -342,14 +427,4 @@ pre.blog-pre:hover {
 img.blog-img {
   max-width: 100%; /* So images don't overflow */
   height: auto;
-}
-
-div.copied-popover {
-  font-family: 'Source Serif 4', serif;
-  padding: 10px;
-}
-
-/* So they don't take up a whole line */
-p.blog-p > div.code {
-  display: inline;
 }

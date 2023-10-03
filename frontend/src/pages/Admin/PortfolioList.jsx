@@ -39,6 +39,7 @@ const ViewList = () => {
 
   const getArtifacts = async () => {
     const response = await axios.get('/api/artifacts');
+    console.debug(response);
     setArtifacts(response.data);
   };
 

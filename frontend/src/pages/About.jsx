@@ -1,63 +1,50 @@
-// frontend/src/pages/Resume.jsx
-// Location of current resume: https://localhost:8081/storage/resume/2023-05-17-dana-tolman-resume.md
+// frontend/src/pages/About.jsx
 
-// frontend/src/pages/Blog/Post.jsx
-
-import React from 'react';
-import { useState, useEffect, createContext } from 'react';
-import axios from 'axios';
-
-export const ThemeContext = createContext();
-
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+import { useState, useEffect } from 'react';
+import { Card, Elevation, Text } from '@blueprintjs/core';
+import HomeLogo from '../components/common/HomeLogo';
 
 function About() {
-  const [isDark, setIsDark] = useState(false);
-  const [isFetching, setIsFetching] = useState(true);
-  const [isNotFound, setIsNotFound] = useState(false);
+  const aboutText = `
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+  Proin sed libero enim sed faucibus turpis in. Diam quis enim lobortis scelerisque fermentum dui. Vel fringilla est ullamcorper 
+  eget nulla facilisi etiam dignissim diam. Tortor posuere ac ut consequat semper viverra nam. Sed vulputate mi sit amet mauris commodo 
+  quis imperdiet massa. Risus nec feugiat in fermentum. Ut ornare lectus sit amet est placerat in egestas.
+  `;
 
-  const value = {
-    isDark,
-    setIsDark,
-  };
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`/api/resumes/current`);
-        if (response.status === 200) {
-          setIsFetching(false);
-        } else {
-          setIsNotFound(true);
-        }
-      } catch (error) {
-        setIsNotFound(true);
-        console.error(error.message);
-      }
-    };
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 400);
 
-    fetchData();
+    // Cleanup function to clear the timeout if the component is unmounted
+    return () => clearTimeout(timer);
   }, []);
-
-  if (isFetching && !isNotFound) {
-    return <div>Loading...</div>;
-  }
-
-  if (isNotFound) {
-    return <div>404 Not Found</div>;
-  }
 
   return (
     <>
-      <ThemeContext.Provider value={value}>
-        <div className='mysb-about'>
-          <br />
-          <br />
-          <br />
-          <br />
-          About: hello my name is Dana
+      <div className='about-container'>
+        <HomeLogo />
+        <Card
+          className='about-card about-card-header'
+          elevation={Elevation.ZERO}
+        >
+          <Text className='about-post-card-title'>About</Text>
+        </Card>
+        <div id='about-text-container'>
+          <Text
+            tagName='p'
+            className={`about-text-content ${
+              isLoaded ? 'fade-in' : 'bp5-skeleton'
+            }`}
+          >
+            {aboutText}
+          </Text>
         </div>
-      </ThemeContext.Provider>
+        <div className='card-footer-bottom-space'>&nbsp;</div>
+      </div>
     </>
   );
 }

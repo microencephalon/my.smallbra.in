@@ -1,7 +1,7 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { Text, NonIdealState, NonIdealStateIconSize } from '@blueprintjs/core';
 
-const Error = ({ responseCode }) => {
+const ErrorCard = ({ responseCode }) => {
   // https://developers.google.com/maps-booking/verticals/beauty/reference/rest-api-v3/status_codes
 
   let message = {
@@ -36,11 +36,11 @@ const Error = ({ responseCode }) => {
       // https://mzl.la/3XvPGRa
       // Not found (Resource not found, invalid url, including invalid RPCs)
       message.issue = 'Not Found';
-      message.desc = `The requested path ${location.pathname} was not found on this server.`;
+      message.desc = `The requested path '${location.pathname}' wasn't found.`;
       break;
     case '409':
       // https://mzl.la/3YYXwUD
-      // The operation was aborted, typically due to a concurrency issue such as a sequencer check failure or transaction abort.
+      // The operation was aborted, typically due to a concurrenwasn't found as a sequencer check failure or transaction abort.
       message.issue = 'Conflict';
       message.desc = '';
       break;
@@ -66,7 +66,7 @@ const Error = ({ responseCode }) => {
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
       // Internal errors. This means that some invariants expected by the underlying system have been broken. This error code is reserved for serious errors.
       message.issue = 'Internal Server Error';
-      message.desc = '';
+      message.desc = 'There was an internal server error.';
       break;
     case '501':
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/501
@@ -89,17 +89,33 @@ const Error = ({ responseCode }) => {
     default:
       break;
   }
+
   return (
     <>
       {/* Response Code + Message */}
-      <div style={{ marginLeft: '20px', fontFamily: 'BPdotsSquares' }}>
-        <h1>
-          <span style={{ color: 'red' }}>{responseCode} </span> {message.issue}
-        </h1>
-        <p>{message.desc}</p>
-      </div>
+
+      <NonIdealState
+        className='error-card'
+        layout='vertical'
+        icon={
+          parseInt(responseCode) < 500 && parseInt(responseCode) > 399
+            ? 'issue'
+            : 'error'
+        }
+        iconSize={NonIdealStateIconSize.STANDARD}
+        title={
+          <Text className='error-card-title' tagName='span'>
+            {responseCode}
+          </Text>
+        }
+        description={
+          <Text className='error-card-description' tagName='span'>
+            {message.desc}
+          </Text>
+        }
+      />
     </>
   );
 };
 
-export default Error;
+export default ErrorCard;

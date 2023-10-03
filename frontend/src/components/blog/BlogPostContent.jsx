@@ -2,17 +2,22 @@
 // import SplashImage from '../../assets/images/splash.jpg';
 // import Image from '../Image';
 
-import { Tag, HTMLTable, Spinner, SpinnerSize } from '@blueprintjs/core';
-import { useState, useEffect, useMemo, createElement } from 'react';
+import { HTMLTable, Spinner, SpinnerSize } from '@blueprintjs/core';
+import { useState, useEffect, useMemo, createElement, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 import axios from 'axios';
-import CodeBlock from './sub-components/CodeBlock';
+import CodeBlock from './CodeBlock';
+import { OmnibarContext } from '../../store/contexts/OmnibarContext';
+import TagsGroup from '../../components/common/TagsGroup';
+import CategoryText from '../../components/common/CategoryText';
 
 const storageBaseUrl = 'http://localhost:8081';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const BlogContent = () => {
+  const { openOmnibarWithQuery, open: isOmnibarOpen } =
+    useContext(OmnibarContext);
   const [postContent, setPostContent] = useState('');
   const [postInfo, setPostInfo] = useState({
     category: '',
@@ -36,7 +41,20 @@ const BlogContent = () => {
         const mdFileURL = `${storageBaseUrl}${post.content}`;
 
         const mdResponse = await axios.get(mdFileURL);
-        const mdContent = mdResponse.data;
+        let mdContent = mdResponse.data;
+        console.debug(mdContent);
+
+        // Remove the h1 from mdContent and any subsequent empty lines
+        const lines = mdContent.split('\n');
+        if (lines[0].startsWith('# ') && !lines[0].startsWith('##')) {
+          lines.shift(); // Remove the first line
+          while (lines.length > 0 && lines[0] === '') {
+            lines.shift(); // Remove empty lines
+          }
+          mdContent = lines.join('\n'); // Rejoin the lines into a single string
+        }
+
+        console.debug(mdContent);
 
         const highlightedMdContent = mdContent.replace(
           /==([^=]+)==/g,
@@ -67,7 +85,7 @@ const BlogContent = () => {
     };
 
     fetchData();
-  }, [idFromParams]);
+  }, [idFromParams, isOmnibarOpen]);
 
   const hyphenateString = useMemo(() => {
     return (str) => str.toLowerCase().trim().replace(/\s+/g, '-');
@@ -248,20 +266,20 @@ const BlogContent = () => {
     },
   };
 
-  const TagsGroup = (array) => {
-    return array.map((tag, index) => (
-      <Tag
-        key={`tag-${index}`}
-        // should go to a place that will list others like it. Maybe can add something that will bring up the search bar with the query set to tag:${tagName}
-        onClick={undefined}
-        interactive={false}
-        minimal={true}
-        large={false}
-        className='blog-post-tags'
-      >
-        {tag}
-      </Tag>
-    ));
+  const TitleText = ({ title }) => {
+    return <Markdown options={blogTitleOptions}>{`# ${title}`}</Markdown>;
+  };
+
+  const DateText = ({ date }) => {
+    return <span style={{ fontSize: '14px' }}> {date}</span>;
+  };
+
+  const AuthorText = ({ author }) => {
+    return (
+      <span style={{ fontSize: '16px' }}>
+        <em>{author}</em>
+      </span>
+    );
   };
 
   if (loading) {
@@ -274,20 +292,38 @@ const BlogContent = () => {
     return (
       <div className='blog-content'>
         <header>
-          <Markdown>{`<span style="font-size: 1rem" className='portfolio-artifact-dp-category'>${postInfo.category}</span>`}</Markdown>
-          <Markdown
-            options={blogTitleOptions}
-          >{`# ${postInfo.title}`}</Markdown>
-          <Markdown>{`<span style="font-size: 0.75rem"> ${postInfo.dateCreated} </span> | `}</Markdown>{' '}
-          <Markdown>{`<span style="font-size: 0.75rem"><em> by ${postInfo.author}</em></span>`}</Markdown>
-          <br />
-          {/* TODO: Add map of tags. Need to do an API call in for it */}
-          {TagsGroup(postInfo.tags)}
-          {postInfo.tags.length < 1 && 'No tags'}
+          <TitleText title={postInfo.title} />
+          <div id='blog-post-metadata-container'>
+            <img
+              id='blog-post-metadata-profile-pic'
+              src='https://avatars.githubusercontent.com/u/61774862?v=4'
+              alt='profile'
+            />
+            <div id='blog-post-metadata-info'>
+              <AuthorText author={postInfo.author} />
+              <DateText date={postInfo.dateCreated} />
+            </div>
+          </div>
+          <CategoryText
+            categoryName={postInfo.category}
+            className='detail-page-categories'
+            onCatClick={openOmnibarWithQuery}
+          />
+          <TagsGroup
+            array={postInfo.tags}
+            className='detail-page-tags'
+            onTagClick={openOmnibarWithQuery}
+          />
         </header>
         <hr />
-        <Markdown options={blogMdOptions}>{postContent}</Markdown>
-        <footer></footer>
+        {isOmnibarOpen ? (
+          <div className='spinner-large'>
+            <Spinner size={SpinnerSize.LARGE} tagName='g' />
+          </div>
+        ) : (
+          <Markdown options={blogMdOptions}>{postContent}</Markdown>
+        )}
+        <footer> </footer>
       </div>
     );
   }

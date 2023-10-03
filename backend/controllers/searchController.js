@@ -16,6 +16,42 @@ const searchItems = async (req, res) => {
     sort,
   } = req.query;
 
+  const allowedQueryParameters = [
+    'query',
+    'title',
+    'category',
+    'description',
+    'summary',
+    'tags',
+    'type',
+    'page',
+    'limit',
+    'sort',
+  ];
+
+  // Check for any query parameters that don't exist in the allowed list
+  for (const key in req.query) {
+    if (!allowedQueryParameters.includes(key)) {
+      return res.status(400).json({
+        message: `Invalid query parameter: '${key}'.`,
+      });
+    }
+  }
+
+  if (query && (title || category || description || summary)) {
+    return res.status(400).json({
+      message:
+        'General queries and specific queries are exclusive in use. Please use only one type.',
+    });
+  }
+
+  // Check for page and limit usage
+  if ((page && !limit) || (!page && limit)) {
+    return res.status(400).json({
+      message: "The 'page' and 'limit' parameters must be used together.",
+    });
+  }
+
   const canBeInteger = (value) => {
     const parsedValue = parseInt(value);
     return !isNaN(parsedValue) && Number.isInteger(parsedValue);
@@ -25,12 +61,6 @@ const searchItems = async (req, res) => {
     return res.status(400).json({
       message: 'Invalid page or limit value. They should be integers.',
     });
-  }
-
-  if (limit && !page) {
-    console.warn(
-      "!!! 'page' parameter not included, 'limit' parameter to be excluded"
-    );
   }
 
   let filterQuery = {};
@@ -48,17 +78,29 @@ const searchItems = async (req, res) => {
         { category: { $regex: queryRegex } },
       ],
     };
+    if (type) {
+      filterQuery.itemType =
+        type.toLowerCase() === 'blog' ? 'blog' : 'portfolio';
+    }
   } else {
     // If a title is provided, search by title
     if (title || category || description || summary || tags || type) {
       if (tags) {
-        const tagList = tags.split(',');
+        const tagList = tags.split(',').map((tag) => {
+          return {
+            tags: {
+              $regex: new RegExp(tag, 'i'), // case-insensitive search
+            },
+          };
+        });
+
         if (tagList.length > 0) {
-          filterQuery.tags = { $all: tagList };
+          filterQuery.$and = tagList;
         } else {
           return res.status(400).json({ message: 'No tags provided' });
         }
       }
+
       if (type) {
         const typeRegex = new RegExp(type, 'i'); // case-insensitive
         filterQuery.itemType = { $regex: typeRegex };
@@ -74,19 +116,23 @@ const searchItems = async (req, res) => {
       }
       // If a description is provided, search by description in artifacts
       if (description) {
-        if (type === 'blog')
-          console.warn(
-            "!!! 'description' query parameter not available for type 'portfolio', excluding from query"
-          );
+        if (type === 'blog') {
+          return res.status(400).json({
+            message:
+              "The 'description' query parameter not available for type 'portfolio'.",
+          });
+        }
         const descriptionRegex = new RegExp(description, 'i'); // case-insensitive
         filterQuery.description = { $regex: descriptionRegex };
       }
       // If a summary is provided, search by summary in posts
       if (summary) {
-        if (type === 'portfolio')
-          console.warn(
-            "!!! 'summary' query parameter not available for type 'blog', excluding from query"
-          );
+        if (type === 'portfolio') {
+          return res.status(400).json({
+            message:
+              "The 'summary' query parameter not available for type 'blog'.",
+          });
+        }
         const summaryRegex = new RegExp(summary, 'i'); // case-insensitive
         filterQuery.summary = { $regex: summaryRegex };
       }
@@ -113,7 +159,9 @@ const searchItems = async (req, res) => {
         sortQuery = { dateCreated: -1 };
         break;
       default:
-        break;
+        return res.status(400).json({
+          message: `Invalid sorting method. Cannot sort with ${sort}. Options: 'asc', 'desc', 'newest', or 'oldest'`,
+        });
     }
   }
 

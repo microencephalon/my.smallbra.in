@@ -6,35 +6,23 @@ import '../../components/blog/blog.css';
 import { useState, useEffect, createContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
-// TODO: Sort out where the image are being sourced from -- Cloudinary
-// TODO: Need to implement the GSAP Scroll Trigger for the Menu.
-// https://webflow.com/made-in-webflow/website/Freebie-Dynamic-collection-with-anchor-link-scrollbar
-// https://webflow.com/made-in-webflow/website/vertical-navbar
-// TODO: Use MongoDB as the database for the blog posts.
-// TODO: Add the Cloudinary upload widget // https://cloudinary.com/documentation/upload_widget for create new blog post and editing mode
-// TODO: Take in slug and/or ID to generate content. Look at Listing.jsx from house-marketplace project for API to fetch data.
+import { Spinner, SpinnerSize } from '@blueprintjs/core';
+import ErrorCard from '../../components/global/ErrorCard';
 
 export const ThemeContext = createContext();
 
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+
 function BlogPost() {
-  const [isDark, setIsDark] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
-
-  const value = {
-    isDark,
-    setIsDark,
-  };
 
   const { id: idFromParams } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4500/api/posts/${idFromParams}`
-        );
+        const response = await axios.get(`/api/posts/${idFromParams}`);
         if (response.status === 200) {
           setIsFetching(false);
         } else {
@@ -49,32 +37,40 @@ function BlogPost() {
     fetchData();
   }, [idFromParams]);
 
+  // To stop it from scrolling to bottom when navigating by way of Omnibar.
+  useEffect(() => {
+    // Delay of 1 second (1000 milliseconds)
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 1000);
+
+    // Cleanup timer if the component is unmounted before the timeout
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   if (isFetching && !isNotFound) {
-    return <div>Loading...</div>;
+    return (
+      <div className='portfolio-artifact'>
+        <Spinner size={SpinnerSize.LARGE} tagName='g' />
+      </div>
+    );
   }
 
   if (isNotFound) {
-    return <div>404 Not Found</div>;
+    return <ErrorCard responseCode={'404'} />;
   }
 
   return (
-    <div
-      style={{
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingTop: 60,
-        paddingBottom: 30,
-      }}
-    >
-      <ThemeContext.Provider value={value}>
-        <div className='blog-post'>
-          {/* Table of Contents Sidebar */}
-          {/* <BlogTableOfContents /> */}
-          <BlogContent />
-          {/* More Articles */}
-          {/* <BlogMoreArticles /> */}
-        </div>
-      </ThemeContext.Provider>
+    <div className='blog-post-container'>
+      <div className='blog-post'>
+        {/* Table of Contents Sidebar */}
+        {/* <BlogTableOfContents /> */}
+        <BlogContent />
+        {/* More Articles */}
+        {/* <BlogMoreArticles /> */}
+      </div>
     </div>
   );
 }

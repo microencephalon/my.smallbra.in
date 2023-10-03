@@ -4,12 +4,34 @@ const Artifact = require('../models/artifactModel');
 const { createOrUpdateSearchItem } = require('./searchHelpers');
 const SearchItem = require('../models/searchItemModel');
 
-// DESC: Get all artifacts
+// DESC: Get all artifacts or paginated artifacts if page query is provided
 // @route GET /api/artifacts
 // @access Public
 const getArtifacts = asyncHandler(async (req, res) => {
-  const artifacts = await Artifact.find({});
-  res.json(artifacts);
+  const page = Number(req.query.page);
+
+  if (page) {
+    const pageSize = 7; // number of artifacts per page
+    const count = await Artifact.countDocuments({});
+    const totalPages = Math.ceil(count / pageSize);
+
+    if (page > totalPages) {
+      return res.status(416).json({
+        message: `416 Range Not Satisfiable: No resource or page ${page} found.`,
+      });
+    }
+
+    const artifacts = await Artifact.find({})
+      .sort({ dateCreated: -1 }) // sorting by dateCreated field, newest first
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    const data = { artifacts, page, pages: totalPages };
+    return res.json(data);
+  }
+
+  const artifacts = await Artifact.find({}).sort({ dateCreated: -1 }); // sorting by dateCreated field, newest first
+  return res.json(artifacts);
 });
 
 // DESC: Get a artifact by ID
@@ -79,6 +101,15 @@ const createArtifact = asyncHandler(async (req, res) => {
     throw new Error('Please include all fields');
   }
 
+  if (req.headers['content-type'].startsWith('multipart/form-data')) {
+    console.log('Changing');
+    console.log(tags);
+    const individualTags = Array.isArray(tags) ? tags : tags.split(',');
+    console.log(individualTags);
+    req.body.tags = individualTags;
+    console.log(req.body.tags);
+  }
+
   const slug =
     req.body.slug ||
     (title ? `${title.replace(/\s/g, '-').toLowerCase()}` : '');
@@ -99,7 +130,7 @@ const createArtifact = asyncHandler(async (req, res) => {
     visible,
     previewImage,
     media,
-    tags,
+    tags: req.body.tags || tags,
     views,
     relatedArtifacts,
   });

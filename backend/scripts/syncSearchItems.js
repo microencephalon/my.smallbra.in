@@ -2,9 +2,36 @@
 const mongoose = require('mongoose');
 const Post = require('../models/postModel');
 const Artifact = require('../models/artifactModel');
+const SearchItem = require('../models/searchItemModel'); // Import the SearchItem model
 const { createOrUpdateSearchItem } = require('../controllers/searchHelpers');
 
-const run = async () => {
+// Function to remove stale search items
+const removeStaleSearchItems = async () => {
+  // Fetch all search items
+  const searchItems = await SearchItem.find({});
+
+  // Loop through each search item to check if it exists in the actual database
+  for (const searchItem of searchItems) {
+    const refId = searchItem.refId;
+    const onModel = searchItem.onModel;
+
+    let item;
+    if (onModel === 'Post') {
+      item = await Post.findById(refId);
+    } else if (onModel === 'Artifact') {
+      item = await Artifact.findById(refId);
+    }
+
+    // If not found, remove the search item from the SearchItem collection
+    if (!item) {
+      await SearchItem.deleteOne({ _id: searchItem._id });
+      console.log(`Deleted stale search item with refId: ${refId}`);
+    }
+  }
+};
+
+const syncSearchItems = async () => {
+  console.log('Syncing search items in database...');
   // Set strictQuery option for Mongoose
   mongoose.set('strictQuery', true);
 
@@ -28,10 +55,13 @@ const run = async () => {
     await createOrUpdateSearchItem(artifact, 'Artifact');
   }
 
-  console.log('Synchronization complete');
+  // Remove stale search items
+  await removeStaleSearchItems();
+
+  console.log('Synchronization of search items complete.');
 
   // Close the database connection
   mongoose.connection.close();
 };
 
-run();
+module.exports = syncSearchItems;

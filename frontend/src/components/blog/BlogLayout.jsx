@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Blogroll from '../../pages/Blog/Blogroll';
 import BlogPost from '../../pages/Blog/BlogPost';
-import Error from '../../pages/Error';
+import ErrorCard from '../global/ErrorCard';
 
 const BlogLayout = () => {
   return (
@@ -11,7 +11,7 @@ const BlogLayout = () => {
       <Routes>
         <Route path='' element={<Blogroll />} />
         <Route path='/:slug/:id' element={<BlogPost />} />
-        <Route path='*' element={<Error responseCode={'404'} />} />
+        <Route path='*' element={<ErrorCard responseCode={'404'} />} />
       </Routes>
     </>
   );

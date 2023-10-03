@@ -138,14 +138,10 @@ const Edit = ({ id, onUpdate }) => {
   const [artifact, setArtifact] = useState(null);
   const [selectedTabId, setSelectedTabId] = useState(0);
   const [refreshCount, setRefreshCount] = useState(0);
-  const [isDark, setIsDark] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxCurrentIndex, setLightboxCurrentIndex] = useState(0);
-
-  const value = {
-    isDark,
-    setIsDark,
-  };
+  const [hasMedia, setHasMedia] = useState(true);
+  const [imageError, setImageError] = useState(null);
 
   const handleLightbox = (open, index = lightboxCurrentIndex) => {
     setIsLightboxOpen(open);
@@ -183,6 +179,11 @@ const Edit = ({ id, onUpdate }) => {
       try {
         const response = await axios.get(`/api/artifacts/${id}`);
         setArtifact(response.data);
+        if (response.data.media && response.data.media.length > 0) {
+          setHasMedia(true);
+        } else {
+          setHasMedia(false);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -321,15 +322,32 @@ const Edit = ({ id, onUpdate }) => {
         />
         <br />
         {/* TODO: Add this as a tooltip and add a Dialog box for this */}
-        <figure>
-          <img
-            src={artifact.previewImage}
-            alt='Preview Thumbnail'
-            width='200px'
-            height='auto'
-            style={{ border: '1px solid #CCCCCC', borderRadius: '3px' }}
-          />
-        </figure>
+        {artifact.previewImage && !imageError ? (
+          <figure>
+            <img
+              src={artifact.previewImage}
+              alt='Preview Thumbnail'
+              width='200px'
+              height='auto'
+              style={{ border: '1px solid #CCCCCC', borderRadius: '3px' }}
+              onError={(e) => {
+                setImageError('Error occurred while retrieving the image.');
+              }}
+            />
+          </figure>
+        ) : (
+          <NonIdealState
+            icon='media'
+            title={
+              imageError
+                ? 'Error Loading Thumbnail'
+                : 'No Preview Thumbnail Found'
+            }
+            description={imageError || 'Please add a preview thumbnail.'}
+          >
+            {/* Add your action button if needed */}
+          </NonIdealState>
+        )}
       </FormGroup>
       <FormGroup label='Tags' labelFor='tags' style={{ width: '90%' }}>
         <InputGroup
@@ -431,14 +449,17 @@ const Edit = ({ id, onUpdate }) => {
 
       <Button onClick={handlePostUpdate}>Save</Button>
       <Lightbox
-        className={isDark ? 'bp5-dark artifact-lightbox' : 'artifact-lightbox'}
+        className='artifact-lightbox'
         onClose={() => handleLightbox(false)}
         isOpen={isLightboxOpen}
       >
         <div className={`${Classes.DIALOG_HEADER} artifact-lightbox-header`}>
           <span className='artifact-lightbox-header-title'>
-            {artifact.media[lightboxCurrentIndex].caption}
+            {artifact?.media && artifact.media[lightboxCurrentIndex]?.caption
+              ? artifact.media[lightboxCurrentIndex].caption
+              : ''}
           </span>
+
           <Button
             minimal={true}
             icon={<Icon icon='cross' color='white' />}
@@ -450,7 +471,11 @@ const Edit = ({ id, onUpdate }) => {
         >
           <img
             className='artifact-lightbox-img'
-            src={artifact.media[lightboxCurrentIndex].src}
+            src={
+              artifact?.media && artifact.media[lightboxCurrentIndex]?.src
+                ? artifact.media[lightboxCurrentIndex].src
+                : ''
+            }
             alt='Dialog View'
           />
         </div>
