@@ -11,7 +11,7 @@ const getArtifacts = asyncHandler(async (req, res) => {
   const page = Number(req.query.page);
 
   if (page) {
-    const pageSize = 7; // number of artifacts per page
+    const pageSize = 6; // number of artifacts per page
     const count = await Artifact.countDocuments({});
     const totalPages = Math.ceil(count / pageSize);
 
@@ -78,7 +78,7 @@ const getOptions = asyncHandler(async (req, res) => {
 
 // DESC: Create a artifact
 // @route POST /api/artifacts
-// @access Public // TODO: @access Private <--- set it so there is protection later
+// @access Public
 const createArtifact = asyncHandler(async (req, res) => {
   const {
     title,

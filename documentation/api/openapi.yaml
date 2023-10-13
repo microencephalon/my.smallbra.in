@@ -26,7 +26,7 @@ tags:
       description: 'Visit the portfolio section'
       url: http://localhost:3000/portfolio
   - name: search
-    description: 'Omnibar search queries'
+    description: 'Search Bar queries'
     externalDocs:
       description: 'Search at the home page with `⌘ + K`'
       url: 'http://localhost:3000/'
@@ -1981,7 +1981,12 @@ components:
           default: 64f8b417f765d8d6170da381
     portfolio:
       page:
-        $ref: '#/components/Parameters/blog/page'
+        in: query
+        name: page
+        required: false
+        description: Will return a page with 6 items. Designated for the the portfolio listing page. Must be used exclusively.
+        schema:
+          type: int32
       artifactId:
         in: path
         name: artifactId

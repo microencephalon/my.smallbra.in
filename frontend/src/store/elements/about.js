@@ -1,2 +1,3 @@
-// TODO: Need to finish about page and then complete this
-export const aboutElements = {};
+// TODO: Add `About` page element selectors here
+
+export const about = {};

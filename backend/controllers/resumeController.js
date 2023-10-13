@@ -58,7 +58,7 @@ const getResumeById = asyncHandler(async (req, res) => {
 
 // DESC: Create a resume
 // @route POST /api/resumes
-// @access Public // TODO: @access Private <--- set it so there is protection later
+// @access Public
 const createResume = asyncHandler(async (req, res) => {
   const date = new Date();
   const year = date.getFullYear().toString();
@@ -157,7 +157,7 @@ const deleteResume = asyncHandler(async (req, res) => {
 
 // DESC: Update a resume's content
 // @route POST /api/resumes/update-resume/:id
-// @access Private // TODO: @access Private <--- set it so there is protection later
+// @access Private
 const updateContent = asyncHandler(async (req, res) => {
   try {
     const resume = await Resume.findById(req.params.id);

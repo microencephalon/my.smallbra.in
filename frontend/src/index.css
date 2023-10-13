@@ -1,4 +1,4 @@
-/* frontend/index.css */
+/* frontend/public/css/index.css */
 
 html, body {
   height: 100%;
@@ -20,6 +20,10 @@ a, button, [tabindex] {
   outline: none;
 }
 
+.disable-interaction:hover {
+  cursor: pointer;
+}
+
 .disable-interaction {
   pointer-events: none;
 }
@@ -35,7 +39,7 @@ a, button, [tabindex] {
 }
 
 .error-card > div.bp5-non-ideal-state-visual > span.bp5-icon > svg {
-  fill: #CD071E;
+  fill: #CD071E; /* chinese red */
   color: #CD071E;
   fill-opacity: 1;
 }
@@ -370,6 +374,11 @@ a, button, [tabindex] {
   background-color: transparent !important;
 }
 
+.search-menu-item-header {
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
 
 .search-menu-item .item-title {
   font-size: 1em;
@@ -461,6 +470,14 @@ a.search-menu-item > div::selection {
   padding-right: 0;
   height: auto;
   border-bottom: 2px solid #141414;
+}
+
+#narrow-navbar-close-menu-btn {
+  height: 50px;
+}
+
+div[role="combobox"]:has(#narrow-navbar-close-menu-btn):hover {
+  cursor: pointer;
 }
 
 .narrow-navbar-menu-item-active:hover {
@@ -827,25 +844,30 @@ h1#home-logo-text:hover {
 .blog-post-card-container {
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.blog-post-card {
-  border-radius: 0;
   border-bottom: 1px solid #141414;
   transition: background-color 0.5s ease-in-out;  /* Add transition for smooth animation */
 }
 
+.blog-post-card-container:hover {
+  cursor: pointer;
+  background-color: #DEE0E4;
+}
+
+.blog-post-card {
+  border-radius: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: transparent;
+}
+
+.blog-post-card:hover {
+  cursor: pointer;
+}
 
 .blog-post-card-last {
   border-bottom: 1px solid transparent;
 }
 
-.blog-post-card:hover {
-  cursor: pointer;
-  background-color: #DEE0E4;
-}
 
 .blog-post-card-date {
   font-family: 'Lato';
@@ -884,6 +906,12 @@ h1#home-logo-text:hover {
   margin-bottom: 10px;
   color: #9D9C9C;
   border-bottom: 1px solid #141414;
+}
+
+.artifact-card-container {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 5px;
 }
 
 .artifact-row-wrapper {
@@ -965,6 +993,7 @@ h1#home-logo-text:hover {
   color: #141414;
   opacity: 0.9;
   overflow: hidden;
+  
 }
 
 .artifact-preview-image-not-found {
@@ -977,6 +1006,10 @@ h1#home-logo-text:hover {
   overflow: hidden;
   padding-top: 15px;
   padding-bottom: 15px
+}
+
+.artifact-preview-image, .artifact-preview-image-not-found {
+  margin-bottom: 10px;
 }
 
 div.artifact-preview-image-not-found > div.bp5-non-ideal-state-text > h4.bp5-heading{

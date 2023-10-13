@@ -38,8 +38,8 @@ router.route('/current').get(getCurrent);
 router
   .route('/:id')
   .get(getResumeById)
-  .patch(protect, isAdmin, setUniqueCurrentResume, patchResume) // TODO: Need to update client-side axios.patch() for resume
-  .delete(protect, isAdmin, deleteResume) // TODO: Need to update client-side axios.patch() for resume
+  .patch(protect, isAdmin, setUniqueCurrentResume, patchResume)
+  .delete(protect, isAdmin, deleteResume)
   .head(getResumeHead)
   .options(getOptions);
 

@@ -1,3 +1,4 @@
+// TODO: Add `Home` element selectors here
 export const homeElements = {
   logo: '#home-logo',
   logoImg: '#home-logo-img',

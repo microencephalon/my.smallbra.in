@@ -18,8 +18,6 @@ const ArtifactCategory = require('../models/artifactCategoryModel');
 
 const router = express.Router();
 
-// TODO: For authentication
-// router.route('/').get(getArtifacts).artifact(protect, ...createArtifact);
 router
   .route('/')
   .get(getArtifacts)
