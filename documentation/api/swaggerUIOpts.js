@@ -11,7 +11,10 @@ async function getJWT() {
     }),
   };
 
-  const response = await fetch(process.env.LOGIN_ENDPOINT, loginRequestObj);
+  const response = await fetch(
+    process.env.SWAGGER.LOGIN_ENDPOINT,
+    loginRequestObj
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch token');
