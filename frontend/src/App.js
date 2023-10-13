@@ -1,26 +1,26 @@
 // frontend/src/App.js
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import { HotkeysProvider } from '@blueprintjs/core';
+
 import { GlobalContext, GlobalProvider } from './store/contexts/GlobalContext';
 import { AuthProvider } from './store/contexts/AuthContext';
-import { OmnibarProvider } from './store/contexts/OmnibarContext';
-import Home from './pages/Home';
-import ErrorCard from './components/global/ErrorCard';
-import Resume from './components/resume/ResumeLayout';
-import Auth from './pages/Auth';
-import About from './pages/About';
-import Admin from './components/admin/AdminLayout';
-import Blog from './components/blog/BlogLayout';
-import Portfolio from './components/portfolio/PortfolioLayout';
-import PrivateRoute from './components/routes/PrivateRoute';
-import Nav from './components/global/Nav';
-import NavNarrow from './components/global/NavNarrow';
-import Footer from './components/global/Footer';
-import SBOmnibar from './components/common/SBOmnibar';
-import SBOmnibarLive from './components/common/SBOmnibarLive';
+import {
+  SearchBarContext,
+  SearchBarProvider,
+} from './store/contexts/SearchBarContext';
 
-// TODO: https://thenounproject.com/icon/wall-construction-4497750/ -- Add this as an "Under Construction" splash
+import AuthPortal from './features/Public/AuthPortal';
+import AdminPortal from './features/Admin';
+import Home from './features/Public/Home';
+import Blog from './features/Public/Blog';
+import Portfolio from './features/Public/Portfolio';
+import Resume from './features/Public/Resume';
+import About from './features/Public/About';
+
+import Global from './shared/components/global';
+import PrivateRoute from './shared/components/routes/PrivateRoute';
 
 const isLiveSearch = process.env.LIVE_SEARCH_ENABLED === 'true';
 
@@ -28,32 +28,33 @@ function App() {
   return (
     <GlobalProvider>
       <HotkeysProvider>
-        <OmnibarProvider>
+        <SearchBarProvider>
           <AuthProvider>
             <Router>
               <Routes>
                 {/* The routes here won't display the Nav component */}
-                <Route path='/auth' element={<Auth />} />
+                <Route path='/auth' element={<AuthPortal />} />
                 <Route
                   path='/admin/*'
-                  element={<PrivateRoute component={Admin} />}
+                  element={<PrivateRoute element={<AdminPortal />} />}
                 />
-
                 {/* The routes here will display the Nav component */}
                 <Route path='/*' element={<AppRoutes />} />
               </Routes>
             </Router>
           </AuthProvider>
-        </OmnibarProvider>
+        </SearchBarProvider>
       </HotkeysProvider>
     </GlobalProvider>
   );
 }
 
-// This was created since OmnibarContext needs to be nested within OmnibarProvider
+// This was created since SearchBarContext needs to be nested within SearchBarProvider
 const AppRoutes = () => {
-  const { blur, isNavMenuOpen, setIsNavMenuOpen, isPageNarrow } =
-    useContext(GlobalContext);
+  const globalContext = useContext(GlobalContext);
+  const { blur, isNavMenuOpen, setIsNavMenuOpen, isPageNarrow } = globalContext;
+  const searchBarContext = useContext(SearchBarContext);
+  const context = { global: globalContext, searchBar: searchBarContext };
 
   const setPadding = () => {
     const navbar = document.getElementById('navbar');
@@ -99,32 +100,43 @@ const AppRoutes = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array ensures this runs once when the component mounts
 
   return (
     <>
-      {isPageNarrow ? <NavNarrow /> : null}
+      {isPageNarrow ? <Global.Nav.Narrow context={context} /> : null}
       <div
         id='page-container'
         className={`
           ${blur ? 'blur-content' : ''}
           ${isNavMenuOpen ? ' disable-interaction' : ''}`}
       >
-        {!isPageNarrow ? <Nav /> : null}
+        {!isPageNarrow ? <Global.Nav.Wide context={context} /> : null}
         <div id='content-wrap' className='center-content'>
           <Routes>
-            <Route exact path='/' element={<Home />} />
-            <Route path='/blog/*' element={<Blog />} />
-            <Route path='/portfolio/*' element={<Portfolio />} />
+            <Route exact path='/' element={<Home context={context} />} />
+            <Route path='/blog/*' element={<Blog context={context} />} />
+            <Route
+              path='/portfolio/*'
+              element={<Portfolio context={context} />}
+            />
             <Route path='/resume' element={<Resume />} />
             <Route path='/about' element={<About />} />
-            <Route path='*' element={<ErrorCard responseCode={'404'} />} />
+            <Route
+              path='*'
+              element={<Global.ErrorCard responseCode={'404'} />}
+            />
           </Routes>
-          {!isLiveSearch ? <SBOmnibar /> : <SBOmnibarLive />}
+          {!isLiveSearch ? (
+            <Global.SearchBar.Manual searchBarContext={searchBarContext} />
+          ) : (
+            <Global.SearchBar.Live searchBarContext={searchBarContext} />
+          )}
         </div>
         <div className='center-content'>
           {isPageNarrow ? <hr /> : null}
-          <Footer />
+          <Global.Footer />
         </div>
       </div>
     </>

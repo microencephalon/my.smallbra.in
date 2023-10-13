@@ -1,0 +1,6 @@
+{
+  "extends": ["@blueprintjs/eslint-config", "plugin:@blueprintjs/recommended"],
+  "plugins": [
+    "@blueprintjs"
+]
+}

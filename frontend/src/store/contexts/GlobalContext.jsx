@@ -1,10 +1,12 @@
-// frontend/src/contexts/OmnibarContext.jsx
+// frontend/src/store/contexts/GlobalContext.jsx
 import { createContext, useState, useEffect } from 'react';
 
 // Initialize the context with default values
 export const GlobalContext = createContext({
   blur: false,
   setBlur: () => {},
+  blurNarrowNav: false,
+  setBlurNarrowNav: () => {},
   isNavMenuOpen: false,
   setIsNavMenuOpen: () => {},
   windowWidth: 0,
@@ -13,8 +15,20 @@ export const GlobalContext = createContext({
 });
 
 export const GlobalProvider = ({ children }) => {
-  const [blur, setBlur] = useState(false);
-  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const GLOBAL_RESETS = {
+    blur: false,
+    blurNarrowNav: false,
+    isNavMenuOpen: false,
+    isPageNarrow: false,
+    // omit windowWidth from a reset value
+  };
+  const [blur, setBlur] = useState(GLOBAL_RESETS.blur);
+  const [blurNarrowNav, setBlurNarrowNav] = useState(
+    GLOBAL_RESETS.blurNarrowNav
+  );
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(
+    GLOBAL_RESETS.isNavMenuOpen
+  );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -37,6 +51,8 @@ export const GlobalProvider = ({ children }) => {
       value={{
         blur,
         setBlur,
+        blurNarrowNav,
+        setBlurNarrowNav,
         isNavMenuOpen,
         setIsNavMenuOpen,
         windowWidth,

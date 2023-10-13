@@ -67,6 +67,8 @@
     ]
   },
   "devDependencies": {
+    "@blueprintjs/eslint-config": "^4.3.0",
+    "@blueprintjs/eslint-plugin": "^5.1.0",
     "jest": "^27.5.1",
     "postcss-flexbugs-fixes": "^5.0.2",
     "prettier": "^3.0.0"

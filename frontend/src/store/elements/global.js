@@ -1,3 +1,4 @@
+// frontend/src/store/elements/global.js
 export function navigationBar(name) {
   const elements = {
     navbar: '#navbar',
@@ -35,7 +36,7 @@ export function navigationBar(name) {
   }
 }
 
-export const omnibar = {
+export const searchBar = {
   inputField: 'div.search-input-box > input.bp5-input',
   searchModeIcons: {
     general: '#search-mode-icon-default',
