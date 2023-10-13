@@ -128,7 +128,7 @@ const getOptions = asyncHandler(async (req, res) => {
 
 // DESC: Create a post
 // @route POST /api/posts
-// @access Public // TODO: @access Private <--- set it so there is protection later
+// @access Public
 const createPost = asyncHandler(async (req, res) => {
   const date = new Date();
   const year = date.getFullYear().toString();

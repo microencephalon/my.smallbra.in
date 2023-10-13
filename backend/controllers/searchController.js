@@ -1,21 +1,8 @@
 // backend/controllers/searchController.js
-
+const _ = require('lodash');
 const SearchItem = require('../models/searchItemModel');
 
 const searchItems = async (req, res) => {
-  const {
-    query,
-    title,
-    category,
-    description,
-    summary,
-    tags,
-    type,
-    page,
-    limit,
-    sort,
-  } = req.query;
-
   const allowedQueryParameters = [
     'query',
     'title',
@@ -29,35 +16,48 @@ const searchItems = async (req, res) => {
     'sort',
   ];
 
-  // Check for any query parameters that don't exist in the allowed list
-  for (const key in req.query) {
-    if (!allowedQueryParameters.includes(key)) {
-      return res.status(400).json({
-        message: `Invalid query parameter: '${key}'.`,
-      });
-    }
+  const pickedQueries = _.pick(req.query, allowedQueryParameters);
+  const disallowedQueries = _.difference(
+    Object.keys(req.query),
+    allowedQueryParameters
+  );
+
+  if (disallowedQueries.length) {
+    return res.status(400).json({
+      message: `Invalid query parameters: ${disallowedQueries.join(', ')}.`,
+    });
   }
 
-  if (query && (title || category || description || summary)) {
+  const {
+    query,
+    title,
+    category,
+    description,
+    summary,
+    tags,
+    type,
+    page,
+    limit,
+    sort,
+  } = pickedQueries;
+
+  if (_.some([title, category, description, summary]) && query) {
     return res.status(400).json({
       message:
         'General queries and specific queries are exclusive in use. Please use only one type.',
     });
   }
 
-  // Check for page and limit usage
   if ((page && !limit) || (!page && limit)) {
     return res.status(400).json({
       message: "The 'page' and 'limit' parameters must be used together.",
     });
   }
 
-  const canBeInteger = (value) => {
-    const parsedValue = parseInt(value);
-    return !isNaN(parsedValue) && Number.isInteger(parsedValue);
-  };
-
-  if ((limit && !canBeInteger(limit)) || (page && !canBeInteger(page))) {
+  if (
+    (limit && !_.isInteger(Number(limit))) ||
+    (page && !_.isInteger(Number(page)))
+  ) {
     return res.status(400).json({
       message: 'Invalid page or limit value. They should be integers.',
     });
@@ -153,10 +153,10 @@ const searchItems = async (req, res) => {
         sortQuery = { title: -1 };
         break;
       case 'newest':
-        sortQuery = { dateCreated: 1 };
+        sortQuery = { dateCreated: -1 };
         break;
       case 'oldest':
-        sortQuery = { dateCreated: -1 };
+        sortQuery = { dateCreated: 1 };
         break;
       default:
         return res.status(400).json({
@@ -185,37 +185,23 @@ const searchItems = async (req, res) => {
   }
 
   // Sort the combined array based on user query preferences
-  results.sort((a, b) => {
-    const numA = parseInt(a.title.replace(/\D/g, '')); // extract numbers
-    const numB = parseInt(b.title.replace(/\D/g, '')); // extract numbers
-
-    // extract strings (remove numbers)
-    const strA = a.title.replace(/\d/g, '').trim();
-    const strB = b.title.replace(/\d/g, '').trim();
-
-    switch (sort) {
-      case 'asc':
-        // compare strings first, then numbers
-        if (strA > strB) return 1;
-        if (strA < strB) return -1;
-        if (isNaN(numA)) return 1;
-        if (isNaN(numB)) return -1;
-        return numA - numB;
-      case 'desc':
-        // compare strings first, then numbers
-        if (strA < strB) return 1;
-        if (strA > strB) return -1;
-        if (isNaN(numA)) return 1;
-        if (isNaN(numB)) return -1;
-        return numB - numA;
-      case 'newest':
-        return new Date(b.dateCreated) - new Date(a.dateCreated);
-      case 'oldest':
-        return new Date(a.dateCreated) - new Date(b.dateCreated);
-      default:
-        return new Date(b.dateCreated) - new Date(a.dateCreated);
-    }
-  });
+  switch (sort) {
+    case 'asc':
+      results = _.orderBy(results, ['title'], ['asc']);
+      break;
+    case 'desc':
+      results = _.orderBy(results, ['title'], ['desc']);
+      break;
+    case 'newest':
+      results = _.orderBy(results, ['dateCreated'], ['desc']);
+      break;
+    case 'oldest':
+      results = _.orderBy(results, ['dateCreated'], ['asc']);
+      break;
+    default:
+      results = _.orderBy(results, ['dateCreated'], ['desc']);
+      break;
+  }
 
   if (page) {
     parseInt(page) > totalPages
@@ -228,7 +214,7 @@ const searchItems = async (req, res) => {
           resultsCount: results.length,
           results,
         });
-  } else if (title || category || description || summary || tags || type) {
+  } else if (_.some([title, category, description, summary, tags, type])) {
     res.status(200).json({ resultsCount: results.length, results });
   } else {
     res.status(200).json({ resultsCount: results.length, results });
