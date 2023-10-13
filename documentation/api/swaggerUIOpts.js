@@ -12,7 +12,7 @@ async function getJWT() {
   };
 
   const response = await fetch(
-    process.env.SWAGGER.LOGIN_ENDPOINT,
+    process.env.SWAGGER_LOGIN_ENDPOINT,
     loginRequestObj
   );
 
