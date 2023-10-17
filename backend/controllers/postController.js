@@ -152,12 +152,8 @@ const createPost = asyncHandler(async (req, res) => {
 
   // Check if the request's content type is multipart/form-data
   if (req.headers['content-type'].startsWith('multipart/form-data')) {
-    console.log('Changing');
-    console.log(tags);
     const individualTags = Array.isArray(tags) ? tags : tags.split(',');
-    console.log(individualTags);
     req.body.tags = individualTags;
-    console.log(req.body.tags);
   }
 
   const slug = req.body.slug || `${title.replace(/\s/g, '-').toLowerCase()}`;

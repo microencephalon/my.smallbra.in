@@ -1,0 +1,33 @@
+/* Error Cards for Error Status Pages */
+.error-card {
+  box-shadow: none;
+  height: auto;
+  width: stretch;
+  color: var(--chinese-black);
+  overflow: hidden;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.error-card > div.bp5-non-ideal-state-visual > span.bp5-icon > svg {
+  fill: var(--chinese-red);
+  color: var(--chinese-red);
+  fill-opacity: 1;
+}
+
+.error-card > div.bp5-non-ideal-state-visual > span.bp5-icon > svg > path {
+  stroke: var(--chinese-red);
+}
+
+.error-card-title {
+  font-family: var(--font-family-title);
+  font-size: 1.75em;
+  color: var(--chinese-black);
+}
+
+.error-card-description {
+  font-family: var(--font-family-card-detail);
+  font-size: 1.5em;
+  font-weight: 550;
+  color: var(--chinese-black);
+}

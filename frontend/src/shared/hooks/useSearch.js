@@ -81,6 +81,8 @@ const useSearch = (initialItem, searchBarContext) => {
       type,
     };
 
+    let encodedItem = encodeURIComponent(item);
+
     const startsWithQuery = Object.entries(PREFIX_MAP).find(([start]) =>
       item.startsWith(start)
     );
@@ -88,6 +90,7 @@ const useSearch = (initialItem, searchBarContext) => {
     if (startsWithQuery) {
       const [, searchPrefix] = startsWithQuery;
       let searchQuery = item.replace(...searchPrefix.replace);
+      let encodedItem = encodeURIComponent(searchQuery);
 
       if (searchPrefix.splitQuery) {
         searchQuery = searchQuery.split(',').map((tag) => tag.trim());
@@ -101,13 +104,13 @@ const useSearch = (initialItem, searchBarContext) => {
       );
       setSearchMode(searchPrefix.searchMode);
 
-      return apiEndpoint.getSearch(item, searchPrefix, moreParams);
+      return apiEndpoint.getSearch(encodedItem, searchPrefix, moreParams);
     } else {
       setSearchMode(RESETS.searchMode);
       setSearchBarLeftIco(RESETS.searchBarLeftIco);
       setIsSpecSearch(RESETS.isSpecSearch);
 
-      return apiEndpoint.getSearch(item, null, moreParams);
+      return apiEndpoint.getSearch(encodedItem, null, moreParams);
     }
   };
 

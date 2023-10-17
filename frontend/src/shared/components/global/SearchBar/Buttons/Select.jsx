@@ -9,7 +9,6 @@ import {
 
 const SearchBarButtonSelect = ({ kind, children, context }) => {
   const {
-    setItems,
     setSelectedFilter,
     setSelectedSort,
     setIsClearedFilter,
@@ -142,7 +141,7 @@ const SearchBarButtonSelect = ({ kind, children, context }) => {
     };
 
     const getClassName = (selectedValue, item) => {
-      const initClassName = 'mysb-omnibar-';
+      const initClassName = 'searchbar-';
       return selectedValue === item.value &&
         !item.label.toLowerCase().startsWith('clear')
         ? initClassName + `sort-active-item`

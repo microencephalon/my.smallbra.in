@@ -17,8 +17,8 @@ const Menu = ({ children, context }) => {
         active={active}
         className={
           activeMenuItem === value
-            ? 'narrow-navbar-menu-item-active'
-            : 'narrow-navbar-menu-item'
+            ? 'narrow-nav-menu-item-active'
+            : 'narrow-nav-menu-item'
         }
         key={value}
         onClick={() => {

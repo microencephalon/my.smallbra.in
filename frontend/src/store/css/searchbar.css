@@ -1,0 +1,214 @@
+/* frontned/src/store/css/searchbar.css */
+
+/* SearchBar Component */
+.searchbar {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  outline: none !important;
+}
+
+.searchbar
+  > div.bp5-input-group
+  > span.bp5-input-left-container
+  > span.bp5-icon {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.searchbar > div.bp5-input-group,
+.searchbar > div.bp5-input-group > input,
+.searchbar > ul.bp5-menu {
+  box-shadow: none;
+  border-radius: 0px;
+  background-color: white;
+}
+
+.searchbar > div.bp5-input-group > input,
+a.search-menu-item > div {
+  font-family: var(--font-family-title);
+  color: var(--chinese-black) !important;
+}
+
+.searchbar > div.bp5-input-group > input::selection,
+a.search-menu-item::selection,
+a.search-menu-item > div::selection {
+  outline: none;
+}
+
+/* Search Results Menu */
+
+#search-results-menu {
+  width: 99.8%; /* Set the width of the omnibar menu */
+  max-height: var(--search-results-menu-height); /* Set a specific height */
+  overflow-y: scroll; /* Enable vertical scrolling */
+  scrollbar-color: var(--scrollbar-thumb-color) var(--lightest-gray);
+}
+
+.bp5-menu-item.bp5-popover-dismiss.search-menu-header:hover {
+  cursor: default !important;
+  background-color: transparent;
+}
+
+.bp5-menu-item.bp5-disabled.search-menu-header {
+  cursor: default !important;
+}
+
+#search-results-menu::-webkit-scrollbar {
+  width: 5px;
+  background-color: var(--lightest-gray); /* Set the background color */
+}
+
+#search-results-menu::-webkit-scrollbar-thumb {
+  background-color: var(
+    --scrollbar-thumb-color
+  ); /* Set the color of the scrollbar thumb */
+  border-radius: 10px;
+}
+
+.search-menu-item:hover {
+  cursor: pointer;
+}
+
+.search-menu-header-text,
+.search-menu-header-text > * {
+  font-family: var(--font-family-default);
+  color: var(--dark-grey);
+}
+
+.search-yield,
+.search-yield > span,
+.searchbar-hl-yield {
+  font-family: var(--font-family-default) !important;
+}
+
+.search-yield,
+.search-yield > span {
+  color: var(--dark-grey);
+}
+
+.searchbar-hl-yield,
+.searchbar-search-hl-yield > span {
+  color: var(--chinese-black);
+  background-color: transparent !important;
+}
+
+.search-yield-title,
+.search-yield-date,
+.search-yield-highlighted-title {
+  font-family: var(--font-family-title) !important;
+  color: var(--dark-grey);
+}
+
+.search-yield-nonideal-content-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.search-yield-nonideal-content {
+  margin-left: 10px;
+}
+
+.search-yield-highlighted-title {
+  color: var(--chinese-black);
+  background-color: transparent !important;
+}
+
+.search-menu-item-header {
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-menu-item .search-item-title {
+  font-family: var(--font-family-title);
+  font-size: 1em;
+}
+
+.search-menu-item > div > div > .item-teaser,
+.search-menu-item > div > div > .search-item-summary,
+.search-menu-item > div > div > .search-item-description,
+.search-menu-item > div > div > .search-item-category,
+.search-menu-item > div > div > .search-item-tags {
+  font-family: var(--font-family-title);
+  font-size: 0.8em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.search-menu-item .search-item-tags {
+  font-family: var(--font-family-title);
+  margin-top: 0.5em;
+}
+
+.search-menu-item .search-item-tags .bp5-tag {
+  margin-right: 0.2em;
+}
+
+#search-menu-spinner {
+  text-align: center;
+  padding: 10px;
+}
+
+#search-menu-terminal-divider {
+  text-align: center;
+  padding: 10px;
+}
+
+.search-menu-subitem {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 5px;
+}
+
+.search-details {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 5px;
+}
+
+/* SearchBar Left Element */
+
+.search-mode-icon {
+  border-radius: 5px !important;
+  overflow: hidden;
+}
+.search-mode-icon:hover {
+  cursor: pointer;
+}
+
+/* Search Help Dialog */
+
+#search-help-modal {
+  background: var(--lightest-gray);
+  border-radius: 6.5px 6.5px 4px 4px;
+}
+
+#search-help-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #5f6b7b;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+#search-help-header-text {
+  color: var(--lightest-gray);
+  font-weight: bold;
+}
+
+#search-help-body {
+  width: auto;
+  height: auto;
+  background-color: var(--lightest-gray);
+}
+
+.search-help-modal-kbd-btns:hover {
+  cursor: default;
+  background-color: #f6f7f9 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 20, 24, 0.2),
+    0 1px 2px rgba(17, 20, 24, 0.1) !important;
+}

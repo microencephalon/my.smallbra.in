@@ -25,12 +25,12 @@
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
-    "dev": "~/.local-scripts/start-dev.sh",
+    "dev": "scripts/start-dev.sh",
     "start-production": "node backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
     "server-production": "nodemon backend/server.js --public my.smallbra.in --allowedHosts my.smallbra.in",
     "client-production": "npm run serve --prefix frontend",
     "production": "concurrently \"npm run server-production\" \"npm run client-production\"",
-    "start-swagger-ui": "nodemon --watch './documentation/api/*' --ext js,json,yaml,yml documentation/api/swagger-ui.js"
+    "swagger-ui": "nodemon --watch './documentation/api/*' --ext js,json,yaml,yml documentation/api/swagger-ui.js"
   },
   "repository": {
     "type": "git",

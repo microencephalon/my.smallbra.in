@@ -35,7 +35,7 @@ export const SearchBarHelpDialog = ({ isLiveSearch, context }) => {
 
   const Header = ({ children }) => {
     return (
-      <div id='search-help-modal-header' className={Classes.DIALOG_HEADER}>
+      <div id='search-help-header' className={Classes.DIALOG_HEADER}>
         <span id='search-help-header-text'>{children}</span>
         <CloseButton
           icon={SEARCH_ICONS.helpDialogClose}
@@ -47,7 +47,7 @@ export const SearchBarHelpDialog = ({ isLiveSearch, context }) => {
 
   const Body = ({ children }) => {
     return (
-      <div id='search-help-modal-body' className={Classes.DIALOG_BODY}>
+      <div id='search-help-body' className={Classes.DIALOG_BODY}>
         {children}
       </div>
     );
@@ -119,7 +119,7 @@ const SearchBarHelpTable = (isLiveSearch) => {
   HELP_DIALOG_TABLE.allRows = TableRows;
 
   return (
-    <div id='help-dialog-table'>
+    <div id='search-help-table'>
       <HTMLTable>
         <TableHeader headers={HELP_DIALOG_TABLE[1].headers} />
         <TableBody>{HELP_DIALOG_TABLE.allRows[1]}</TableBody>

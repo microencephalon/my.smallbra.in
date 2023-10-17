@@ -1,0 +1,185 @@
+/* frontend/src/store/css/footer.css */
+
+#footer {
+  display: flex;
+  justify-content: center;
+  padding: 3% 3% 1% 0;
+}
+
+#footer-items {
+  display: flex;
+  justify-content: flex-start; /* Align columns to the start */
+}
+
+#footer-social-items,
+#footer-built-with-items,
+#footer-home-logo {
+  margin-right: 20px; /* Set the space between the columns */
+}
+
+#footer-items > div:last-child {
+  margin-right: 0; /* Removing margin from the last column */
+}
+
+#footer-social-items,
+#footer-home-logo,
+#footer-built-with-items {
+  display: flex;
+  justify-content: center;
+}
+
+#footer-social-items > *,
+#footer-built-with-items > *,
+#footer-home-logo {
+  display: flex;
+  align-items: center;
+  opacity: 0.4;
+  /* transition: var(--transition-opacity-quicker) ease-in-out, var(--transition-transform-quicker) ease-in-out; */
+}
+
+#footer-item-email > svg,
+#footer-item-github > svg,
+#footer-item-x > svg,
+#footer-item-instagram > svg,
+#footer-item-facebook > svg,
+#footer-item-nodejs > svg,
+#footer-item-blueprint > svg,
+#footer-item-react > svg,
+#footer-item-express > svg,
+#footer-item-mongodb > svg,
+#footer-social-items > *,
+#footer-built-with-items > *,
+#footer-home-logo {
+  transition:
+    var(--transition-opacity-quicker) ease-in-out,
+    var(--transition-transform-quicker) ease-in-out;
+}
+
+#footer-home-img {
+  width: 20px;
+  height: auto;
+  margin-right: 7.5px;
+}
+
+#footer-home-text,
+#footer-email {
+  font-family: var(--font-family-title);
+  line-height: 40.16px;
+  padding-bottom: 1.5px;
+}
+
+#footer-social-items:hover > svg,
+#footer-built-with-items:hover > svg,
+#footer-home-logo:hover {
+  cursor: pointer;
+  opacity: 1;
+  transform: var(--scale-footer-items-default);
+}
+
+#footer-social-items > *:hover,
+#footer-built-with-items > *:hover,
+#footer-social-items:hover,
+#footer-built-with-items:hover {
+  opacity: 1;
+}
+
+#footer-item-email > svg:hover,
+#footer-item-github > svg:hover,
+#footer-item-x > svg:hover,
+#footer-item-instagram > svg:hover,
+#footer-item-facebook > svg:hover,
+#footer-item-nodejs > svg:hover,
+#footer-item-blueprint > svg:hover,
+#footer-item-react > svg:hover,
+#footer-item-express > svg:hover,
+#footer-item-mongodb > svg:hover {
+  cursor: pointer;
+  transform: var(--scale-footer-items-grow);
+}
+
+#footer-built-with-items {
+  border: 1px solid transparent; /* Start with a transparent border */
+  position: relative;
+  transition: var(--transition-border-quicker) ease-out; /* Add transition for the border */
+}
+
+#footer-built-with-items::before {
+  content: ' ';
+  background: transparent; /* Start with a transparent background */
+  position: absolute;
+  top: -8px;
+  right: 5%;
+  padding: 0 1.5px;
+  font-size: small;
+  z-index: 1;
+  opacity: 0; /* Start with 0 opacity */
+  transition:
+    var(--transition-opacity-quicker) ease-in-out,
+    var(--transition-content-quicker) ease-in-out; /* Add transition */
+}
+
+#footer-built-with-items:hover {
+  border: 1px solid var(--chinese-black);
+  transition: var(--transition-border-slower) ease-in;
+}
+
+#footer-built-with-items:hover::before {
+  content: var(--content-footer-built-with-items);
+  background: white;
+  opacity: 1; /* Change to full opacity on hover */
+}
+
+#footer-social-items .bp5-button:hover,
+#footer-built-with-items .bp5-button:hover,
+#footer-home-logo .bp5-button:hover {
+  background-color: transparent !important;
+}
+
+@media (max-width: 800px) {
+  #footer-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Align columns to the start */
+  }
+
+  #footer-home-logo,
+  #footer-built-with-items {
+    margin-bottom: 20px;
+  }
+
+  #footer-social-items,
+  #footer-built-with-items,
+  #footer-home-logo {
+    margin-right: 0px; /* Set the space between the columns */
+  }
+
+  #footer-social-items > *,
+  #footer-built-with-items > *,
+  #footer-home-logo {
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    /* transition: var(--transition-opacity-quicker) ease-in-out, var(--transition-transform-quicker) ease-in-out; */
+  }
+
+  #footer-built-with-items {
+    border: 1px solid var(--chinese-black); /* Start with a transparent border */
+    position: relative;
+    transition: var(----transition-border-quicker) ease-out; /* Add transition for the border */
+  }
+
+  #footer-built-with-items::before {
+    content: 'built with';
+    background: white;
+    position: absolute;
+    top: -8px;
+    right: 5%;
+    padding: 0 1.5px;
+    font-size: small;
+    z-index: 1;
+    opacity: 1;
+    transition:
+      var(--transition-opacity-quicker) ease-in-out,
+      var(--transition-content-quicker) ease-in-out; /* Add transition */
+  }
+}

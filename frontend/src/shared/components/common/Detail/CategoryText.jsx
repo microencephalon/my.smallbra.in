@@ -1,6 +1,6 @@
 // frontend/src/components/common/TagsGroup.jsx
 import { Tag } from '@blueprintjs/core';
-import { SEARCH_PREFIXES, SEARCH_MODES } from '../../../constants/searchBar';
+import { SEARCH_PREFIXES, SEARCH_MODES } from '../../../../constants/searchBar';
 
 const CategoryText = ({ categoryName, className, onCatClick }) => {
   return (

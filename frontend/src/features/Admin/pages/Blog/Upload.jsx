@@ -1,6 +1,6 @@
 // frontend/src/pages/Blog/Upload.jsx
 import '@blueprintjs/core/lib/css/blueprint.css';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -122,7 +122,7 @@ function Upload() {
             id='summary'
             value={summary}
             fill={true}
-            growVertically={true}
+            autoResize={true}
             onChange={(e) => setSummary(e.target.value)}
             style={{ resize: 'none' }}
           />

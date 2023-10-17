@@ -16,7 +16,6 @@ const MenuButton = ({ context, option }) => {
       onClick={(e) => {
         e.preventDefault();
         navigate(option.href);
-        <i class='fa fa-spotify' aria-hidden='true'></i>;
       }}
     />
   );

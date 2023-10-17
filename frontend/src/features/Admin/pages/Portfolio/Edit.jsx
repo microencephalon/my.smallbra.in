@@ -1,5 +1,5 @@
 // frontend/src/pages/Admin/PortolioArtifactEdit.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   FormGroup,
@@ -74,7 +74,7 @@ function MediaPanel({ media, onMediaChange, handleLightbox, index }) {
         {media.format === 'image' && (
           <figure>
             <img
-              className='portfolio-artifact-dp-media-img'
+              className='artifact-media-img'
               src={media.src}
               alt={media.alt}
               width='200px'
@@ -91,7 +91,7 @@ function MediaPanel({ media, onMediaChange, handleLightbox, index }) {
               height='168.75px'
               src={media.src}
               title='YouTube video player'
-              frameborder={0}
+              frameBorder={0}
               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
               allowFullScreen
               crossOrigin='anonymous'
@@ -140,7 +140,6 @@ const Edit = ({ id, onUpdate }) => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxCurrentIndex, setLightboxCurrentIndex] = useState(0);
-  const [hasMedia, setHasMedia] = useState(true);
   const [imageError, setImageError] = useState(null);
 
   const handleLightbox = (open, index = lightboxCurrentIndex) => {
@@ -179,11 +178,6 @@ const Edit = ({ id, onUpdate }) => {
       try {
         const response = await axios.get(`/api/artifacts/${id}`);
         setArtifact(response.data);
-        if (response.data.media && response.data.media.length > 0) {
-          setHasMedia(true);
-        } else {
-          setHasMedia(false);
-        }
       } catch (err) {
         console.error(err);
       }
@@ -254,7 +248,7 @@ const Edit = ({ id, onUpdate }) => {
           id='artifact-description'
           value={artifact.description}
           fill={true}
-          growVertically={true}
+          autoResize={true}
           style={{ resize: 'none' }}
           onChange={(e) =>
             setArtifact({ ...artifact, description: e.target.value })
@@ -314,7 +308,7 @@ const Edit = ({ id, onUpdate }) => {
         style={{ width: '90%' }}
       >
         <InputGroup
-          id='artifact-preview-image'
+          id='portfolio-card-preview-img'
           value={artifact.previewImage}
           onChange={(e) =>
             setArtifact({ ...artifact, previewImage: e.target.value })

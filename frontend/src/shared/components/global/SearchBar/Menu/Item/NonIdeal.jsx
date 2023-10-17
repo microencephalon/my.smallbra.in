@@ -6,11 +6,11 @@ const NonIdeal = ({ type }) => {
     <MenuItem
       id={'search-menu-item-non-ideal'}
       text={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className='search-yield-nonideal-content-wrapper'>
           <Icon icon={SEARCH_ICONS.noResults} />
-          <div style={{ marginLeft: '10px' }}>
+          <div className='search-yield-nonideal-content'>
             <NonIdealState
-              className='mysb-omnibar-no-search-yields'
+              className='no-search-yield'
               layout='horizontal'
               title={title}
             />

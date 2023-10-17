@@ -27,8 +27,8 @@ const NavWide = ({ context }) => {
   }, []);
 
   const navbarClass = classNames({
-    'navbar-shadow': showShadow,
-    'navbar-shadowless': !showShadow,
+    'nav-shadow': showShadow,
+    'nav-shadowless': !showShadow,
   });
 
   const contextItems = {
@@ -52,8 +52,8 @@ const NavWide = ({ context }) => {
         id='navbar-group-left'
         className={navHeadingClass}
       >
-        {MENU_OPTIONS.map((option) => (
-          <Buttons.Menu context={contextItems} option={option} />
+        {MENU_OPTIONS.map((option, idx) => (
+          <Buttons.Menu key={idx} context={contextItems} option={option} />
         ))}
         <Buttons.Search context={contextItems} />
       </Navbar.Group>

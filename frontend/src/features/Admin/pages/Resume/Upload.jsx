@@ -1,6 +1,6 @@
 // frontend/src/Admin/ResumeUpload.jsx
 import '@blueprintjs/core/lib/css/blueprint.css';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {

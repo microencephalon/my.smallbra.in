@@ -1,0 +1,41 @@
+/* Admin */
+
+.admin-nav-heading {
+  transition: var(--transition-transform-quicker); /* Animation */
+  width: 24px;
+  height: auto;
+}
+
+.admin-nav-heading:hover {
+  transform: var(--scale-admin-nav-heading-grow); /* Animation */
+}
+
+.editable-cell:hover {
+  background-color: var(--editable-cell-bg-color);
+}
+
+.non-editable-cell {
+  background-color: var(--non-editable-cell-bg-color);
+}
+
+.portfolio-upload-tabs-no-nis > div[role='tabpanel'] {
+  width: 90%;
+}
+
+.portfolio-upload-tabs-center-nis {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.portfolio-upload-tabs-edit-no-nis > div[role='tabpanel'] {
+  width: 90%;
+}
+
+.portfolio-upload-tabs-edit-center-nis {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

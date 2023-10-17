@@ -5,6 +5,48 @@ const path = require('path');
 const isDev = process.env.NODE_ENV === 'development' ? true : false;
 const isProd = process.env.NODE_ENV === 'production' ? true : false;
 
+const cspArray = [
+  'default-src',
+  "'self'",
+  "'unsafe-inline'",
+  'https://avatars.githubusercontent.com',
+  'https://cdn.jsdelivr.net',
+  'https://unpkg.com',
+  'https://fonts.gstatic.com',
+  'https://fonts.cdnfonts.com',
+  'https://fonts.googleapis.com',
+  'https://applesocial.s3.amazonaws.com',
+  'https://mdg.imgix.net/assets/images/san-juan-mountains.jpg',
+  'https://www.youtube.com',
+  'youtube.com',
+  'https://i.ytimg.com',
+  'i.ytimg.com',
+  'ytimg.com',
+  'https://www.google.com',
+  'google.com',
+  'https://yt3.ggpht.com',
+  'yt3.ggpht.com',
+  'applesocial.s3.amazonaws.com',
+  'fonts.cdnfonts.com',
+  'unpkg.com',
+  'www.youtube.com',
+];
+
+let localPolicy = [
+  '192.168.1.66',
+  'localhost',
+  'ws://localhost:3000',
+  'wss://localhost:3000',
+  'http://localhost:8081',
+  'http://192.168.1.66:8081',
+  'http://localhost:3000',
+  'http://192.168.1.66:3000',
+  'http://localhost:4500',
+  'http://192.168.1.66:4500',
+  'http://localhost:4000',
+  'http://192.168.1.66:4000',
+];
+
 const headers = {
   'Cross-Origin-Embedder-Policy': 'unsafe-none',
   'Cross-Origin-Opener-Policy': 'same-origin',
@@ -18,8 +60,9 @@ const headers = {
   'X-Frame-Options': 'SAMEORIGIN',
   'X-Permitted-Cross-Domain-Policies': 'none',
   'X-XSS-Protection': '1; mode=block',
-  'Content-Security-Policy':
-    "default-src 'self' 'unsafe-inline' ws://localhost:3000 wss://localhost:3000 https://avatars.githubusercontent.com https://cdn.jsdelivr.net https://unpkg.com http://localhost:8081 http://192.168.1.66:8081 http://localhost:3000 http://192.168.1.66:3000 http://localhost:4500 http://192.168.1.66:4500 http://localhost:4000 http://192.168.1.66:4000 https://fonts.gstatic.com https://fonts.cdnfonts.com https://fonts.googleapis.com https://applesocial.s3.amazonaws.com https://mdg.imgix.net/assets/images/san-juan-mountains.jpg https://www.youtube.com youtube.com https://i.ytimg.com i.ytimg.com ytimg.com https://www.google.com google.com https://yt3.ggpht.com yt3.ggpht.com 192.168.1.66 applesocial.s3.amazonaws.com fonts.cdnfonts.com localhost unpkg.com www.youtube.com;",
+  'Content-Security-Policy': isDev
+    ? cspArray.concat(localPolicy).join(' ')
+    : cspArray.join(' '),
 };
 
 // https://webpack.js.org/configuration/

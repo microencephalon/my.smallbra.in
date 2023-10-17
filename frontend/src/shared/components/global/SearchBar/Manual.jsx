@@ -119,6 +119,7 @@ const ManualSearchBar = ({ searchBarContext }) => {
     <SearchBar.Omnibar.Hotkeys context={{ handleSearchBarToggle }}>
       <SearchBar.Omnibar.HelpDialog isLiveSearch={false} context={context} />
       <Omnibar
+        className='searchbar'
         onClose={() => handleClose()}
         query={item}
         onQueryChange={(newQuery) => handleQueryChange(newQuery)}
@@ -128,7 +129,6 @@ const ManualSearchBar = ({ searchBarContext }) => {
         activeItem={item}
         items={items}
         inputProps={searchBarInputProps}
-        className='mysb-omnibar'
       />
     </SearchBar.Omnibar.Hotkeys>
   );

@@ -1,5 +1,5 @@
 // frontend/src/App.js
-import React, { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { HotkeysProvider } from '@blueprintjs/core';
@@ -21,6 +21,8 @@ import About from './features/Public/About';
 
 import Global from './shared/components/global';
 import PrivateRoute from './shared/components/routes/PrivateRoute';
+
+import { useClickOutsideNav, useScalingTopPadding } from './shared/hooks';
 
 const isLiveSearch = process.env.LIVE_SEARCH_ENABLED === 'true';
 
@@ -52,10 +54,12 @@ function App() {
 // This was created since SearchBarContext needs to be nested within SearchBarProvider
 const AppRoutes = () => {
   const globalContext = useContext(GlobalContext);
-  const { blur, isNavMenuOpen, setIsNavMenuOpen, isPageNarrow } = globalContext;
   const searchBarContext = useContext(SearchBarContext);
+
+  const { blur, isNavMenuOpen, isPageNarrow } = globalContext;
   const context = { global: globalContext, searchBar: searchBarContext };
 
+  // Scales padding so content under the Navbar maintains relative consistency padding-top regardless of width scale.
   const setPadding = () => {
     const navbar = document.getElementById('navbar');
     const contentWrap = document.getElementById('content-wrap');
@@ -66,42 +70,10 @@ const AppRoutes = () => {
       contentWrap.style.paddingTop = `${padding}px`;
     }
   };
+  setPadding(); // For initial render
+  useScalingTopPadding({ action: setPadding, context: globalContext });
 
-  useEffect(() => {
-    setPadding(); // Initial setting
-
-    // Update on window resize
-    window.addEventListener('resize', setPadding);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', setPadding);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageNarrow]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        event.target.closest('#narrow-navbar-current-btn') ||
-        event.target.closest(
-          'div.bp5-portal:has(a.narrow-navbar-menu-item) .bp5-popover-transition-container'
-        )
-      ) {
-        return; // Do nothing
-      }
-      setIsNavMenuOpen(false);
-    };
-
-    // Attach the click event listener
-    document.addEventListener('mousedown', handleClickOutside);
-
-    // Cleanup: Remove event listener on component unmount
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  useClickOutsideNav(globalContext);
 
   return (
     <>

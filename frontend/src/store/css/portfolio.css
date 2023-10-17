@@ -1,0 +1,329 @@
+/* frontend/src/store/css/portfolio.css */
+
+/* Portfolio Roll */
+.portfolio-roll-row-wrapper {
+  max-width: 1200px;
+  margin: var(--margin-center-horizontal);
+  display: flex;
+  justify-content: center;
+}
+
+.portfolio-roll-row-container {
+  max-width: 1128px;
+  margin: var(--margin-center-horizontal);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(356px, 1fr));
+  gap: 10px;
+}
+
+.portfolio-card {
+  width: 100%;
+  box-shadow: none;
+  padding: 10px;
+  border-radius: 0px;
+}
+
+.portfolio-card-header {
+  max-width: 1200px; /* Should be the same as the .portfolio-card-header */
+  margin: var(--margin-center-horizontal); /* Center the element */
+  margin-bottom: 10px;
+}
+
+.artifact-card-container {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 5px;
+}
+
+.portfolio-roll-card {
+  position: relative;
+  width: calc(33.333% - 20px); /* One-third width minus margins */
+  max-width: 356px;
+  height: auto;
+  margin-right: 10px;
+  margin-left: 10px;
+  flex-grow: 1; /* Will grow if there's available space */
+  border-radius: 5px;
+  /* border-bottom: 1px solid white; */ /* keep for mobile */
+  color: white;
+  background-color: var(--chinese-black);
+  filter: grayscale(100%);
+  transition:
+    background-color 0.5s ease-in-out,
+    var(--transition-color-slower) ease-in-out,
+    var(--transition-filter-slower) ease-in-out;
+}
+
+.portfolio-roll-card:hover {
+  cursor: pointer;
+  background-color: white;
+  color: var(--chinese-black);
+  filter: none;
+}
+
+.portfolio-roll-card-description {
+  font-family: var(--font-family-card-detail);
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.portfolio-card-preview-img {
+  /* In Admin and Card */
+  box-shadow: none;
+  border-radius: 7.55px;
+  object-fit: cover;
+  height: auto;
+  max-height: 130px;
+  width: stretch;
+  color: var(--chinese-black);
+  opacity: 0.9;
+  overflow: hidden;
+}
+
+.portfolio-img-not-found {
+  box-shadow: none;
+  border-radius: 7.55px;
+  height: auto;
+  width: stretch;
+  color: var(--chinese-black);
+  background-color: var(--lightest-gray);
+  overflow: hidden;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.portfolio-card-preview-img,
+.portfolio-img-not-found {
+  margin-bottom: 10px;
+}
+
+.portfolio-img-not-found > div.bp5-non-ideal-state-text > h4.bp5-heading {
+  font-family: var(--font-family-portfolio-img-not-found);
+  color: var(--chinese-black);
+}
+.portfolio-img-not-found > div.bp5-non-ideal-state-text > div {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--chinese-black);
+}
+
+.portfolio-img-not-found
+  > div.bp5-non-ideal-state-visual
+  > span.bp5-icon
+  > svg {
+  fill: var(--chinese-black);
+  color: var(--chinese-black);
+  fill-opacity: 1;
+}
+
+.portfolio-img-not-found
+  > div.bp5-non-ideal-state-visual
+  > span.bp5-icon
+  > svg
+  > path {
+  stroke: var(--chinese-black);
+}
+
+/* Artifact Detail Page */
+
+.artifact-container-card {
+  box-shadow: none;
+}
+
+.artifact-title {
+  font-family: var(--font-family-title);
+  font-size: 3em;
+}
+
+.artifact-h2 {
+  font-family: var(--font-family-title);
+  font-size: 1.5em;
+}
+
+.artifact-description {
+  font-family: var(--font-family-default);
+  font-size: 15px;
+  font-weight: 400;
+  /* line-height: 20px; */
+}
+
+#artifact-preview-container {
+  background: var(--lightest-gray);
+  padding: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 65%;
+}
+
+.artifact-media-img {
+  max-width: 100%;
+  max-height: auto;
+  cursor: zoom-in;
+}
+
+.artifact-media-iframe {
+  max-width: 90%;
+  width: 560px;
+  height: 315px;
+}
+
+.artifact-links-list > li {
+  list-style-type: none;
+  margin-left: -20px;
+}
+
+.artifact-links > button > span.bp5-button-text,
+.artifact-media-caption {
+  font-family: var(--font-family-default);
+}
+
+.artifact-links:hover {
+  text-decoration: none;
+}
+
+/* Lightbox for Artifact Images */
+
+.artifact-lightbox {
+  width: auto;
+  height: auto;
+  background-color: var(--chinese-black); /* Chinese var(--chinese-black) */
+}
+
+.artifact-lightbox-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--chinese-black); /* Chinese var(--chinese-black) */
+}
+
+.artifact-lightbox-header-title {
+  color: white;
+}
+
+.artifact-lightbox-container,
+.artifact-lightbox-container > .artifact-lightbox-img {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.artifact-lightbox-header-title {
+  color: white;
+}
+
+.artifact-lightbox-container,
+.artifact-lightbox-container > .artifact-lightbox-img {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+@media (max-width: 2041px) {
+  #artifact-preview-container {
+    padding: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .artifact-media-img {
+    max-width: 90%;
+    max-height: auto;
+  }
+}
+
+/* Media query for dimensions 1362px W x 1430px H and 1166px W x 1419px H */
+
+@media (max-width: 1362px) and (min-width: 1024px) {
+  .portfolio-roll-row-container {
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+  }
+}
+
+/* Buffer zone: 1023px - 1023px */
+@media (max-width: 1023px) and (min-width: 1023px) {
+  /* Buffer zone: minimal styling or transitional styles */
+  /* Leave empty or put any transitional styles here */
+}
+
+.portfolio-roll-card-vertical,
+.portfolio-roll-card {
+  border-radius: 5px;
+  color: white;
+  background-color: var(--chinese-black);
+  filter: grayscale(100%);
+  transition:
+    var(--transition-background-color-slower) ease-in-out,
+    var(--transition-color-slower) ease-in-out,
+    var(--transition-filter-slower) ease-in-out;
+}
+
+.portfolio-roll-card-vertical:hover,
+.portfolio-roll-card:hover {
+  cursor: pointer;
+  background-color: white;
+  color: var(--chinese-black);
+  filter: none;
+}
+
+/* Media query for dimensions less than or equal to 1022px */
+@media (max-width: 1024px) {
+  /* Your styles for smaller screens */
+  .portfolio-roll-row-container {
+    grid-template-columns: 1fr;
+  }
+
+  /* New CSS for vertical layout */
+  .portfolio-roll-card-vertical {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    color: white;
+    background-color: var(--chinese-black);
+    filter: grayscale(100%);
+    transition:
+      var(--transition-background-color-slower) ease-in-out,
+      var(--transition-color-slower) ease-in-out,
+      var(--transition-filter-slower) ease-in-out;
+  }
+
+  .portfolio-roll-card-vertical:hover {
+    cursor: pointer;
+    background-color: white;
+    color: var(--chinese-black);
+    filter: none;
+  }
+
+  .portfolio-roll-card-vertical .portfolio-roll-card-content {
+    flex-direction: column;
+    flex-basis: 65%;
+    max-width: 65%;
+    margin-left: 10px;
+  }
+
+  .portfolio-roll-card-vertical .portfolio-img-not-found,
+  .portfolio-roll-card-vertical .portfolio-card-preview-img {
+    flex-basis: 35%;
+    max-width: 35%;
+    min-height: 165px;
+  }
+
+  #artifact-preview-container > .bp5-tabs.bp5-vertical {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .artifact-media-caption {
+    display: none;
+  }
+}
+
+@media (max-width: 736px) {
+  div#artifact-preview-container {
+    padding-right: 0px;
+  }
+}

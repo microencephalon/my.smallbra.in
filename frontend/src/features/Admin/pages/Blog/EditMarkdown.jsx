@@ -1,5 +1,5 @@
 // frontend/src/pages/Admin/BlogEditMarkdown.jsx
-import React, { useState, useEffect, createElement } from 'react';
+import { useState, useEffect, createElement } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {
@@ -74,7 +74,6 @@ const BlogEditMarkdown = () => {
           },
         }
       );
-      console.log('Server response:', response);
 
       if (response.status === 200) {
         AppToaster.show({
@@ -259,7 +258,7 @@ const BlogEditMarkdown = () => {
                 id='markdown'
                 value={markdown}
                 fill={true}
-                growVertically={true}
+                autoResize={true}
                 onChange={(e) => setMarkdown(e.target.value)}
                 style={{ resize: 'none' }}
               />

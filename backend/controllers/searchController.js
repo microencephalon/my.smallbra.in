@@ -2,6 +2,14 @@
 const _ = require('lodash');
 const SearchItem = require('../models/searchItemModel');
 
+const createRegex = (string) => {
+  // Escape special characters for use in a regular expression
+  const escapedString = string.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&');
+
+  // Replace one or more spaces with the regex that matches one or more spaces
+  return new RegExp(escapedString.replace(/\s+/g, '\\s+'), 'i');
+};
+
 const searchItems = async (req, res) => {
   const allowedQueryParameters = [
     'query',
@@ -69,7 +77,7 @@ const searchItems = async (req, res) => {
   // Perform a full-text search if a general query is provided
 
   if (query) {
-    const queryRegex = new RegExp(query, 'i'); // case-insensitive
+    const queryRegex = createRegex(query);
     filterQuery = {
       $or: [
         { title: { $regex: queryRegex } },
@@ -102,17 +110,14 @@ const searchItems = async (req, res) => {
       }
 
       if (type) {
-        const typeRegex = new RegExp(type, 'i'); // case-insensitive
-        filterQuery.itemType = { $regex: typeRegex };
+        filterQuery.itemType = { $regex: createRegex(type) };
       }
       if (title) {
-        const titleRegex = new RegExp(title, 'i'); // case-insensitive
-        filterQuery.title = { $regex: titleRegex };
+        filterQuery.title = { $regex: createRegex(title) };
       }
       // If a category is provided, search by category
       if (category) {
-        const categoryRegex = new RegExp(category, 'i'); // case-insensitive
-        filterQuery.category = { $regex: categoryRegex };
+        filterQuery.category = { $regex: createRegex(category) };
       }
       // If a description is provided, search by description in artifacts
       if (description) {
@@ -122,8 +127,7 @@ const searchItems = async (req, res) => {
               "The 'description' query parameter not available for type 'portfolio'.",
           });
         }
-        const descriptionRegex = new RegExp(description, 'i'); // case-insensitive
-        filterQuery.description = { $regex: descriptionRegex };
+        filterQuery.description = { $regex: createRegex(description) };
       }
       // If a summary is provided, search by summary in posts
       if (summary) {
@@ -134,7 +138,7 @@ const searchItems = async (req, res) => {
           });
         }
         const summaryRegex = new RegExp(summary, 'i'); // case-insensitive
-        filterQuery.summary = { $regex: summaryRegex };
+        filterQuery.summary = { $regex: createRegex(summary) };
       }
     } else {
       return res

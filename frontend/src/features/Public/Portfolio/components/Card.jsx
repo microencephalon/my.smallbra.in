@@ -18,9 +18,7 @@ export function ArtifactCard({ data, onClick, context }) {
   // const date = new Date(data.dateCreated).toLocaleDateString();
 
   const responsiveClassName =
-    windowWidth < 1037
-      ? 'portfolio-artifact-card-vertical'
-      : 'portfolio-artifact-card';
+    windowWidth < 1037 ? 'portfolio-roll-card-vertical' : 'portfolio-roll-card';
 
   const classNames = `portfolio-card ${
     data.isLoading ? 'bp5-skeleton' : ''
@@ -32,7 +30,7 @@ export function ArtifactCard({ data, onClick, context }) {
         <img
           src={data.previewImage}
           alt='Preview media of portfolio artifact'
-          className='artifact-preview-image'
+          className='portfolio-card-preview-img'
           onLoad={() => <Spinner />}
           onError={() => {
             setImageError('Error occurred while retrieving the image.');
@@ -42,7 +40,7 @@ export function ArtifactCard({ data, onClick, context }) {
     } else {
       return (
         <NonIdealState
-          className='artifact-preview-image-not-found'
+          className='portfolio-img-not-found'
           icon={imageError ? 'error' : 'issue'}
           iconSize={NonIdealStateIconSize.SMALL}
           title={imageError ? 'Error Loading Image' : 'Image Not Found'}
@@ -55,18 +53,18 @@ export function ArtifactCard({ data, onClick, context }) {
   };
 
   const Content = ({ children }) => {
-    return <div className='portfolio-artifact-card-content'>{children}</div>;
+    return <div className='portfolio-roll-card-content'>{children}</div>;
   };
 
   const Title = ({ children }) => {
-    return <Text className='portfolio-artifact-card-title'>{children}</Text>;
+    return <Text className='roll-card-title'>{children}</Text>;
   };
 
   const Teaser = ({ children }) => {
     return (
       <Text
         tagName='p'
-        className='portfolio-artifact-card-description'
+        className='roll-card-preview-text portfolio-roll-card-description'
         ellipsize={false}
       >
         {children}

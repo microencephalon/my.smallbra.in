@@ -11,15 +11,8 @@ const Detail = ({ data, type, divClass, context }) => {
   }
 
   return (
-    <div
-      className={divClass}
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        paddingBottom: '5px',
-      }}
-    >
-      <span className='mysb-omnibar-search-yield'>{data}</span>
+    <div className={`${divClass} search-details`}>
+      <span className='search-yield bp5-text-small'>{data}</span>
       <Tag intent='none' minimal={true}>
         <span className='bp5-text-muted'>{type}</span>
       </Tag>

@@ -27,7 +27,7 @@ const Card = ({ context, itemData, itemProps }) => {
       item: item,
       highlightClass:
         field === SEARCH_MODES.title
-          ? 'mysb-omnibar-hl-yield-title'
+          ? 'search-yield-highlighted-title'
           : undefined,
     });
   });

@@ -6,7 +6,7 @@ const LoadMoreButton = ({ visibleWhen, onClick, context }) => {
   if (_.every(visibleWhen, Boolean)) {
     return (
       <Button
-        className='load-more-button'
+        id='roll-load-more-btn'
         aria-label='Load more items'
         minimal={true}
         large={true}

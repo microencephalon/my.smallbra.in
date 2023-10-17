@@ -1,15 +1,14 @@
-import CardFooterSpace from './CardFooterSpace';
-import CategoryText from './CategoryText';
+import CategoryText from './Detail/CategoryText';
 import FeatureLayout from './FeatureLayout';
 import FeatureCard from './FeatureCard';
 import GithubIcon from './GithubIcon';
 import HomeLogo from './HomeLogo';
 import SmallBrainIcon from './SmallBrainIcon';
-import TagsGroup from './TagsGroup';
+import TagsGroup from './Detail/TagsGroup';
 import Roll from './Roll';
+import Detail from './Detail';
 
 const Common = {
-  CardFooterSpace,
   CategoryText,
   FeatureLayout,
   FeatureCard,
@@ -18,6 +17,7 @@ const Common = {
   SmallBrainIcon,
   TagsGroup,
   Roll,
+  Detail,
 };
 
 export default Common;

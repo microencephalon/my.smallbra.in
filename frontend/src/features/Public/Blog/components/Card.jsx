@@ -3,23 +3,27 @@ import { Text } from '@blueprintjs/core';
 import Common from '../../../../shared/components/common';
 
 export function BlogCard({ data, onClick, context }) {
-  let classNames = `blog-card blog-post-card ${
+  let classNames = `blog-card blog-roll-card ${
     data.isLoading ? 'bp5-skeleton' : ''
   }`;
 
   const PostDate = ({ children }) => {
     return (
-      <Text tagName='span' className='blog-post-card-date'>
+      <Text tagName='span' className='roll-card-date'>
         {children}
       </Text>
     );
   };
   const Title = ({ children }) => {
-    return <Text className='blog-post-card-title'>{children}</Text>;
+    return <Text className='roll-card-title'>{children}</Text>;
   };
   const Summary = ({ children }) => {
     return (
-      <Text tagName='p' className='blog-post-card-summary' ellipsize={false}>
+      <Text
+        tagName='p'
+        className='roll-card-preview-text blog-roll-card-summary'
+        ellipsize={false}
+      >
         {children}
       </Text>
     );

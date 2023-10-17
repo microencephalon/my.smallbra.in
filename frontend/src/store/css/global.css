@@ -1,0 +1,74 @@
+/* Maintains a scrollbar placeholder part constantly showing */
+html {
+  overflow-y: scroll;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-size: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+button,
+[tabindex] {
+  outline: none;
+}
+
+/* Content */
+
+#page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.center-content {
+  width: 70%;
+  margin: var(--margin-center-horizontal);
+}
+
+@media (max-width: 800px) {
+  .center-content {
+    width: 85%;
+    margin: var(--margin-center-horizontal);
+  }
+}
+
+#content-wrap {
+  flex: 1;
+}
+
+.spinner-large {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Blur Settings for SearchBar and Mobile Navbar */
+.disable-interaction {
+  pointer-events: none;
+}
+
+.disable-interaction:hover {
+  cursor: pointer;
+}
+
+.blur-content {
+  filter: var(--blurred);
+  transition: var(--blur-transition-params);
+}
+
+#page-container:not(.blur-content) {
+  /* For unblurring the page */
+  filter: var(--unblurred);
+  transition: var(--blur-transition-params);
+}

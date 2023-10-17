@@ -46,6 +46,15 @@ export const GlobalProvider = ({ children }) => {
 
   const isPageNarrow = windowWidth <= 800;
 
+  useEffect(() => {
+    // Reset blur when isPageNarrow changes
+    if (!isPageNarrow) {
+      setBlur(GLOBAL_RESETS.blur);
+      setIsNavMenuOpen(GLOBAL_RESETS.isNavMenuOpen);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPageNarrow]);
+
   return (
     <GlobalContext.Provider
       value={{

@@ -119,7 +119,7 @@ export const SEARCH_MENU_DETAIL_ITEMS = {
   tags: {
     data: null,
     type: SEARCH_MODES.tag,
-    divClass: 'item-tags',
+    divClass: 'search-item-tags',
   },
   category: {
     data: null,
@@ -263,22 +263,24 @@ export const THROTTLE_TIME = 750;
 
 export const SCROLL_THRESHOLD = 10;
 
+const hdKbdBtnsClass = 'search-help-modal-kbd-btns';
+
 const HD_TABLE = {
   1: {
     headers: ['Button', 'Hotkey/Event', 'Action'],
     rows: {
       1: [
         <Button
-          className='search-help-modal-kbd-btns'
+          className={hdKbdBtnsClass}
           icon={<Icon icon={SEARCH_ICONS.submitQuery} />}
           minimal={false}
-        />,
-        <KeyComboTag combo='enter' />,
-        'search request submission',
+        />, // Button
+        <KeyComboTag combo='enter' />, // Hotkey/Event
+        'search request submission', // Action
       ],
       2: [
         <Button
-          className='search-help-modal-kbd-btns'
+          className={hdKbdBtnsClass}
           icon={<Icon icon={SEARCH_ICONS.filter} />}
           minimal={false}
         />,
@@ -287,7 +289,7 @@ const HD_TABLE = {
       ],
       3: [
         <Button
-          className='search-help-modal-kbd-btns'
+          className={hdKbdBtnsClass}
           icon={<Icon icon={SEARCH_ICONS.sort} />}
           minimal={false}
         />,
@@ -296,7 +298,7 @@ const HD_TABLE = {
       ],
       4: [
         <Button
-          className='search-help-modal-kbd-btns'
+          className={hdKbdBtnsClass}
           icon={<Icon icon={SEARCH_ICONS.helpDialog} color='#CCCCCC' />}
           minimal={true}
         />,
@@ -314,9 +316,9 @@ const HD_TABLE = {
         'all fields below',
       ],
       2: [
-        <Icon icon={SEARCH_ICONS.title} />,
-        `'${SEARCH_PREFIXES.title[1]}' and '${SEARCH_PREFIXES.title[0]}'`,
-        'titles',
+        <Icon icon={SEARCH_ICONS.title} />, // Icon
+        `'${SEARCH_PREFIXES.title[1]}' and '${SEARCH_PREFIXES.title[0]}'`, // Prefixes
+        'titles', // Search Scope
       ],
       3: [
         <Icon icon={SEARCH_ICONS.tag} />,

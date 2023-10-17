@@ -60,7 +60,7 @@ export const SearchBarContext = createContext({
 });
 
 export const SearchBarProvider = ({ children }) => {
-  const { setBlur, setBlurNarrowNav, isPageNarrow } = useContext(GlobalContext);
+  const { setBlur } = useContext(GlobalContext);
 
   const menuRef = useRef(null);
 
@@ -99,7 +99,6 @@ export const SearchBarProvider = ({ children }) => {
   let scrollLockTimeout;
   let scrollPosition;
 
-  // Function to lock the scroll position
   const lockScroll = () => {
     window.scrollTo(0, scrollPosition);
   };

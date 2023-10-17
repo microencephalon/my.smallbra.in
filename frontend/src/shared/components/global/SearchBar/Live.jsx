@@ -1,4 +1,5 @@
 // frontend/src/components/SBOmnibarLive.jsx
+// @outdated -- needs to be updated along with corresponding hook useLiveSearch.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,15 +54,8 @@ const LiveSearchBar = ({ searchBarContext }) => {
     }
 
     return (
-      <div
-        className={divClass}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingBottom: '5px',
-        }}
-      >
-        <span className='mysb-omnibar-search-yield'>{data}</span>
+      <div className={`search-menu-subitem ${divClass}`}>
+        <span className='search-yield'>{data}</span>
         <Tag intent='none' minimal={true}>
           <span className='bp5-text-muted'>{type}</span>
         </Tag>
@@ -86,7 +80,7 @@ const LiveSearchBar = ({ searchBarContext }) => {
         val: val[field],
         item,
         highlightClass:
-          field === 'title' ? 'mysb-omnibar-hl-yield-title' : undefined,
+          field === 'title' ? 'search-yield-highlighted-title' : undefined,
       });
     });
 
@@ -98,22 +92,22 @@ const LiveSearchBar = ({ searchBarContext }) => {
           </Tag>
         )),
         type: 'tag',
-        divClass: 'item-tags',
+        divClass: 'search-item-tags',
       },
       {
         data: highlighted['category'],
         type: 'category',
-        divClass: 'item-category',
+        divClass: 'search-item-category',
       },
       {
         data: highlighted['description'],
         type: 'portfolio:description',
-        divClass: 'item-description',
+        divClass: 'search-item-description',
       },
       {
         data: highlighted['summary'],
         type: 'blog:summary',
-        divClass: 'item-summary',
+        divClass: 'search-item-summary',
       },
     ];
 
@@ -128,7 +122,7 @@ const LiveSearchBar = ({ searchBarContext }) => {
       <div className={loading ? 'bp5-skeleton fade-in' : 'fade-in'}>
         {/* Menu Item Title */}
         <div
-          className='item-title mysb-omnibar-search-yield-title'
+          className='search-item-title search-yield-title'
           style={{ paddingBottom: '5px' }}
         >
           {highlighted['title'] || val.title}
@@ -159,11 +153,7 @@ const LiveSearchBar = ({ searchBarContext }) => {
   };
 
   const handleItemListRender = ({ items, renderItem }) => {
-    return (
-      <Menu id='search-results-menu' className='mysb-omnibar-menu'>
-        {items.map(renderItem)}
-      </Menu>
-    );
+    return <Menu id='search-results-menu'>{items.map(renderItem)}</Menu>;
   };
 
   const handleSearchLeftIcoMouseLeave = () => {
@@ -240,6 +230,7 @@ const LiveSearchBar = ({ searchBarContext }) => {
     >
       <SearchBar.Omnibar.HelpDialog isLiveSearch={true} context={context} />
       <Omnibar
+        className='searchbar'
         onClose={handleSearchClose}
         onQueryChange={(newQuery) => setItem(newQuery)}
         itemRenderer={handleItemRender}
@@ -248,7 +239,6 @@ const LiveSearchBar = ({ searchBarContext }) => {
         activeItem={item}
         items={loading ? [] : items}
         inputProps={searchBarInputProps}
-        className='mysb-omnibar'
       />
     </HotkeysTarget2>
   );

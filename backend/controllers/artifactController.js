@@ -102,12 +102,8 @@ const createArtifact = asyncHandler(async (req, res) => {
   }
 
   if (req.headers['content-type'].startsWith('multipart/form-data')) {
-    console.log('Changing');
-    console.log(tags);
     const individualTags = Array.isArray(tags) ? tags : tags.split(',');
-    console.log(individualTags);
     req.body.tags = individualTags;
-    console.log(req.body.tags);
   }
 
   const slug =
