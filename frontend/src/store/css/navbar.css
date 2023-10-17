@@ -1,0 +1,191 @@
+/* frontend/src/store/css/navbar.css */
+
+.nav-button {
+  border-radius: 0;
+  position: relative;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+.nav-button.bp5-active {
+  transition: var(--transition-background-color-faster) ease-in-out;
+}
+
+.nav-button:not(.bp5-active):not(#nav-search-btn):hover {
+  background-color: transparent !important;
+}
+
+.nav-button.bp5-active:hover {
+  cursor: default;
+}
+
+.nav-button:not(#nav-search-btn) > span.bp5-button-text {
+  color: var(--chinese-black);
+}
+
+.nav-button > span.bp5-button-text {
+  font-family: var(--font-family-title);
+  font-weight: 400;
+  font-size: 30px;
+  padding-top: 50px;
+  transition: var(--transition-transform-quicker) ease-in-out;
+}
+
+.nav-button:not(.bp5-active):not(#nav-search-btn) > span.bp5-button-text:hover {
+  transform: scale(1.2) translateY(-7%); /* Animation */
+}
+
+#nav-search-btn > span.bp5-button-text {
+  color: inherit;
+}
+
+#nav-search-btn {
+  background-color: var(--chinese-black);
+  color: white;
+}
+
+#nav-search-btn:hover {
+  color: white;
+}
+
+.nav-search-btn-items {
+  transform: translateX(-155%) translateY(-25%);
+  opacity: 0;
+  transition: var(--transition-opacity-quicker) ease-in-out; /* Add transition for smooth fade */
+}
+
+.nav-search-kbd > kbd.bp5-key {
+  background-color: transparent;
+  border-color: white;
+  border: 1px solid white;
+  color: white;
+}
+
+/* Fade in when #nav-search-btn is hovered */
+#nav-search-btn:hover ~ .nav-search-btn-items {
+  opacity: 1;
+}
+
+.slide-out {
+  transform: translateX(-105px);
+  transition: var(--transition-transform-quicker) ease-out;
+}
+
+.slide-in {
+  transform: translateX(0);
+  transition: var(--transition-transform-quicker) ease-in;
+}
+
+.remain-in {
+  transform: translateX(0);
+}
+
+.remain-out {
+  transform: translateX(-105px);
+}
+
+#navbar {
+  height: 74px;
+  /* display: flex;
+  justify-content: center; */
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+#navbar.narrow-nav {
+  padding-left: 0;
+  padding-right: 0;
+  height: auto;
+  border-bottom: 2px solid var(--chinese-black);
+}
+
+#narrow-nav-close-menu-btn {
+  height: 50px;
+}
+
+div[role='combobox']:has(#narrow-nav-close-menu-btn):hover {
+  cursor: pointer;
+}
+
+.narrow-nav-menu-item-active:hover {
+  background-color: var(--active-item-bg-color);
+}
+
+.narrow-nav-menu-item > div,
+.narrow-nav-menu-item-active > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.narrow-nav-btn > *,
+.narrow-nav-menu-item > *,
+.narrow-nav-menu-item-active > * {
+  font-family: var(--font-family-title);
+  font-weight: 400;
+  transition: var(--transition-transform-quicker) ease-in-out;
+}
+
+.narrow-nav-btn > *,
+.narrow-nav-menu-item > *,
+.narrow-nav-menu-item-active > * {
+  font-size: 30px;
+}
+
+#narrow-nav-current-btn {
+  height: 50px;
+}
+
+#narrow-nav-current-btn.narrow-nav-btn > span {
+  font-size: 24px;
+  transform: translateY(-2px);
+}
+
+.narrow-nav-menu-item > *,
+.narrow-nav-menu-item-active > * {
+  line-height: normal;
+}
+
+.narrow-nav-menu-item-active,
+.narrow-nav-menu-item-active > * {
+  color: var(--chinese-black);
+  background: var(--active-item-bg-color);
+  background-color: var(--active-item-bg-color);
+  border-radius: 0 0 0 0;
+}
+
+#narrow-nav-search-btn {
+  background: var(--chinese-black);
+  background-color: var(--chinese-black);
+}
+
+div.bp5-portal:has(a.narrow-nav-menu-item) ul[role='listbox'] {
+  border-radius: 0 0 0 0;
+}
+
+div.bp5-portal:has(a.narrow-nav-menu-item) .bp5-popover {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border-radius: 0;
+  border-bottom: 3px solid var(--chinese-black);
+}
+
+div.bp5-portal:has(a.narrow-nav-menu-item) .bp5-popover-content {
+  border-radius: 0 0 0 0;
+  padding: 0 0 0 0;
+}
+
+.nav-shadowless,
+#navbar.narrow-nav {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.nav-shadow {
+  box-shadow: var(--box-shadow-navbar);
+  -webkit-box-shadow: var(--box-shadow-navbar);
+}
+
+/* Remove blue outline from buttons */
+#navbar-group-left > button {
+  outline: none;
+}

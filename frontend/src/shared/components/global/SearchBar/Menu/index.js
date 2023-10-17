@@ -1,6 +1,7 @@
+import { cloneElement } from 'react';
 import { Menu, MenuDivider } from '@blueprintjs/core';
 import Header from './Header';
-import Spinner from './Spinner';
+import { MenuSpinner as Spinner } from '../../../common/Spinners';
 import TerminalDivider from './TerminalDivider';
 import Item from './Item';
 
@@ -8,11 +9,7 @@ const SearchBarMenu = ({ items, renderItem, type, context }) => {
   const { menuRef, searchPerformed, loading, page, totalPages } = context;
 
   const renderMenu = (children) => (
-    <Menu
-      id='search-results-menu'
-      className='mysb-omnibar-menu'
-      ulRef={menuRef}
-    >
+    <Menu id='search-results-menu' ulRef={menuRef}>
       {children}
     </Menu>
   );
@@ -36,7 +33,9 @@ const SearchBarMenu = ({ items, renderItem, type, context }) => {
     return renderMenu(
       <>
         {searchPerformed && <Header context={context} />}
-        {items.map(renderItem)}
+        {items.map((item, index) =>
+          cloneElement(renderItem(item), { key: index })
+        )}
         {loading && <Spinner size={20} />}
         {searchPerformed && page >= totalPages && <TerminalDivider />}
       </>

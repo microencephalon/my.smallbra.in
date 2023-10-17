@@ -1,4 +1,5 @@
 // frontend/src/hooks/useLiveSearch.js
+// @outdated -- needs to be updated along with corresponding SearchBar.Live.jsx component
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 

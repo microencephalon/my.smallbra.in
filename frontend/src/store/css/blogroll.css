@@ -1,0 +1,51 @@
+.blog-card {
+  width: 100%;
+  box-shadow: none;
+  padding: 10px;
+  border-radius: 0;
+}
+
+.blog-card-footer {
+  margin-bottom: 10px;
+  color: var(--chinese-black);
+  text-align: right;
+  opacity: 0.1;
+  transition: var(--transition-opacity-slower) ease-in-out; /* Add transition for smooth animation */
+}
+
+.blog-card-footer:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.roll-footer-bottom-space {
+  padding-bottom: 100px;
+}
+
+.blog-roll-card-container {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid var(--chinese-black);
+  transition: var(--transition-background-color-slower) ease-in-out; /* Add transition for smooth animation */
+}
+
+.blog-roll-card-container:hover {
+  cursor: pointer;
+  background-color: var(--active-item-bg-color);
+}
+
+.blog-roll-card {
+  border-radius: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: transparent;
+}
+
+.blog-roll-card:hover {
+  cursor: pointer;
+}
+
+.blog-roll-card-summary {
+  font-size: 16px;
+  line-height: 18px;
+}

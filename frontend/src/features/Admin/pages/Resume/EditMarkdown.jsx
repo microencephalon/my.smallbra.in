@@ -1,5 +1,5 @@
 // frontend/src/pages/Admin/ResumeEditMarkdown.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {
@@ -111,7 +111,7 @@ const ResumeEditMarkdown = () => {
                 id='markdown'
                 value={markdown}
                 fill={true}
-                growVertically={true}
+                autoResize={true}
                 onChange={(e) => setMarkdown(e.target.value)}
                 style={{ resize: 'none' }}
               />

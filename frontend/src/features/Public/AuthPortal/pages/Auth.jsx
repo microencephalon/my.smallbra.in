@@ -1,7 +1,8 @@
 // frontend/src/pages/Auth.jsx
-import React, { useState, useEffect } from 'react';
+// TODO: Refactoring required -- separate hooks and modularize components
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // use useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
 import {
   Tab,
   Tabs,

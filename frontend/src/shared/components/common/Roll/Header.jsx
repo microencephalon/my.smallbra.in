@@ -4,12 +4,13 @@ const Header = ({ children, type }) => {
 
   switch (type) {
     case 'blog':
-      classNames.header = 'blog-card blog-card-header';
-      classNames.title = 'blog-post-card-title';
+      classNames.header = 'blog-card roll-card-header';
+      classNames.title = 'roll-card-title';
       break;
     case 'portfolio':
-      classNames.header = 'portfolio-card portfolio-card-header';
-      classNames.title = 'portfolio-artifact-card-title';
+      classNames.header =
+        'portfolio-card roll-card-header portfolio-card-header';
+      classNames.title = 'roll-card-title';
       break;
     default:
       break;

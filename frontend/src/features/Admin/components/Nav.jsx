@@ -1,5 +1,5 @@
 // frontend/src/components/Nav.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alignment,
   Button,

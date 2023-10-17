@@ -2,7 +2,6 @@
 
 // NOTE: Doesn't sustain
 function disableElementByID(elementID) {
-  console.log('Function running');
   let xpathExpression = `(//div[@id='${elementID}']//button[contains(@class, 'try-out__btn')])[1]`;
   let xpathResult = document.evaluate(
     xpathExpression,

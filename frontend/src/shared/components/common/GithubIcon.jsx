@@ -1,5 +1,3 @@
-import React from 'react';
-
 const GithubIcon = ({ color }) => (
   <svg
     width='24'

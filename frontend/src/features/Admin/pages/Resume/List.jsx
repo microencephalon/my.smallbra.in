@@ -1,6 +1,6 @@
 // frontend/src/pages/Blog/ResumeList.jsx
 import '@blueprintjs/table/lib/css/table.css';
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
   Button,

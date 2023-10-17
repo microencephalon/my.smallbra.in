@@ -1,5 +1,4 @@
 // frontend/src/features/Admin/components/Layout.jsx
-import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Breadcrumbs, Breadcrumb, Boundary, Text } from '@blueprintjs/core';
 

@@ -5,8 +5,8 @@ const SearchButton = ({ context }) => {
 
   return (
     <Button
-      id='nav-search-btn-narrow'
-      className='narrow-navbar-btn'
+      id='narrow-nav-search-btn'
+      className='narrow-nav-btn'
       icon={<Icon icon='search' color='#FFF' size={IconSize.LARGE} />}
       onClick={handleSearchBarToggle}
       aria-label='Toggle Search'

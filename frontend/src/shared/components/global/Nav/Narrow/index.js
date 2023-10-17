@@ -36,14 +36,14 @@ const NavNarrow = ({ context }) => {
     <Navbar
       id='navbar'
       className={`
-      narrow-navbar 
+      narrow-nav 
       ${blurNarrowNav ? 'blur-content' : ''}
       ${isNavMenuOpen ? ' disable-interaction' : ''}
       `}
       fixedToTop={false}
     >
       <ButtonGroup
-        id='narrow-navbar-btn-group'
+        id='narrow-nav-btn-group'
         minimal={true}
         fill={true}
         large={true}

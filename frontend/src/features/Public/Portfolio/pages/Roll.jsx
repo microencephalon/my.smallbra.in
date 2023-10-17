@@ -1,14 +1,11 @@
 // frontend/src/features/Public/Portfolio/pages/Roll.jsx
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-import ArtifactCard from '../components/Card';
+import Portfolio from '../components';
 import Common from '../../../../shared/components/common';
 
 import { useRoll } from '../../../../shared/hooks';
-
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 const PortfolioRoll = ({ context }) => {
   const navigate = useNavigate();
@@ -30,7 +27,8 @@ const PortfolioRoll = ({ context }) => {
     const where = `/portfolio/${data.slug}/${data._id}`;
     return (
       <Common.Roll.Card
-        Template={ArtifactCard}
+        key={`portfolio-roll-card-${data._id}`}
+        Template={Portfolio.Roll.Card}
         data={data}
         classNames={classNames}
         onClick={() => navigate(where)}
@@ -43,12 +41,10 @@ const PortfolioRoll = ({ context }) => {
     <div className='portfolio-roll-container'>
       <Common.HomeLogo />
       <Common.Roll.Header type='portfolio'>Artifacts</Common.Roll.Header>
-      <div className='artifact-row-wrapper'>
-        <div className='artifact-row-container'>
-          {artifacts.map((artifactObj, idx) => (
-            <Fragment key={artifactObj._id}>
-              {renderCard(artifactObj, idx)}
-            </Fragment>
+      <div className='portfolio-roll-row-wrapper'>
+        <div className='portfolio-roll-row-container'>
+          {artifacts.map((artifactObj) => (
+            <Fragment key={artifactObj._id}>{renderCard(artifactObj)}</Fragment>
           ))}
         </div>
       </div>
@@ -57,7 +53,7 @@ const PortfolioRoll = ({ context }) => {
         onClick={handleLoadMore}
         context={{ loading }}
       />
-      <Common.CardFooterSpace />
+      <Common.Roll.FooterSpace />
     </div>
   );
 };

@@ -44,8 +44,6 @@ function getHighlightedText(value, item, highlightClass) {
   if (typeof value !== 'string') value = '';
   let processedResult;
 
-  // Set string to
-  console.debug({ value, item, highlightClass });
   const [str, substr] = [value.toLowerCase(), item.toLowerCase()];
 
   if (str.includes(substr)) {
@@ -75,16 +73,8 @@ export function highlightQuery({
   specificQuery,
   val,
   item,
-  highlightClass = 'mysb-omnibar-hl-yield',
+  highlightClass = 'searchbar-hl-yield',
 }) {
-  console.debug({
-    searchMode,
-    searchModeStr,
-    specificQuery,
-    val,
-    item,
-    highlightClass,
-  });
   const result =
     searchMode === searchModeStr
       ? getHighlightedText(val, specificQuery, highlightClass)
@@ -136,3 +126,6 @@ export const stripScheme = (url) => {
       return url;
   }
 };
+
+export const hyphenateString = (str) =>
+  str.toLowerCase().trim().replace(/\s+/g, '-');

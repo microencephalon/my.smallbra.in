@@ -1,0 +1,140 @@
+/* frontend/src/store/css/common.css */
+
+/* Home Logo */
+
+#home-logo {
+  margin-left: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: var(--scale-home-logo);
+  transition: var(--transition-transform-slower); /* Animation */
+}
+
+#home-logo:hover {
+  cursor: var(--cursor-home-logo);
+  transform: var(--scale-home-logo-shrink);
+}
+
+@media (max-width: 800px) {
+  #home-logo {
+    transform: var(--scale-home-logo-800);
+  }
+  #home-logo:hover {
+    cursor: var(--cursor-home-logo);
+    transform: var(--scale-home-logo-800-shrink);
+  }
+}
+
+#home-logo > img#home-logo-img {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+#home-logo > img#home-logo-img {
+  cursor: var(--cursor-home-logo);
+}
+
+h1#home-logo-text {
+  color: var(--chinese-black);
+  font-family: var(--font-family-home-logo);
+  font-size: 59.375px;
+  font-weight: 700;
+  line-height: 40.16px;
+  padding-bottom: 10px;
+}
+
+h1#home-logo-text:hover {
+  cursor: var(--cursor-home-logo);
+}
+
+/* Roll card shared */
+
+.roll-card-header {
+  color: var(--roll-card-header-color);
+  border-bottom: 1px solid var(--chinese-black);
+}
+
+.roll-card-date {
+  font-family: var(--font-family-card-detail);
+  color: var(--roll-card-header-color);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16.46665px;
+}
+
+.roll-card-title {
+  font-family: var(--font-family-title);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 40.16px;
+}
+
+.roll-card-preview-text {
+  font-family: var(--font-family-card-detail);
+  font-weight: 400;
+}
+
+#roll-load-more-btn {
+  outline: none !important;
+  margin-top: 1%;
+  margin-left: 50%;
+  margin-right: 50%;
+  opacity: 0.4;
+}
+
+#roll-load-more-btn:hover {
+  background-color: transparent !important;
+  cursor: default;
+  opacity: 1;
+}
+
+#roll-load-more-btn,
+#roll-load-more-btn > span.bp5-icon-add > svg {
+  transition: var(--transition-transform-quicker) ease-in;
+}
+
+#roll-load-more-btn > span.bp5-icon-add > svg,
+#roll-load-more-btn {
+  transform: scale(1.3);
+  transition:
+    var(--transition-transform-slower) ease-in-out,
+    opacity 0.5s ease-in-out;
+}
+
+#roll-load-more-btn > span.bp5-icon-add > svg:hover {
+  cursor: pointer;
+  transform: scale(1.75); /* Animation */
+  transition: var(--transition-transform-quicker) ease-in-out;
+}
+
+/* Detail Pages Shared -- Artifacts and Posts */
+
+.detail-page-tags,
+.detail-page-categories {
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.detail-page-categories {
+  background-color: var(--category-tag-bg-color) !important;
+}
+
+.detail-page-categories:hover,
+.detail-page-tags:hover {
+  cursor: pointer;
+}
+
+.detail-page-tags > span {
+  font-family: var(--font-family-default);
+  color: var(--tag-font-color);
+  font-weight: 500;
+}
+
+.detail-page-categories > span {
+  font-family: var(--font-family-default);
+  color: white;
+  font-weight: 500;
+}

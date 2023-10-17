@@ -1,7 +1,4 @@
 // frontend/src/features/Admin/pages/Home.jsx
-
-import React from 'react';
-
 const AdminHome = () => {
   return (
     <div style={{ padding: '20px' }}>

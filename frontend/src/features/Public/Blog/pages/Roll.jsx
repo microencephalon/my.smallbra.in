@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import BlogCard from '../components/Card';
+import Blog from '../components';
 import Common from '../../../../shared/components/common';
 import { useRoll } from '../../../../shared/hooks';
 
@@ -25,11 +25,12 @@ const Blogroll = ({ context }) => {
   );
 
   const renderCard = (data) => {
-    const classNames = { containerClass: 'blog-post-card-container' };
+    const classNames = { containerClass: 'blog-roll-card-container' };
     const where = `/blog/${data.slug}/${data._id}`;
     return (
       <Common.Roll.Card
-        Template={BlogCard}
+        key={`blog-roll-card-${data._id}`}
+        Template={Blog.Roll.Card}
         data={data}
         classNames={classNames}
         onClick={() => navigate(where)}
@@ -39,7 +40,7 @@ const Blogroll = ({ context }) => {
   };
 
   return (
-    <div className='blogroll-container'>
+    <div id='blog-roll-container'>
       <Common.HomeLogo />
       <Common.Roll.Header type={'blog'}>Articles</Common.Roll.Header>
       {posts.map((data) => (
@@ -51,7 +52,7 @@ const Blogroll = ({ context }) => {
         context={{ loading }}
       />
 
-      <Common.CardFooterSpace />
+      <Common.Roll.FooterSpace />
     </div>
   );
 };

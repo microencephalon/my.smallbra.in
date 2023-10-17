@@ -5,16 +5,14 @@ import { RxDropdownMenu } from 'react-icons/rx';
 const MenuButton = ({ context }) => {
   const { isNavMenuOpen, activeMenuItem, setIsNavMenuOpen } = context;
 
-  const currButtonClass = classNames('narrow-navbar-btn', {
-    'nav-menu-open': isNavMenuOpen,
+  const currButtonClass = classNames('narrow-nav-btn', {
+    'narrow-nav-open': isNavMenuOpen,
   });
 
   return (
     <Button
       id={
-        !isNavMenuOpen
-          ? 'narrow-navbar-current-btn'
-          : 'narrow-navbar-close-menu-btn'
+        !isNavMenuOpen ? 'narrow-nav-current-btn' : 'narrow-nav-close-menu-btn'
       }
       className={currButtonClass}
       aria-label={

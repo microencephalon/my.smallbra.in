@@ -1,62 +1,51 @@
-/* frontend/src/components/blog/blog.css */
+/* frontend/src/components/blog/blog-posts.css */
 
 /* Blog Posts */
 
-#blog-post-metadata-container {
+/* Meta Data */
+#blog-metadata-container {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 20px;
 }
 
-#blog-post-metadata-profile-pic {
+#blog-metadata-profile-pic {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
 
-
-#blog-post-metadata-info {
+#blog-metadata-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-evenly;
   margin-left: 12px;
-  
 }
 
 /* Disable default where display: block for every div. */
-div.blog-div {
+.blog-div {
   display: unset;
 }
 
-@media (min-width: 768px) {
-  .blog-toc {
-    font-family: 'Open Sans', sans-serif;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200px;
-    height: 100%;
-    background-color: #f1f1f1;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+#blog-post-container {
+  padding-bottom: 5%;
 }
 
-.blog-toc {
-  display: none;
-}
-
-.blog-p, .blog-ul, .blog-li, .blog-anchor {
-  font-family: 'Open Sans', sans-serif;
+.blog-p,
+.blog-ul,
+.blog-li,
+.blog-anchor {
+  font-family: var(--font-family-default);
   font-size: 16px !important;
 }
 
 /* Main content styles */
 
 @media (min-width: 320px) {
-  .blog-post {
-    font-family: 'Open Sans', sans-serif;
+  #blog-post,
+  #resume-doc {
+    font-family: var(--font-family-default);
     margin-left: 220px; /* leave space for the sidebar */
     padding-bottom: 400px;
     max-width: 800px;
@@ -65,28 +54,31 @@ div.blog-div {
   }
 }
 
-.blog-post {
-  font-family: 'Open Sans', sans-serif;
+#blog-post,
+#resume-doc {
+  font-family: var(--font-family-default);
   padding: 20px;
   box-sizing: border-box;
   margin-left: 5px;
   margin-right: 5px;
-  max-width: calc(100% - 10px); /* Adjust the max-width to accommodate the left and right margins */
-  margin: 0 auto;
+  max-width: calc(
+    100% - 10px
+  ); /* Adjust the max-width to accommodate the left and right margins */
+  margin: var(--margin-center-horizontal);
 }
 
 blockquote.blog-blockquote {
   background-color: transparent;
   border: 0px solid;
-  border-color: #424346 !important;
+  border-color: var(--blog-blockquote-border-color) !important;
   border-left-width: 2px !important;
   border-radius: 0px;
-  color: black;
+  color: var(--chinese-black);
   font-family: inherit;
   font-style: inherit;
   line-height: 1.25em;
   margin: 0 10px;
-  padding: 12px 0 0.1px 12.5px
+  padding: 12px 0 0.1px 12.5px;
 }
 
 blockquote.blog-blockquote > p.blog-p {
@@ -94,57 +86,75 @@ blockquote.blog-blockquote > p.blog-p {
   font-weight: 600;
   font-size: 18px !important;
 }
-blockquote.blog-blockquote > span > div > pre > code.language-code-string > span {
+blockquote.blog-blockquote
+  > span
+  > div
+  > pre
+  > code.language-code-string
+  > span {
   font-size: 10px !important;
 }
 
-.blog-post > h1, h2, h3, h4, h5, h6 {
+#blog-post > h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#resume-doc > h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   padding-top: 15px;
   padding-bottom: 0px;
 }
 
 /* Headers */
 
-h1.blog-h1, h1.blog-h1 > * {
-  font-family: 'Oswald', sans-serif;
+h1.blog-h1,
+h1.blog-h1 > * {
+  font-family: var(--font-family-title);
   font-size: 3em;
 }
 
-h2.blog-h2, h2.blog-h2 > * {
-  font-family: 'Oswald', sans-serif;
+h2.blog-h2,
+h2.blog-h2 > * {
+  font-family: var(--font-family-title);
   font-size: 1.5em;
 }
 
 h3.blog-h3 {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-family-title);
   font-size: 1.3em;
 }
 
 h4.blog-h4 {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-family-title);
   font-size: 1em;
 }
 
 h5.blog-h5 {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-family-title);
   font-size: 0.8em;
 }
 
 h6.blog-h6 {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-family-title);
   font-size: 0.7em;
 }
 
 .example-in-action {
-  color: #9DB2BD;
+  color: var(--blog-example-in-action);
   text-decoration: underline;
-  text-decoration-color: #9DB2BD;
+  text-decoration-color: var(--blog-example-in-action);
   text-decoration-thickness: 2px;
   text-decoration-style: solid;
 }
 
-table.blog-table { 
-  border: 0.125rem solid black;
+table.blog-table {
+  border: 0.125rem solid var(--chinese-black);
   border-collapse: separate;
   border-left: 0;
   border-radius: 4px;
@@ -164,25 +174,28 @@ tr.blog-tr {
   vertical-align: inherit;
   border-color: inherit;
 }
-th.blog-th, td.blog-td {
-  padding: 7.5px; 
+th.blog-th,
+td.blog-td {
+  padding: 7.5px;
   text-align: left;
   vertical-align: top;
-  border-left: 0.125rem solid black;    
+  border-left: 0.125rem solid var(--chinese-black);
 }
 td.blog-td {
-  border-top: 1px solid black;    
+  border-top: 1px solid var(--chinese-black);
 }
-th.blog-th:first-child, td.blog-td:first-child {
-  border-left: 0.125rem solid black;    
+th.blog-th:first-child,
+td.blog-td:first-child {
+  border-left: 0.125rem solid var(--chinese-black);
 }
-thead.blog-thead:first-child tr.blog-tr:first-child th.blog-th:first-child, tbody.blog-tbody:first-child tr.blog-tr:first-child td.blog-td:first-child {
+thead.blog-thead:first-child tr.blog-tr:first-child th.blog-th:first-child,
+tbody.blog-tbody:first-child tr.blog-tr:first-child td.blog-td:first-child {
   border-radius: 2px 0 0 0;
 }
-thead.blog-thead:last-child tr.blog-tr:last-child th.blog-th:first-child, tbody.blog-tbody:last-child tr.blog-tr:last-child td.blog-td:first-child {
+thead.blog-thead:last-child tr.blog-tr:last-child th.blog-th:first-child,
+tbody.blog-tbody:last-child tr.blog-tr:last-child td.blog-td:first-child {
   border-radius: 0 0 0px 2px;
 }
-
 
 /* Code Blocks */
 
@@ -205,77 +218,60 @@ pre.blog-pre > div {
 
 pre.blog-pre > div > pre {
   background: white !important;
-  border: 1px solid #141414 !important;
+  border: 1px solid var(--chinese-black) !important;
 }
 
 pre.blog-pre > code > span {
-  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace !important;
+  font-family: 'Ubuntu Mono', Consolas, Monaco, 'Andale Mono', monospace !important;
   font-size: 14px;
 }
 
 /* Code Block Copy Buttons */
 
-.code-copy-btn {
+.blog-code-copy-btn {
   position: absolute !important;
   top: 0.5rem !important;
   right: 0.5rem !important;
   z-index: 1 !important;
   width: 66px;
-  transition: background-color 0.3s ease-in-out
+  transition: var(--transition-background-color-faster) ease-in-out;
 }
 
-.code-copy-btn.code-copied {
-  background-color: lightgreen !important;
+.blog-code-copy-btn.blog-code-copied-btn {
+  background-color: var(--blog-pre-copy-success-color) !important;
 }
 
-.code-copy-btn.code-copied:hover {
-  background-color: rgb(134, 221, 134) !important;
-  transition: background-color 0.3s ease-in-out
+.blog-code-copy-btn.blog-code-copied-btn:hover {
+  background-color: var(--blog-pre-copy-success-hover-color) !important;
 }
 
-.code-copy-btn > span {
-  transition: transform 0.2s ease-in-out;
-}
-
-.code-copy-btn:hover > span {
-  transform: scale(1.1);
-}
-
-
-div.copied-popover {
-  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace !important;
-  font-size: 12px !important;
-  padding: 10px;
-}
-
-
-.code-copy-btn {
-  color: #000000 !important;
-  background-color: whitesmoke !important;
+.blog-code-copy-btn {
+  color: var(--chinese-black) !important;
+  background-color: var(--lightest-gray) !important;
   border: none !important;
   font-size: 15px !important;
   border-radius: 2px !important;
   box-shadow: none !important;
 }
 
-.code-copy-btn:hover {
-  background-color: #DEE0E4 !important;
+.blog-code-copy-btn:hover {
+  background-color: var(--active-item-bg-color) !important;
 }
 
 /* Inline code strings */
 
 /* Firefox support via JavaScript */
-@supports not (-moz-appearance:none) {
-  pre.blog-pre:has(> code.language-code-string), code.language-code-string {
+@supports not (-moz-appearance: none) {
+  pre.blog-pre:has(> code.language-code-string),
+  code.language-code-string {
     all: unset !important;
   }
 }
 
-
 div > pre.blog-pre > code.language-code-string > span {
-  font-family: "Ubuntu Mono", Consolas, Monaco, "Andale Mono", monospace;
-  color: #414141;
-  background-color: #EBEAEA;
+  font-family: 'Ubuntu Mono', Consolas, Monaco, 'Andale Mono', monospace;
+  color: var(--chinese-black);
+  background-color: var(--blog-codeblock-bg-color);
   font-size: 16px !important;
   padding: 1.75px 3px;
   border-radius: 2px;
@@ -300,16 +296,20 @@ img.blog-img {
 }
 
 a.blog-anchor > sup.blog-sup {
-  color: lightslategray;
+  color: var(--blog-superscript-color);
   position: relative;
 }
 a.blog-anchor > sup.blog-sup::before {
-  content: "｢ "; /* Using U+2009 'Narrow Thin Space' for space before '｣' */
-  position: relative;
+  content: var(
+    --content-blog-superscript-before
+  ); /* Using U+2009 'Narrow Thin Space' for space before '｣' */
+  position: var(--blog-superscript-before-after-position);
 }
 a.blog-anchor > sup.blog-sup::after {
-  content: " ｣"; /* Using U+2009 'Narrow Thin Space' for space before '｣' */
-  position: relative;
+  content: var(
+    --content-blog-superscript-after
+  ); /* Using U+2009 'Narrow Thin Space' for space before '｣' */
+  position: var(--blog-superscript-before-after-position);
 }
 
 footer.blog-footer > div {
@@ -318,7 +318,6 @@ footer.blog-footer > div {
 
 /* List Items */
 
-
 /* Checkbox Lists */
 
 @supports not (-moz-appearance: none) {
@@ -326,14 +325,14 @@ footer.blog-footer > div {
     display: flex;
     align-items: center;
     padding-left: 0rem;
-    margin-left: -1.30rem;
+    margin-left: -1.3rem;
   }
 }
 
-ul.blog-ul > li.blog-li > input[type="checkbox"] {
+ul.blog-ul > li.blog-li > input[type='checkbox'] {
   appearance: none;
   padding-left: 0px;
-  border: 2px solid black;
+  border: 2px solid var(--chinese-black);
   border-radius: 4px;
   width: 18px;
   height: 18px;
@@ -341,17 +340,20 @@ ul.blog-ul > li.blog-li > input[type="checkbox"] {
   margin-right: 10px;
 }
 
-ul.blog-ul > li.blog-li > input[type="checkbox"]:checked:after {
-  content: '\2714';
+ul.blog-ul > li.blog-li > input[type='checkbox']:checked:after {
+  content: var(--content-blog-checkbox-mark);
   font-size: 12px;
-  color: black;
+  color: var(--chinese-black);
   position: relative;
   /* top: ; */
   left: 2.5px;
-  font-family: 'Arial', sans-serif; /* Fallback font */
+  font-family: var(--font-family-blog-checkbox-fallback);
 }
 
-blockquote.blog-blockquote > ul.blog-ul > li.blog-li > input[type="checkbox"]:checked:after {
+blockquote.blog-blockquote
+  > ul.blog-ul
+  > li.blog-li
+  > input[type='checkbox']:checked:after {
   top: -4px;
 }
 
@@ -362,7 +364,7 @@ blockquote.blog-blockquote > ul.blog-ul > li.blog-li > input[type="checkbox"]:ch
   pre.blog-pre::-webkit-scrollbar {
     height: 10px !important;
     width: 10px !important;
-    background:transparent !important;
+    background: transparent !important;
   }
 
   pre.blog-pre::-webkit-scrollbar-thumb {
@@ -372,7 +374,7 @@ blockquote.blog-blockquote > ul.blog-ul > li.blog-li > input[type="checkbox"]:ch
   }
 
   pre.blog-pre:hover::-webkit-scrollbar-thumb {
-    background-color: black !important;
+    background-color: var(--chinese-black) !important;
     border: 3.5px solid white !important;
     border-radius: 25px !important;
   }
@@ -384,10 +386,16 @@ pre.blog-pre {
 }
 
 pre.blog-pre:hover {
-  scrollbar-color: black transparent !important;
+  scrollbar-color: var(--chinese-black) transparent !important;
 }
 
 img.blog-img {
   max-width: 100%; /* So images don't overflow */
   height: auto;
 }
+
+/* unused
+
+#blog-content {}
+
+*/
