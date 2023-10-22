@@ -162,7 +162,7 @@ module.exports = {
   json,
   raw,
   router,
-  statick,
+  static: statick,
   text,
   urlencoded,
 };

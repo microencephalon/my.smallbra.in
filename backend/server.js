@@ -58,12 +58,12 @@ const startServer = async () => {
   if (STAGE === 'production') {
     // Set build folder as static
     app.use(
-      express.static(expressOpts.statick.root, expressOpts.statick.options)
+      express.static(expressOpts.static.root, expressOpts.static.options)
     );
 
     // App * anything, except for the routes created
     app.get('*', (_, res) =>
-      res.sendFile(__dirname, `${expressOpts.statick.root}/index.html`)
+      res.sendFile(__dirname, `${expressOpts.static.root}/index.html`)
     );
   } else {
     // Send message
