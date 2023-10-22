@@ -15,12 +15,12 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please include all fields');
   }
-  // DESC: Find it user already exists
+  // DESC: Find if user already exists
   const userExists = await User.findOne({ email });
 
   if (userExists) {
     res.status(409);
-    throw new Error('User already exists');
+    throw new Error('User email already exists');
   }
 
   // DESC: Create User
@@ -153,10 +153,10 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   if (user) {
     await user.remove();
-    res.json({ message: 'User removed' });
+    res.json({ message: 'User removed', userId: req.params.id });
   } else {
     res.status(404);
-    throw new Error('User not found');
+    throw new Error({ message: 'User not found', userId: req.params.id });
   }
 });
 
@@ -204,7 +204,11 @@ const updateUser = asyncHandler(async (req, res) => {
       const updatedUser = await user.save();
       res.json(updatedUser);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      if (error.code === 11000) {
+        res.status(409).json({ message: 'User email already exists' }); // Handle duplicate key error
+      } else {
+        res.status(400).json({ message: error.message });
+      }
     }
   } else {
     res.status(404).json({ message: 'User not found' });
