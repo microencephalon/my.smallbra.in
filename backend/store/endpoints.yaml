@@ -1,0 +1,10 @@
+endpoints:
+  users: "/api/users"
+  login: "/api/users/login"
+  blog: "/api/posts"
+  blog-categories: "/api/post-categories"
+  portfolio: "/api/artifacts"
+  portfolio-categories: "/api/artifact-categories"
+  resumes: "/api/resumes"
+  search: "/api/search"
+  oauth: "/api/oauth"
