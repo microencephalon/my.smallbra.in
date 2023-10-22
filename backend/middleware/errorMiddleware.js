@@ -1,6 +1,23 @@
 // backend/middleware/errorMiddleware.js
+require('dotenv').config();
+
+const PATH_BEFORE_ROOT = process.env.PATH_BEFORE_ROOT || '';
+
+const omitPathInStack = (stack, path) => {
+  if (!stack || !path) return stack;
+  const regex = new RegExp(path, 'g');
+  return stack.replace(regex, '~');
+};
+
 const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+
+  let sanitizedStack = process.env.NODE_ENV === 'production' ? null : err.stack;
+
+  // Remove the specific path from the stack trace
+  if (process.env.NODE_ENV !== 'production' && PATH_BEFORE_ROOT !== '') {
+    sanitizedStack = omitPathInStack(sanitizedStack, PATH_BEFORE_ROOT);
+  }
 
   if (err.name === 'CastError') {
     statusCode = 404; // Set the status code to 404 for CastError
@@ -36,7 +53,7 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode);
   res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+    stack: sanitizedStack,
   });
 };
 
