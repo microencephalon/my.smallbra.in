@@ -131,6 +131,7 @@ paths:
               examples:
                 Invalid Credentials:
                   $ref: '#/components/Responses/shared/4xx-examples/InvalidCredentials'
+
       requestBody:
         $ref: '#/components/RequestBodies/LoginUser'
       deprecated: false
@@ -147,7 +148,6 @@ paths:
       responses:
         '200':
           description: Successful response
-
           content:
             application/json:
               schema:
@@ -156,6 +156,23 @@ paths:
                 _id: 6503a3b30049cd6bb6a9b9d4
                 name: John Doe
                 email: johndoe@test.com
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -165,6 +182,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '404':
           description: Not Found
           content:
@@ -211,6 +230,23 @@ paths:
                 profilePicture: "http://localhost:8081/images/myprofilepic.png"
                 createdAt: "2023-09-16T00:17:50.336Z"
                 updatedAt: "2023-09-16T00:17:50.336Z"
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -220,6 +256,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -289,6 +327,17 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
+
         '401':
           description: Not authorized
           content:
@@ -298,6 +347,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -350,6 +401,23 @@ paths:
                 $ref: '#/components/Responses/users/DeleteUserById/200'
               example:
                 message: "User removed"
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -359,6 +427,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -443,6 +513,16 @@ paths:
               examples:
                 Include All Fields:
                   $ref: '#/components/Responses/shared/4xx-examples/IncludeAllFields'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -452,6 +532,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -582,6 +664,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/Responses/blog/PatchBlogPostById/200'
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -591,6 +690,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -634,6 +735,23 @@ paths:
                 $ref: '#/components/Responses/blog/DeleteBlogPostById/200'
               example:
                 message: 'Post removed'
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -643,6 +761,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -726,6 +846,16 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not Authorized
           content:
@@ -735,6 +865,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '409':
           description: Conflict due to duplicate value
           content:
@@ -812,6 +944,27 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '404':
           description: Not Found
           content:
@@ -921,15 +1074,27 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
-          description: Not authorized
+          description: Not Authorized
           content:
             application/json:
               schema:
                 $ref: '#/components/Responses/shared/4xx'
-              example:
-                message: 'Not authorized'
-                stack: 'Error: Not authorized\n at ...'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -1058,15 +1223,28 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
+                  
         '401':
           description: Not authorized
           content:
             application/json:
               schema:
                 $ref: '#/components/Responses/shared/4xx'
-              example:
-                message: 'Not authorized'
-                stack: 'Error: Not authorized\n at ...'
+              examples:
+                Not Authorized:
+                  $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -1112,6 +1290,23 @@ paths:
                 $ref: '#/components/Responses/portfolio/DeletePortfolioArtifactById/200'
               example:
                 message: Artifact removed
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -1121,6 +1316,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -1192,6 +1389,16 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -1201,6 +1408,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -1288,6 +1497,16 @@ paths:
                   $ref: '#/components/Responses/shared/4xx-examples/UnexpectedToken'
                 Bad Control Character:
                   $ref: '#/components/Responses/shared/4xx-examples/BadControlCharacter'
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -1297,6 +1516,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -1350,6 +1571,23 @@ paths:
                 $ref: '#/components/Responses/portfolio/DeleteArtifactCategoryById/200'
               example:
                 message: Category removed
+        '400':
+          description: No Authorization Header or Impermissible Authorization Value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/Responses/shared/4xx'
+              examples:
+                Missing or Empty Authorization Header:
+                  $ref: '#/components/Responses/shared/4xx-examples/MissingOrEmptyAuthorizationHeader'
+                Authorization Header Not Initialized with 'Bearer':
+                  $ref: '#/components/Responses/shared/4xx-examples/AuthorizationHeaderNotInitWithBearer'
+                Bearer No Whitespace:
+                  $ref: '#/components/Responses/shared/4xx-examples/BearerNoWhitespace'
+                Malformed JWT General:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWTGeneral'
+                Malformed JWT No 3 Parts:
+                  $ref: '#/components/Responses/shared/4xx-examples/MalformedJWT3Parts'
         '401':
           description: Not authorized
           content:
@@ -1359,6 +1597,8 @@ paths:
               examples:
                 Not Authorized:
                   $ref: '#/components/Responses/shared/4xx-examples/NotAuthorized'
+                Token Verification Failed:
+                  $ref: '#/components/Responses/shared/4xx-examples/TokenVerificationFailed'
         '403':
           description: Not authorized as admin
           content:
@@ -2017,82 +2257,80 @@ components:
         properties:
           message:
             type: string
-          stack:
-            type: string
       '4xx-examples':
+        MissingOrEmptyAuthorizationHeader:
+          value:
+            message: "Missing Authorization Header or empty value for Authorization header"
+        AuthorizationHeaderNotInitWithBearer:
+          value:
+            message: "Authorization Header can only include Bearer token"
+        BearerNoWhitespace:
+          value:
+            message: "Authorization Header starts with Bearer, but the syntax is malformed. Possible that no whitespace after 'Bearer'"
+        MalformedJWTGeneral:
+          value:
+            message: "Authorization Header can only include Bearer token"
+        MalformedJWT3Parts:
+          value:
+            message: "Malformed Token: Token should have exactly three parts separated by dots (header.payload.signature)"
+        TokenVerificationFailed:
+          value:
+            message: "Authorization Header can only include Bearer token"
         ExclusiveHomePageParams:
           value:
             message: "The 'home' and 'page' query params must be used exclusively"
         IncludeAllFields:
           value:
             message: "Please include all fields"
-            stack: "Error: Please include all fields\n    at ..."
         NoCategoryProvided:
           value:
             message: "No category provided"
-            stack: "Error: No category provided\n    at ..."
         InvalidCredentials:
           value:
             message: 'Invalid Credentials'
-            stack: 'Error: Invalid Credentials\n at ...'
         MissingClosingCurlyBrace:
           value:
             message: "Expected ',' or '}' after property value in JSON at position 67"
-            stack: "SyntaxError: Expected ',' or '}' after property value ..."
         ExpectedDoubleQuotedPropertyName:
           value:
             message: "Expected double-quoted property name in JSON at position 23"
-            stack: "SyntaxError: Expected double-quoted property name in JSON at position 23"
         UnexpectedToken:
           value:
             message: |-
               Unexpected token '}', \"{\n  \"name\":\n}\" is not valid JSON
-            stack: |-
-              SyntaxError: Unexpected token '}', \"{\n  \"name\":\n}\" ...
         BadControlCharacter:
           value:
             message: "Bad control character in string literal in JSON at position 78"
-            stack: "SyntaxError: Bad control character in string literal in JSON at position 78 ..."
         UserAlreadyExists:
           value:
             message: 'User already exists'
-            stack: 'Error: User already exists\n    at ...'
         UserNotFound:
           value:
             message: "User not found."
-            stack: "Error: User not found.\n    at ..."
         ResourceNotFound:
           value:
             message: "Resource not found"
-            stack: "CastError: Resource not found.\n    at ..."
         PostNotFound:
           value:
             message: "Post not found"
-            stack: "Error: Post not found\n    at ..."
         ArtifactNotFound:
           value:
             message: "Artifact not found"
-            stack: "Error: Artifact not found\n    at ..."
         CategoryNotFound:
           value:
             message: "Category not found"
-            stack: "Error: Category not found\n    at ..."
         DuplicateValueConflict:
           value:
             message: "Confluct due to duplicate value"
-            stack: 'Error: Conflict due to duplicate value\n at ...'
         NotAuthorized:
           value:
             message: 'Not authorized'
-            stack: 'Error: Not authorized\n at ...'
         NotAuthorizedAsAdmin:
           value:
             message: 'Not authorized as admin'
-            stack: 'Error: Not authorized as admin\n at ...'
         UnsupportedMediaTypeMd:
           value:
             message: 'Unsupported Media Type. Only accepts markdown files.'
-            stack: 'Error: Unsupported Media Type. Only accepts markdown files.\n at ...'
         UserValidationFailedCastToBoolean:
           value:
             message: |-
@@ -2104,7 +2342,6 @@ components:
         FailedToFetchFromURL:
           value:
             message: 'Failed to fetch the file from the provided URL'
-            stack: 'Error: Failed to fetch the file from the provided URL\n at ...'
 
     users:
       RegisterUser:
